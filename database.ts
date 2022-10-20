@@ -1,15 +1,15 @@
-import { Knex } from "knex";
-import * as fs from "fs";
+import knex, { Knex } from 'knex'
+import * as fs from 'fs'
 
 // createTcpPool initializes a TCP connection pool for a Cloud SQL
 // instance of Postgres.
-const createTcpPool = async config: any => {
+const createTcpPool = async (config?: Knex.Config) => {
   // Note: Saving credentials in environment variables is convenient, but not
   // secure - consider a more secure solution such as
   // Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
   // keep secrets safe.
   const dbConfig = {
-    client: "pg",
+    client: 'pg',
     connection: {
       host: process.env.INSTANCE_HOST, // e.g. '127.0.0.1'
       port: process.env.DB_PORT, // e.g. '5432'
@@ -19,7 +19,10 @@ const createTcpPool = async config: any => {
     },
     // ... Specify additional properties here.
     ...config
-  };
+  }
   // Establish a connection to the database.
-  return Knex(dbConfig);
-};
+  return knex(dbConfig as unknown as Knex.Config)
+}
+
+const connection = createTcpPool
+export default connection
