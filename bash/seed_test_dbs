@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o allexport
+source .env.development
+set +o allexport
+
+npx ts-node lib/scripts/seed_test_db.ts
