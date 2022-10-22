@@ -9,7 +9,7 @@ Create and populate `.env.development` and `.env.production` files in the root o
 
 `npm install`
 
-Open Postgres and create a server called `pharmabox`
+Open Postgres and create a database called `pharmabox`
 
 Open Postico2 and connect to this server.
 
