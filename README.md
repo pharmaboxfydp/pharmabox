@@ -1,4 +1,27 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Environment Setup
+
+Install Postgress Locally: https://postgresapp.com/downloads.html
+
+Install Postico 2: https://eggerapps.at/postico2/
+
+Create and populate `.env.development` and `.env.production` files in the root of the directory
+
+`npm install`
+
+Open Postgres and create a server called `Pharmabox`
+
+Open Postico2 and connect to this server.
+
+Create the database schema with: `sh bash/migrate_dbs`
+Populate database with fake data with: `sh bash/seed_test_dbs`
+
+Startup Server and Frontend with `npm run dev`
+
+View Frontend on `http://localhost:3000`
+
+You should also be able to view the populated data in the user's table in Postico2
+
 
 ## Getting Started
 
