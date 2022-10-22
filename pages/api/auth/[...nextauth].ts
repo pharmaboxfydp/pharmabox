@@ -1,10 +1,18 @@
-import NextAuth, { Account, NextAuthOptions, User } from 'next-auth'
+import NextAuth, {
+  Account,
+  NextAuthOptions,
+  Profile,
+  Session,
+  TokenSet,
+  User
+} from 'next-auth'
 import { AdapterUser } from 'next-auth/adapters'
 import { JWT } from 'next-auth/jwt'
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import prisma from '../../../lib/prisma'
+import { GoogleUser, UserSession } from '../../../types'
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -55,29 +63,19 @@ export const authOptions = {
         return null
       }
     })
-    // ...add more providers here
   ],
   callbacks: {
-    async jwt({ token, account }: { token: JWT; account: Account }) {
-      // Persist the OAuth access_token to the token right after signin
-      if (account) {
-        token.accessToken = account.access_token
+    session: async (session: UserSession, user: GoogleUser) => {
+      let emailVerified = user?.emailVerified ?? null
+      if (user?.id) {
+        session.user = {
+          ...session.user,
+          id: user.id,
+          emailVerified
+        }
       }
-      return token
-    },
-    async session({
-      session,
-      token,
-      user
-    }: {
-      session: any
-      token: JWT
-      user: User | AdapterUser
-    }) {
-      // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken
-      return session
+      return Promise.resolve(session)
     }
   }
 }
-export default NextAuth(authOptions as NextAuthOptions)
+export default NextAuth(authOptions as unknown as NextAuthOptions)
