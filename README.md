@@ -9,11 +9,12 @@ Create and populate `.env.development` and `.env.production` files in the root o
 
 `npm install`
 
-Open Postgres and create a server called `Pharmabox`
+Open Postgres and create a server called `pharmabox`
 
 Open Postico2 and connect to this server.
 
 Create the database schema with: `sh bash/migrate_dbs`
+
 Populate database with fake data with: `sh bash/seed_test_dbs`
 
 Startup Server and Frontend with `npm run dev`
