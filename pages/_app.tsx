@@ -7,15 +7,15 @@ import { useRouter } from 'next/router'
 import { Box, Button, Grommet, Spinner, Text } from 'grommet'
 import theme from '../styles/theme'
 import GradientLoader from '../components/gradient-loader'
+import Link from 'next/link'
 
 function Protector(props: React.PropsWithChildren<ProtectedRoute>) {
   const { data, status } = useSession()
-
+  const { page } = props
   if (status === 'loading') {
     return <GradientLoader />
   }
-
-  if (!data) {
+  if (!data && page !== '/signin') {
     return (
       <Box justify="center" align="center" pad="xlarge" gap="medium">
         <Box
@@ -29,7 +29,9 @@ function Protector(props: React.PropsWithChildren<ProtectedRoute>) {
           round
           gap="small"
         >
-          <Button primary label="Login to Pharambox" />
+          <Link href="/auth/signin" passHref>
+            <Button primary label="Login to Pharambox" />
+          </Link>
         </Box>
       </Box>
     )

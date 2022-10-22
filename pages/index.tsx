@@ -39,7 +39,8 @@ export async function getStaticProps(): Promise<{
   return {
     props: {
       protected: true,
-      allowedRoles: ['staff', 'patient']
+      allowedRoles: ['staff', 'patient'],
+      page: '/'
     }
   }
 }
