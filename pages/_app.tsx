@@ -4,7 +4,7 @@ import { SessionProvider, useSession } from 'next-auth/react'
 import { UserRole } from '../components/user-role'
 import { ProtectedRoute } from '../types/types'
 import { useRouter } from 'next/router'
-import { Box, Grommet, Spinner, Text } from 'grommet'
+import { Box, Button, Grommet, Spinner, Text } from 'grommet'
 import theme from '../styles/theme'
 import GradientLoader from '../components/gradient-loader'
 
@@ -16,7 +16,23 @@ function Protector(props: React.PropsWithChildren<ProtectedRoute>) {
   }
 
   if (!data) {
-    return <div>Login to continue</div>
+    return (
+      <Box justify="center" align="center" pad="xlarge" gap="medium">
+        <Box
+          align="center"
+          alignContent="center"
+          animation="fadeIn"
+          basis="small"
+          border
+          direction="column"
+          pad="large"
+          round
+          gap="small"
+        >
+          <Button primary label="Login to Pharambox" />
+        </Box>
+      </Box>
+    )
   }
 
   return (
