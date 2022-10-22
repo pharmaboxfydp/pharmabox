@@ -3,7 +3,8 @@ import Head from 'next/head'
 import Image from 'next/image'
 // import prisma from '../lib/prisma'
 import { useEffect } from 'react'
-import LoginButton from '../components/login-btn'
+import SigninButton from '../components/signin-btn'
+import { ProtectedRoute, Role } from '../types/types'
 /*
 export const username = async () => {
   const firstUser = await prisma.user.findFirst()
@@ -27,10 +28,20 @@ const Home = (props: { [key: string]: any }) => {
       </Head>
       <div>
         <h1>App Main Page</h1>
-        <LoginButton />
+        <SigninButton />
       </div>
     </div>
   )
+}
+export async function getStaticProps(): Promise<{
+  props: ProtectedRoute
+}> {
+  return {
+    props: {
+      protected: true,
+      allowedRoles: ['staff', 'patient']
+    }
+  }
 }
 
 export default Home
