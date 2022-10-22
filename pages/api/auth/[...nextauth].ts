@@ -74,6 +74,7 @@ export const authOptions = {
           emailVerified
         }
       }
+      // this is where we can store something in the database
       return Promise.resolve(session)
     }
   }
