@@ -1,4 +1,5 @@
 import { useSession, signIn, signOut } from 'next-auth/react'
+import Link from 'next/link'
 export default function LoginButton() {
   const { data: session } = useSession()
   console.log(session)
@@ -14,6 +15,7 @@ export default function LoginButton() {
     <>
       Not signed in <br />
       <button onClick={() => signIn()}>Sign in</button>
+      <Link href="/api/auth/new-user">New User</Link>
     </>
   )
 }

@@ -1,18 +1,10 @@
-import NextAuth, {
-  Account,
-  NextAuthOptions,
-  Profile,
-  Session,
-  TokenSet,
-  User
-} from 'next-auth'
+import NextAuth, { NextAuthOptions, Session, User } from 'next-auth'
 import { AdapterUser } from 'next-auth/adapters'
 import { JWT } from 'next-auth/jwt'
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import prisma from '../../../lib/prisma'
-import { GoogleUser, UserSession } from '../../../types'
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -69,13 +61,14 @@ export const authOptions = {
     })
   ],
   callbacks: {
-    session: async (session: UserSession, user: GoogleUser) => {
+    session: async (session: Session, user: User) => {
       let emailVerified = user?.emailVerified ?? null
       if (user?.id) {
         session.user = {
           ...session.user,
           id: user.id,
-          emailVerified
+          emailVerified,
+          role: 'patient'
         }
       }
       // this is where we can store something in the database
