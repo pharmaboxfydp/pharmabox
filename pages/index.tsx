@@ -8,7 +8,7 @@ import { useClerk } from '@clerk/clerk-react'
 
 export const getStaticProps: GetStaticProps = async () => {
   const firstUser = await prisma.user.findFirst()
-  const name = firstUser?.name
+  // const name = firstUser?.name
 
   return {
     props: { name }
@@ -27,7 +27,7 @@ const Home = (props: { [key: string]: any }) => {
       </div>
     )
   }
-  
+
 
   return (
     <div>
