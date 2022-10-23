@@ -2,9 +2,9 @@ export type Role = 'staff' | 'patient'
 
 export type User = {
   id: string
-  first_name?: string
-  last_name?: string
-  email?: string
+  first_name: string | null
+  last_name: string | null
+  email: string
   phone?: string
   banned: boolean
   pickup_enabled?: boolean

@@ -1,58 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PharmaBox Platform
 
-## Environment Setup
+- [Organization](https://github.com/pharma-box)
+- [Organization Documents](https://github.com/pharma-box/docs)
+- [Live Url: pharmabox.vercel.com](https://pharmabox.vercel.com)
 
-Install Postgress Locally: https://postgresapp.com/downloads.html
+Status
 
-Install Postico 2: https://eggerapps.at/postico2/
+![status](https://img.shields.io/github/checks-status/pharmaboxfydp/pharmabox/main)
 
-Create and populate `.env.development` and `.env.production` files in the root of the directory
+This is a [Next.js](https://nextjs.org/) project
 
-`npm install`
+## Environment Setup for Local Development
 
-Open Postgres and create a database called `pharmabox`
+1. Install Postgress Locally: [postgressapp.com](https://postgresapp.com/downloads.html)
+2. Install Postico 2: [postico2](https://eggerapps.at/postico2/)
+3. Install Node Version Manager (NVM) [nvm-sh/NVM](https://github.com/nvm-sh/nvm)
+4. Create and populate `.env.development` and `.env.production` files in the root of the directory. **Never commit or share secrets and API keys**
 
-Open Postico2 and connect to this server.
+   ```bash
+   # .env.development
+   DATABASE_URL="postgres://postgres:password@localhost:5432/pharmabox"
+   CLERK_JWT_KEY=
+   CLERK_API_KEY=
+   NEXT_PUBLIC_CLERK_FRONTEND_API=s
+   ```
 
-Create the database schema with: `sh bash/migrate_dbs`
+   ```bash
+   # .env.production
+   DATABASE_URL=
 
-Populate database with fake data with: `sh bash/seed_test_dbs`
+   ```
 
-Startup Server and Frontend with `npm run dev`
+5. Make sure you are using the right version of `Node` and `NPM` by using running `nvm use`
+6. Run `npm install`
+7. Open Postgres and create a database called `pharmabox`
+8. Open Postico2 and connect to this server.
+9. Create the database schema with: `sh bash/migrate_dbs`
+10. Populate database with fake data with: `sh bash/seed_test_dbs`
+11. Generate a prisma client by running `npx prisma generate`
+12. Startup Server and Frontend with `npm run dev`
+13. View Frontend on `http://localhost:3000`
 
-View Frontend on `http://localhost:3000`
+You should also be able to view the populated data in the user's table in Postico2 or pgAdmin 4
 
-You should also be able to view the populated data in the user's table in Postico2
+## Development Practices
 
-## Getting Started
+### Contributing
 
-First, run the development server:
+Development should happen in a feature branch. When a feature is ready, a pull request can be opened against the `main` branch. You should get at least one approval and review from another team member before merging.
+
+### Code Cleanup
+
+This repository uses [prettier](https://prettier.io/) to format code and [ESLint](https://eslint.org/) to enforce code style. It is recommended to configure your preferred editor to `format on save` with prettier. You can also run `prettier` on all files using
 
 ```bash
-npm run dev
-# or
-yarn dev
+# check formatting
+npx prettier . --check
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+# fix formatting
+npx prettier . --write
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+You can also lint files using
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+# lint files
+npx eslint . --ext .js,.jsx,.ts,.tsx --fix
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Contributors
 
-## Learn More
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
-To learn more about Next.js, take a look at the following resources:
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-## Deploy on Vercel
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
