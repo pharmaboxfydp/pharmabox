@@ -2,17 +2,39 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 
-type Data = {
-  name: string
+type User = {
+//   id: string,
+  name: string,
+  email: string,
+//   createadAt: Date,
+//   updatedAt: Date
+
 }
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<User>
 ) {
     if (req.method === 'POST') {
         // Process a POST request
-        console.log(req.body)
+        try {
+            console.log(req.body)
+            const {name, email} = req.body
+            const user = await prisma.user.create({data: {
+                name: name,
+                email: email,
+              },})
+            console.log(user)
+            res.status(200).json({ email: 'Success', name:'Works' })
+        } catch(e) {
+            console.log(e)
+            res.status(400).json({ email: 'Fail', name:'Duplicate' })
+
+        }
+        
+        
+
       }
-  res.status(200).json({ name: 'John Doe' })
+
+//   res.status(200).json({ message: 'John Doe', name:'hi' })
 }
