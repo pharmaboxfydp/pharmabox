@@ -27,6 +27,7 @@ const Home = (props: { [key: string]: any }) => {
       </div>
     )
   }
+  
 
   return (
     <div>
