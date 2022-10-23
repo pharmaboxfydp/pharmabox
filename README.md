@@ -70,6 +70,13 @@ You can also lint files using
 npx eslint . --ext .js,.jsx,.ts,.tsx --fix
 ```
 
+## Prisma Studio
+
+You can use Prisma Studio to help with development! You might run into issues with `next.js` since it stores environment variables in `.env.*`. So we can use `dotenv-cli` to store environment variables. To use Prisma Studio:
+
+1. Install `dotenv cli`. `npm install -g dotenv-cli`
+2. `dotenv -e .env.development -- npx prisma studio`
+
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
