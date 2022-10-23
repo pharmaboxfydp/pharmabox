@@ -65,5 +65,4 @@ phone_number = phone_numbers.find(( { id }) => id === primary_phone_number_id ) 
         }
     }
 
-    //   res.status(200).json({ message: 'John Doe', name:'hi' })
 }
