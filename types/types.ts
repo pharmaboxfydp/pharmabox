@@ -5,7 +5,7 @@ export type User = {
     email?: string,
     phone?: string,
     banned: boolean,
-    pickup_enabled: boolean,
+    pickup_enabled?: boolean,
     role?: string,
     dob?: string,
     createdAt: string,
