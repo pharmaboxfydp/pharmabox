@@ -60,7 +60,7 @@ phone_number = phone_numbers.find(( { id }) => id === primary_phone_number_id ) 
             res.status(200).json({ message: 'Success', id: user.id })
         } catch (e) {
             console.error(e)
-            res.status(400).json({ message: 'Fail', })
+            res.status( 400 ).json( { message: 'Bad Request, error: e } )
 
         }
     }
