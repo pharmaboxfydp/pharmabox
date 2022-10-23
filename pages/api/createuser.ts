@@ -33,10 +33,7 @@ export default async function handler(
                 banned, 
             } = req.body.data
             let email_address = null;
-            for(const email of email_addresses) {
-                if (email.id == primary_email_address_id) {
-                    email_address = email.email_address;
-                    break;
+ email_address = email_addresses.find(( { id } ) => id === primary_email_address_id ) ?? null
                 }
             }
 
