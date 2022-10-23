@@ -11,5 +11,5 @@ set -o allexport
 source .env.production
 set +o allexport
 
-echo $DATABASE_URL
-npx prisma migrate dev
+# echo $DATABASE_URL
+# npx prisma migrate dev

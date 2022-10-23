@@ -15,8 +15,10 @@ model User {
   first_name String?
   last_name  String?
   email      String?  @unique
-  createdAt  DateTime @default(now()) @map(name: "created_at")
-  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+  phone      String?
+  banned     Boolean?
+  createdAt  String @map(name: "created_at")
+  updatedAt  String @map(name: "updated_at")
 
   @@map(name: "users")
 }
