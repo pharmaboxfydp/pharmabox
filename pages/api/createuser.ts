@@ -2,14 +2,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 
-// type User = {
-//     id: string,
-//     name: string,
-//     email: string,
-//     //   createadAt: Date,
-//     //   updatedAt: Date
-
-// }
+type User = {
+    id: string,
+    first_name: string,
+    last_name: string,
+    email: string,
+    phone: string,
+    banned: boolean,
+    createdAt: string,
+    updatedAt: string
+}
 
 export default async function handler(
     req: NextApiRequest,
@@ -18,7 +20,7 @@ export default async function handler(
     if (req.method === 'POST') {
         // Process a POST request
         try {
-            const { 
+            let { 
                 first_name, 
                 last_name, 
                 id, 
@@ -45,7 +47,8 @@ export default async function handler(
                     break;
                 }
             }
-            const user = await prisma.user.create({data: {
+
+            const payload:User = {
                 id: id,
                 first_name: first_name,
                 last_name: last_name,
@@ -54,7 +57,8 @@ export default async function handler(
                 banned: banned,
                 createdAt: created_at.toString(),
                 updatedAt: updated_at.toString()
-              }})
+            }
+            const user = await prisma.user.create({data: payload})
             // const user = await prisma.user.create({data:{
             //     first_name: first_name,
             //     last_name
