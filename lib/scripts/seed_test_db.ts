@@ -5,7 +5,7 @@
 import prisma from '../prisma'
 import fetch from 'node-fetch'
 import * as dotenv from 'dotenv'
-import { User } from '../../types/types'
+import { Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
 import { Prisma } from '@prisma/client'
 
@@ -65,7 +65,7 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
       createdAt: user.created_at.toString(),
       updatedAt: user.updated_at.toString(),
       pickup_enabled: false,
-      role: userNumber < midpoint ? 'patient' : 'staff',
+      role: userNumber < midpoint ? Role.Patient : Role.Staff,
       dob: undefined
     }
 

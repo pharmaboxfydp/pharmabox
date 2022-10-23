@@ -1,4 +1,7 @@
-export type Role = 'staff' | 'patient'
+export enum Role {
+  Staff = 'STAFF',
+  Patient = 'PATIENT'
+}
 
 export type User = {
   id: string
