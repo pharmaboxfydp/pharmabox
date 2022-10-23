@@ -1,3 +1,5 @@
+export type Role = 'staff' | 'patient'
+
 export type User = {
   id: string
   first_name?: string
@@ -6,7 +8,7 @@ export type User = {
   phone?: string
   banned: boolean
   pickup_enabled?: boolean
-  role?: string
+  role?: Role
   dob?: string
   createdAt: string
   updatedAt: string

@@ -41,12 +41,16 @@ export default async function handler(
         phone: phone_number,
         banned: banned,
         createdAt: created_at.toString(),
-        updatedAt: updated_at.toString()
+        updatedAt: updated_at.toString(),
+        // always make default users be patients
+        role: 'patient'
       }
       const user = await prisma.user.create({ data: payload })
       res.status(200).json({ message: 'Success', user: user })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }
+  } else {
+    res.status(405).json({ message: `Method: ${req.method} Not Allowed` })
   }
 }
