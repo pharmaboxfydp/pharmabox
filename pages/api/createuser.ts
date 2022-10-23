@@ -54,7 +54,11 @@ export default async function handler(
                 banned: banned,
                 createdAt: created_at.toString(),
                 updatedAt: updated_at.toString()
-              },})
+              }})
+            // const user = await prisma.user.create({data:{
+            //     first_name: first_name,
+            //     last_name
+            // }})
             // console.log(user)
             res.status(200).json({ message: 'Success', id: user.id })
         } catch (e) {
