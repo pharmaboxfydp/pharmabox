@@ -38,11 +38,7 @@ export default async function handler(
             }
 
             let phone_number = null;
-            for(const phone of phone_numbers) {
-                if (phone.id == primary_phone_number_id) {
-                    phone_number = phone.phone_number;
-                    break;
-                }
+phone_number = phone_numbers.find(( { id }) => id === primary_phone_number_id ) ?? null
             }
 
             const payload:User = {
