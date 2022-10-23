@@ -16,11 +16,12 @@
     "next": "12.3.1",
     "pg": "^8.8.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "svix": "^0.68.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
-    "@types/node": "18.11.2",
+    "@types/node": "^18.11.2",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "eslint": "8.25.0",
