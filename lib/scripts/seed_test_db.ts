@@ -3,16 +3,19 @@ import { faker } from '@faker-js/faker'
 
 async function createRandomUser() {
 
-  const name = faker.name.fullName();
+  const first_name = faker.name.firstName();
+  const last_name = faker.name.lastName();
   const email = faker.helpers.unique(faker.internet.email, [
-    name
+    first_name
   ]);
-  const updatedAt = faker.date.recent();
+  const updatedAt = faker.date.recent().toISOString();
 
   return {
     id: faker.datatype.uuid(),
-    name: name,
+    first_name: first_name,
+    last_name: last_name,
     email: email,
+    createdAt: updatedAt,
     updatedAt: updatedAt
   };
 }
@@ -24,9 +27,7 @@ async function generateUserData() {
 
     const random_user = await createRandomUser();
 
-    await prisma.user.create({
-      data: random_user
-    });
+    await prisma.user.create({data:random_user});
     
   }
 }

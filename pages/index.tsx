@@ -6,14 +6,14 @@ import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
 import { useClerk } from '@clerk/clerk-react'
 
-export const getStaticProps: GetStaticProps = async () => {
-  const firstUser = await prisma.user.findFirst()
-  const name = firstUser?.name
+// export const getStaticProps: GetStaticProps = async () => {
+//   // const firstUser = await prisma.user.findFirst()
+//   // const name = firstUser?.name
 
-  return {
-    props: { name }
-  }
-}
+//   return {
+//     props: { name }
+//   }
+// }
 
 const Home = (props: { [key: string]: any }) => {
   const { isLoaded, isSignedIn, user } = useUser()
@@ -27,6 +27,7 @@ const Home = (props: { [key: string]: any }) => {
       </div>
     )
   }
+
 
   return (
     <div>
