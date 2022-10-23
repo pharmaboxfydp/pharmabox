@@ -18,7 +18,8 @@ export default async function handler(
     if (req.method === 'POST') {
         // Process a POST request
         try {
-            console.log(req.body.data)
+            console.log(req)
+            // console.log(req.data)
             // const {name, email} = req.body
             // const user = await prisma.user.create({data: {
             //     name: name,
