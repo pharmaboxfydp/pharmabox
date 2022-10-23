@@ -23,10 +23,9 @@ export default async function handler(
                 banned,
             } = req.body.data
             let email_address = null;
-            email_address = email_addresses.find(({ id }: { id: string }) => id === primary_email_address_id) ?? null
-
+            email_address = email_addresses.find(({ id }: { id: string }) => id === primary_email_address_id)?.email_address ?? null
             let phone_number = null;
-            phone_number = phone_numbers.find(({ id }: { id: string }) => id === primary_phone_number_id) ?? null
+            phone_number = phone_numbers.find(({ id }: { id: string }) => id === primary_phone_number_id)?.phone_number ?? null
 
             const payload: User = {
                 id: id,
