@@ -1,4 +1,5 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
 ## Environment Setup
 
 Install Postgress Locally: https://postgresapp.com/downloads.html
@@ -22,7 +23,6 @@ Startup Server and Frontend with `npm run dev`
 View Frontend on `http://localhost:3000`
 
 You should also be able to view the populated data in the user's table in Postico2
-
 
 ## Getting Started
 

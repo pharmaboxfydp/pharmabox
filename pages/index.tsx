@@ -17,7 +17,6 @@ import { useClerk } from '@clerk/clerk-react'
 
 const Home = (props: { [key: string]: any }) => {
   const { isLoaded, isSignedIn, user } = useUser()
-  console.log(user)
   const { signOut } = useClerk()
   if (!isSignedIn) {
     return (
@@ -27,7 +26,6 @@ const Home = (props: { [key: string]: any }) => {
       </div>
     )
   }
-
 
   return (
     <div>
