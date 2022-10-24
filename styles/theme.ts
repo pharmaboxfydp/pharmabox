@@ -56,6 +56,7 @@ const theme = {
       'neutral-3': '#00739D',
       'neutral-4': '#A2423D',
       'neutral-5': '#2B138D',
+      'neutral-6': '#AC94D9',
       'status-critical': '#FF4040',
       'status-error': '#FF4040',
       'status-warning': '#FFAA15',
@@ -241,7 +242,7 @@ const theme = {
   button: {
     border: {
       width: '0px',
-      radius: '4px'
+      radius: '2px'
     },
     primary: {},
     disabled: {
@@ -252,6 +253,22 @@ const theme = {
     padding: {
       vertical: '8px',
       horizontal: '16px'
+    }
+  },
+  tip: {
+    drop: {
+      background: { color: 'light-1' },
+      margin: { vertical: 'small' },
+      round: 'xsmall',
+      elevation: 'medium',
+      fontSize: '12px'
+    },
+    content: {
+      elevation: 'none',
+      background: 'none',
+      pad: 'small',
+      size: 'small',
+      fontSize: '12px'
     }
   },
   calendar: {

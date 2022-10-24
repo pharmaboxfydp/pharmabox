@@ -1,5 +1,4 @@
 import Head from 'next/head'
-
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import getUserDetails from '../helpers/user-details'
 import Page from '../components/Page'

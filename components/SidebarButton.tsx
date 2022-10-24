@@ -22,13 +22,14 @@ export default function SidebarButton({
       <Link href={href} passHref>
         <Button
           justify="start"
-          gap="small"
           icon={icon}
           label={label}
           {...rest}
           a11yTitle={label}
           hoverIndicator
           color={theme.global.colors['neutral-2']}
+          size="small"
+          style={{ borderRadius: '4px' }}
         />
       </Link>
     </Box>

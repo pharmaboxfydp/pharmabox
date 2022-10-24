@@ -19,6 +19,7 @@ export default function Protector({
   const isValidStaff =
     role === Role.Staff &&
     staffPages.includes(router.pathname as StaffRootPages)
+
   if (isValidStaff || isValidPatient) {
     return <Box>{children}</Box>
   } else {

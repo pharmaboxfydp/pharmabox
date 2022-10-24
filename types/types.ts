@@ -11,14 +11,16 @@ export enum StaffRootPages {
   Patients = '/patients',
   Team = '/team',
   Logbook = '/logbook',
-  Settings = '/settings'
+  Settings = '/settings',
+  Profile = '/user-profile/[[...index]]'
 }
 
 export enum PatientRootPages {
   Home = '/',
   Payments = '/payments',
   Notifications = '/notifications',
-  Settings = '/settings'
+  Settings = '/settings',
+  Profile = '/user-profile/[[...index]]'
 }
 
 export type User = {
