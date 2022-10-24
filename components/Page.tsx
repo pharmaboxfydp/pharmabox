@@ -1,6 +1,5 @@
-import { Box, Main, Nav } from 'grommet'
+import { Box } from 'grommet'
 import { PropsWithChildren } from 'react'
-import Link from 'next/link'
 import Sidebar from './Sidebar'
 import { User } from '../types/types'
 import Protector from './Protector'

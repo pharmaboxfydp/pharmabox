@@ -4,7 +4,6 @@ import { PatientRootPages, Role, StaffRootPages } from '../types/types'
 import SidebarButton from './SidebarButton'
 import { useClerk } from '@clerk/clerk-react'
 import {
-  Add,
   Home,
   Dashboard,
   WatsonHealthNominate,
