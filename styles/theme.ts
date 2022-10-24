@@ -55,6 +55,7 @@ const theme = {
       'neutral-2': '#3D138D',
       'neutral-3': '#00739D',
       'neutral-4': '#A2423D',
+      'neutral-5': '#2B138D',
       'status-critical': '#FF4040',
       'status-error': '#FF4040',
       'status-warning': '#FFAA15',
