@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { Grommet } from 'grommet'
+import { Grommet, ThemeType } from 'grommet'
 import theme from '../styles/theme'
 import {
   ClerkProvider,
@@ -9,7 +9,7 @@ import {
   RedirectToSignIn
 } from '@clerk/nextjs'
 import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+//import 'nprogress/nprogress.css'
 import Router from 'next/router'
 
 NProgress.configure({
@@ -25,7 +25,7 @@ Router.events.on('routeChangeError', () => NProgress.done())
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <Grommet theme={theme} full>
+    <Grommet theme={theme as unknown as ThemeType} full>
       <ClerkProvider {...pageProps}>
         <SignedIn>
           <Component {...pageProps} />
