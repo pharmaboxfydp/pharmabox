@@ -249,8 +249,8 @@ const theme = {
     minWidth: '96px',
     maxWidth: '384px',
     padding: {
-      vertical: '4px',
-      horizontal: '22px'
+      vertical: '8px',
+      horizontal: '16px'
     }
   },
   calendar: {

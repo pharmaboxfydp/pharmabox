@@ -6,26 +6,29 @@ import theme from '../styles/theme'
 export interface SidebarButtonInterface {
   icon?: ReactElement
   label: string
-  href: string
+  href?: string
   rest?: Record<string, any>
+  onClick?: () => void
 }
 
 export default function SidebarButton({
   icon,
   label,
-  href,
+  href = '/',
   ...rest
 }: SidebarButtonInterface) {
   return (
     <Box pad="xsmall">
       <Link href={href} passHref>
         <Button
+          justify="start"
+          gap="small"
           icon={icon}
           label={label}
           {...rest}
           a11yTitle={label}
           hoverIndicator
-          color={theme.global.colors['dark-1']}
+          color={theme.global.colors['neutral-2']}
         />
       </Link>
     </Box>
