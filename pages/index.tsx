@@ -5,15 +5,7 @@ import prisma from '../lib/prisma'
 import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
 import { useClerk } from '@clerk/clerk-react'
-
-// export const getStaticProps: GetStaticProps = async () => {
-//   // const firstUser = await prisma.user.findFirst()
-//   // const name = firstUser?.name
-
-//   return {
-//     props: { name }
-//   }
-// }
+import { withServerSideAuth } from '@clerk/nextjs/ssr'
 
 const Home = (props: { [key: string]: any }) => {
   const { isLoaded, isSignedIn, user } = useUser()
@@ -44,3 +36,23 @@ const Home = (props: { [key: string]: any }) => {
 }
 
 export default Home
+
+export const getServerSideProps = withServerSideAuth(
+  async ({ req }) => {
+    const { userId } = req.auth
+    if (userId) {
+      return prisma.user
+        .findUnique({
+          where: {
+            id: userId
+          }
+        })
+        .then((user) => {
+          return { props: { userId } }
+        })
+    }
+
+    return { props: { userId } }
+  },
+  { loadUser: true }
+)

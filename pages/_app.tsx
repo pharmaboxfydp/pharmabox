@@ -1,12 +1,26 @@
 import '../styles/globals.css'
-import { ClerkProvider } from '@clerk/nextjs'
 import type { AppProps } from 'next/app'
+import { Box, Button, Grommet, Spinner, Text } from 'grommet'
+import theme from '../styles/theme'
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  RedirectToSignIn
+} from '@clerk/nextjs'
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <ClerkProvider {...pageProps}>
-      <Component {...pageProps} />
-    </ClerkProvider>
+    <Grommet theme={theme}>
+      <ClerkProvider {...pageProps}>
+        <SignedIn>
+          <Component {...pageProps} />
+        </SignedIn>
+        <SignedOut>
+          <RedirectToSignIn />
+        </SignedOut>
+      </ClerkProvider>
+    </Grommet>
   )
 }
 
