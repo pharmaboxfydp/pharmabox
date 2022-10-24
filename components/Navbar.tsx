@@ -55,7 +55,7 @@ function NavUserIcon() {
 export default function Navbar() {
   return (
     <Header
-      background={theme.global.colors['neutral-5']}
+      background={theme.global.colors['neutral-2']}
       height="xxsmmall"
       border={{
         color: theme.global.colors['light-1'],
