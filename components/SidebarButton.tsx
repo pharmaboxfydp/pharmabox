@@ -1,6 +1,7 @@
 import { Box, Button } from 'grommet'
 import Link from 'next/link'
 import { ReactElement } from 'react'
+import theme from '../styles/theme'
 
 export interface SidebarButtonInterface {
   icon?: ReactElement
@@ -16,15 +17,15 @@ export default function SidebarButton({
   ...rest
 }: SidebarButtonInterface) {
   return (
-    <Box pad="small">
+    <Box pad="xsmall">
       <Link href={href} passHref>
         <Button
-          gap="medium"
-          alignSelf="start"
-          plain
           icon={icon}
           label={label}
           {...rest}
+          a11yTitle={label}
+          hoverIndicator
+          color={theme.global.colors['dark-1']}
         />
       </Link>
     </Box>

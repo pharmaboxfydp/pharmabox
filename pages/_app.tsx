@@ -25,7 +25,7 @@ Router.events.on('routeChangeError', () => NProgress.done())
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <Grommet theme={theme}>
+    <Grommet theme={theme} full>
       <ClerkProvider {...pageProps}>
         <SignedIn>
           <Component {...pageProps} />

@@ -1,24 +1,25 @@
 import { Sidebar as GSidebar, Nav } from 'grommet'
+import theme from '../styles/theme'
 import { PatientRootPages, Role, StaffRootPages } from '../types/types'
 import SidebarButton from './SidebarButton'
 
 export const allowedUrls: Record<
   Role,
-  Array<StaffRootPages | PatientRootPages>
+  Array<{ link: StaffRootPages | PatientRootPages; name: string }>
 > = {
   PATIENT: [
-    PatientRootPages.Home,
-    PatientRootPages.Payments,
-    PatientRootPages.Notifications,
-    PatientRootPages.Settings
+    { link: PatientRootPages.Home, name: 'Home' },
+    { link: PatientRootPages.Payments, name: 'Payments' },
+    { link: PatientRootPages.Notifications, name: 'Notifications' },
+    { link: PatientRootPages.Settings, name: 'Settings' }
   ],
   STAFF: [
-    StaffRootPages.Home,
-    StaffRootPages.Patients,
-    StaffRootPages.Workflows,
-    StaffRootPages.Team,
-    StaffRootPages.Logbook,
-    PatientRootPages.Settings
+    { link: StaffRootPages.Home, name: 'Home' },
+    { link: StaffRootPages.Patients, name: 'Patients' },
+    { link: StaffRootPages.Workflows, name: 'Workflows' },
+    { link: StaffRootPages.Team, name: 'Team' },
+    { link: StaffRootPages.Logbook, name: 'Logbook' },
+    { link: PatientRootPages.Settings, name: 'Settings' }
   ]
 }
 
@@ -28,11 +29,14 @@ export default function Sidebar({ role }: { role?: Role }) {
    */
   const urls = allowedUrls[role ?? 'PATIENT']
   return (
-    <GSidebar>
+    <GSidebar background={theme.global.colors['dark-1']} height="100%">
       <Nav>
-        {urls.map((link) => (
-          <SidebarButton href={link} key={link} label="TEST" />
-        ))}
+        {urls.map(
+          ({ link, name }) =>
+            name !== 'Settings' && (
+              <SidebarButton href={link} key={link} label={name} />
+            )
+        )}
       </Nav>
     </GSidebar>
   )
