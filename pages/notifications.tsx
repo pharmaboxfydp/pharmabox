@@ -29,7 +29,11 @@ const Notifications = ({ user }: ServerPageProps) => {
 export default Notifications
 
 export const getServerSideProps = withServerSideAuth(
-  async ({ req }) => {
+  async ({ req, res }) => {
+    res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=240, stale-while-revalidate=120'
+    )
     const { userId } = req.auth
     if (userId) {
       return getUserDetails(userId)
