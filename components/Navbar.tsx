@@ -1,7 +1,9 @@
 import { useUser } from '@clerk/nextjs'
 import { Avatar, Box, Button, Header, Nav, Spinner, Tip } from 'grommet'
+import Image from 'next/image'
 import Link from 'next/link'
 import theme from '../styles/theme'
+import Logo from '../public/pharmabox_logo.svg'
 
 function NavUserIcon() {
   const { isLoaded, isSignedIn, user } = useUser()
@@ -65,7 +67,15 @@ export default function Navbar() {
       }}
       pad="small"
     >
-      <Box></Box>
+      <Box direction="row" align="center" alignContent="start">
+        <Box margin={{ horizontal: 'medium' }}>
+          <Link href="/" passHref>
+            <Button plain a11yTitle="Pharmabox">
+              <Image src={Logo} alt="Pharmabox" height={18} width={124.5} />
+            </Button>
+          </Link>
+        </Box>
+      </Box>
       <Nav direction="row">
         <NavUserIcon />
       </Nav>
