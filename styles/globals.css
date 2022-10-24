@@ -93,3 +93,14 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.cl-rootBox {
+  padding-bottom: 24px;
+}
+
+.cl-card {
+  -webkit-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.21);
+  box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.21);
+  margin-bottom: 24px;
+  border-radius: 8px;
+}
