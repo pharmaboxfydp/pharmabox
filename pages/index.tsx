@@ -5,6 +5,7 @@ import getUserDetails from '../helpers/user-details'
 import Page from '../components/Page'
 import { ServerPageProps } from '../types/types'
 import { Box, Text } from 'grommet'
+
 const Home = ({ user }: ServerPageProps) => {
   return (
     <>
@@ -18,7 +19,7 @@ const Home = ({ user }: ServerPageProps) => {
       </Head>
       <Page user={user}>
         <Box pad="medium">
-          <Text>Hello {user.first_name}</Text>
+          <Text>Hello {user.id}</Text>
           <Text>You are a {user.role}</Text>
           <Text>Your Email is: {user.email}</Text>
         </Box>

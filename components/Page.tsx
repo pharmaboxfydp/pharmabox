@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Sidebar from './Sidebar'
 import { User } from '../types/types'
 import Protector from './Protector'
+import PageErrorBoundary from './PageErrorBoundary'
 
 export default function Page({
   user,
@@ -12,7 +13,9 @@ export default function Page({
   return (
     <Box direction="row" fill>
       <Sidebar role={user.role} />
-      <Protector role={user.role}>{children}</Protector>
+      <PageErrorBoundary>
+        <Protector role={user.role}>{children}</Protector>
+      </PageErrorBoundary>
     </Box>
   )
 }
