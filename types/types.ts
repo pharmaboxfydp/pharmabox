@@ -1,8 +1,8 @@
 import { UserJSON } from '@clerk/backend-core'
 
 export enum Role {
-  Staff = 'STAFF',
-  Patient = 'PATIENT'
+  Staff = 'staff',
+  Patient = 'patient'
 }
 
 export enum StaffRootPages {

@@ -25,7 +25,7 @@ export const allowedUrls: Record<
     Icon: JSX.Element
   }>
 > = {
-  PATIENT: [
+  patient: [
     {
       link: PatientRootPages.Home,
       name: 'Home',
@@ -47,7 +47,7 @@ export const allowedUrls: Record<
       Icon: <Settings size={24} />
     }
   ],
-  STAFF: [
+  staff: [
     {
       link: StaffRootPages.Home,
       name: 'Dashboard',
@@ -87,7 +87,7 @@ export default function Sidebar({ role }: { role?: Role }) {
   /**
    * If no role is provided default to patient
    */
-  const urls = allowedUrls[role ?? 'PATIENT']
+  const urls = allowedUrls[role ?? 'patient']
   return (
     <GSidebar
       background={theme.global.colors['neutral-2']}

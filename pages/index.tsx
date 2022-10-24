@@ -1,6 +1,5 @@
 import Head from 'next/head'
 
-import { useClerk } from '@clerk/clerk-react'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import getUserDetails from '../helpers/user-details'
 import Page from '../components/Page'
