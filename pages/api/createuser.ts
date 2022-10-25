@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 import { Role, User } from '../../types/types'
-//
+
 
 export default async function handler(
   req: NextApiRequest,
