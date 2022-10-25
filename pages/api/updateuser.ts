@@ -10,7 +10,7 @@ export default async function handler(
 ) {
     if (req.method === 'POST') {
         try {
-              let {
+            let {
                 first_name,
                 last_name,
                 id,
@@ -20,22 +20,22 @@ export default async function handler(
                 primary_phone_number_id,
                 created_at,
                 updated_at
-              } = req.body.data
-              let email_address: string = ''
-              email_address =
+            } = req.body.data
+            let email_address: string = ''
+            email_address =
                 email_addresses.find(
-                  ({ id }: { id: string }) => id === primary_email_address_id
+                    ({ id }: { id: string }) => id === primary_email_address_id
                 )?.email_address ?? null
-              let phone_number: string | undefined = undefined
-              phone_number =
+            let phone_number: string | undefined = undefined
+            phone_number =
                 phone_numbers.find(
-                  ({ id }: { id: string }) => id === primary_phone_number_id
+                    ({ id }: { id: string }) => id === primary_phone_number_id
                 )?.phone_number ?? null
 
-              let createdAt: Date = new Date(created_at)
-              let updatedAt: Date = new Date(updated_at)
+            let createdAt: Date = new Date(created_at)
+            let updatedAt: Date = new Date(updated_at)
 
-              const payload: User = {
+            const payload: User = {
                 id: id,
                 firstName: first_name,
                 lastName: last_name,
@@ -46,9 +46,9 @@ export default async function handler(
                 updatedAt: updatedAt.toISOString(),
                 // always make default users be patients on production
                 role: Role.Patient
-              }
-              const user = await prisma.user.update({where:{id: payload.id}, data: payload })
-              res.status(200).json({ message: 'Success', user: user })
+            }
+            const user = await prisma.user.update({ where: { id: payload.id }, data: payload })
+            res.status(200).json({ message: 'Success', user: user })
         } catch (e) {
             res.status(400).json({ message: 'Bad Request', error: e })
         }
