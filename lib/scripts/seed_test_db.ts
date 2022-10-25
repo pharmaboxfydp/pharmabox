@@ -50,23 +50,23 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
     const numUses = users.length
     const userNumber = index + 1
     const midpoint = Math.max(numUses / 2)
+    let createdAt = new Date(user.created_at)
+    let updatedAt = new Date(user.updated_at)
 
     const newUser: User = {
       id: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      firstName: user.first_name,
+      lastName: user.last_name,
       /** pick the first email by default if one exists */
       email: user.email_addresses[0].email_address,
       /** pick first phone number by default if one exists */
       phone: user.phone_numbers.length
         ? user.phone_numbers[0].phone_number
         : undefined,
-      banned: user.banned,
-      createdAt: user.created_at.toString(),
-      updatedAt: user.updated_at.toString(),
-      pickup_enabled: false,
-      role: userNumber < midpoint ? Role.Patient : Role.Staff,
-      dob: undefined
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt.toISOString(),
+      // make half the users patients, and the other half staff locally
+      role: userNumber < midpoint ? Role.Patient : Role.Staff
     }
 
     newUsers.push(newUser)

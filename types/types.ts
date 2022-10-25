@@ -25,14 +25,12 @@ export enum PatientRootPages {
 
 export type User = {
   id: string
-  first_name: string | null
-  last_name: string | null
+  firstName: string | undefined
+  lastName: string | undefined
   email: string
   phone?: string
-  banned: boolean
   pickup_enabled?: boolean
   role?: Role
-  dob?: string
   createdAt: string
   updatedAt: string
 }
