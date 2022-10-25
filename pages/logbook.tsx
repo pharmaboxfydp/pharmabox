@@ -1,7 +1,7 @@
 import Head from 'next/head'
 
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
-import getUserDetails from '../helpers/user-details'
+import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
 import { ServerPageProps } from '../types/types'
 import { Box, Text } from 'grommet'
@@ -28,16 +28,6 @@ const Logbook = ({ user }: ServerPageProps) => {
 export default Logbook
 
 export const getServerSideProps = withServerSideAuth(
-  async ({ req, res }) => {
-    res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=240, stale-while-revalidate=120'
-    )
-    const { userId } = req.auth
-    if (userId) {
-      return getUserDetails(userId)
-    }
-    return { props: { userId } }
-  },
+  async ({ req, res }) => SSRUser({ req, res }),
   { loadUser: true }
 )
