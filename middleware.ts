@@ -14,4 +14,4 @@ export default withClerkMiddleware((req: NextRequest) => {
 })
 
 // Stop Middleware running on static files like images
-export const config = { matcher: ['/api/:path*'] }
+export const config = { matcher: ['/api/:path*', '/((?!.*\\.).*)'] }
