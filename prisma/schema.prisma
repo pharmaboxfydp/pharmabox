@@ -11,17 +11,82 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  first_name     String?
-  last_name      String?
-  email          String?  @unique
-  phone          String?
-  banned         Boolean?
-  pickup_enabled Boolean  @default(false)
-  role           String   @default("patient")
-  dob            String?  @map(name: "date_of_birth")
-  createdAt      String   @map(name: "created_at")
-  updatedAt      String   @map(name: "updated_at")
+  id           String   @id @default(uuid())
+  firstName    String   @default("Josh")
+  lastName     String   @default("Wilkinson")
+  email        String   @unique
+  phone        String?
+  role         String   @default("patient")
+  Patient      Patient?
+  Staff        Staff?
+  lastLoggedIn DateTime @default(now()) @map(name: "last_logged_in")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @default(now()) @map(name: "updated_at")
 
   @@map(name: "users")
+}
+
+model Patient {
+  id            Int            @id @unique @default(autoincrement())
+  userId        String         @unique
+  user          User           @relation(fields: [userId], references: [id])
+  pickupEnabled Boolean        @default(false) @map(name: "pickup_enabled")
+  dob           String?        @map(name: "date_of_birth")
+  prescriptions Prescription[]
+
+  @@map(name: "patients")
+}
+
+model Staff {
+  id      Int     @id @unique @default(autoincrement())
+  userId  String  @unique
+  user    User    @relation(fields: [userId], references: [id])
+  isAdmin Boolean @default(false) @map(name: "is_admin")
+
+  @@map(name: "staff")
+}
+
+model Prescription {
+  id          Int       @id @unique @default(autoincrement())
+  name        String
+  status      String
+  pickupTime  DateTime?
+  Patient     Patient?  @relation(fields: [patientId], references: [id])
+  patientId   Int
+  balance     Float
+  location    Location  @relation(fields: [locationId], references: [id])
+  lockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
+  locationId  Int
+  lockerBoxId Int
+
+  @@map(name: "prescriptions")
+}
+
+model Location {
+  id           Int            @id @unique @default(autoincrement())
+  address      String
+  phoneNumber  BigInt
+  locker       Locker         @relation(fields: [lockerId], references: [id])
+  lockerId     Int            @unique
+  Prescription Prescription[]
+
+  @@map(name: "locations")
+}
+
+model Locker {
+  id          Int         @id @unique @default(autoincrement())
+  Location    Location?
+  lockerBoxes LockerBox[]
+
+  @@map(name: "lockers")
+}
+
+model LockerBox {
+  id           Int            @id @unique @default(autoincrement())
+  status       String
+  Locker       Locker?        @relation(fields: [lockerId], references: [id])
+  lockerId     Int?
+  Prescription Prescription[]
+
+  @@map(name: "locker_box")
 }
