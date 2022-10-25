@@ -27,7 +27,7 @@ model User {
 }
 
 model Patient {
-  id            Int            @id @default(autoincrement())
+  id            Int            @id @unique @default(autoincrement())
   userId        String         @unique
   user          User           @relation(fields: [userId], references: [id])
   pickupEnabled Boolean        @default(false) @map(name: "pickup_enabled")
@@ -38,7 +38,7 @@ model Patient {
 }
 
 model Staff {
-  id      Int     @id @default(autoincrement())
+  id      Int     @id @unique @default(autoincrement())
   userId  String  @unique
   user    User    @relation(fields: [userId], references: [id])
   isAdmin Boolean @default(false) @map(name: "is_admin")
@@ -47,7 +47,7 @@ model Staff {
 }
 
 model Prescription {
-  id          Int       @id @default(autoincrement())
+  id          Int       @id @unique @default(autoincrement())
   name        String
   status      String
   pickupTime  DateTime?
@@ -63,7 +63,7 @@ model Prescription {
 }
 
 model Location {
-  id           Int            @id @default(autoincrement())
+  id           Int            @id @unique @default(autoincrement())
   address      String
   phoneNumber  BigInt
   locker       Locker         @relation(fields: [lockerId], references: [id])
@@ -74,7 +74,7 @@ model Location {
 }
 
 model Locker {
-  id          Int         @id @default(autoincrement())
+  id          Int         @id @unique @default(autoincrement())
   Location    Location?
   lockerBoxes LockerBox[]
 
@@ -82,7 +82,7 @@ model Locker {
 }
 
 model LockerBox {
-  id           Int            @id @default(autoincrement())
+  id           Int            @id @unique @default(autoincrement())
   status       String
   Locker       Locker?        @relation(fields: [lockerId], references: [id])
   lockerId     Int?
