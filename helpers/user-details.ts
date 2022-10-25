@@ -41,10 +41,6 @@ export function SSRUser({
   req: IncomingMessage & { auth: ServerSideAuth }
   res: ServerResponse<IncomingMessage>
 }): SSRUserResponse {
-  res.setHeader(
-    'Cache-Control',
-    `public, s-maxage=${CACHE_MAX_AGE}, stale-while-revalidate=${CACHE_TIME_SECONDS}`
-  )
   const { userId } = req.auth
   if (userId) {
     return getUserDetails(userId)
