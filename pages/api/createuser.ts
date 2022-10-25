@@ -19,30 +19,32 @@ export default async function handler(
         phone_numbers,
         primary_phone_number_id,
         created_at,
-        updated_at,
-        banned
+        updated_at
       } = req.body.data
-      let email_address = null
+      let email_address: string = ''
       email_address =
         email_addresses.find(
           ({ id }: { id: string }) => id === primary_email_address_id
         )?.email_address ?? null
-      let phone_number = null
+      let phone_number: string | undefined = undefined
       phone_number =
         phone_numbers.find(
           ({ id }: { id: string }) => id === primary_phone_number_id
         )?.phone_number ?? null
 
+      let createdAt: Date = new Date(created_at)
+      let updatedAt: Date = new Date(updated_at)
+
       const payload: User = {
         id: id,
-        first_name: first_name,
-        last_name: last_name,
+        firstName: first_name,
+        lastName: last_name,
         email: email_address,
         phone: phone_number,
-        banned: banned,
-        createdAt: created_at.toString(),
-        updatedAt: updated_at.toString(),
-        // always make default users be patients
+        // send ISO strings to Postgres so that it can construct correct dates
+        createdAt: createdAt.toISOString(),
+        updatedAt: updatedAt.toISOString(),
+        // always make default users be patients on production
         role: Role.Patient
       }
       const user = await prisma.user.create({ data: payload })
