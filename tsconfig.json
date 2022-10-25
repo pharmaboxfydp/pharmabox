@@ -19,7 +19,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/signup/[[...index]].[jsx/tsx]"
+    "pages/signup/[[...index]].[jsx/tsx]",
+    "lib/scripts/seed_test_db.ts"
   ],
   "exclude": ["node_modules"]
 }

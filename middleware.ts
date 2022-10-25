@@ -6,5 +6,5 @@ export default withClerkMiddleware((req: NextRequest) => {
   return NextResponse.next()
 })
 
-// Stop Middleware running on static files
+// Stop Middleware running on static files like images
 export const config = { matcher: '/((?!.*\\.).*)' }
