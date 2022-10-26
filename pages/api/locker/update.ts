@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import { Role, User } from '../../../types/types'
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,22 +10,13 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { locationId, locker_count } = req.body
+      let { lockerId, label, status, prescription } = req.body
 
-      let lockerBoxes = Array.from({ length: locker_count }, (_, i) => {
-        let obj = { label: i + 1, status: 'empty' }
-        return obj
-      })
-      const locker = await prisma.locker.create({
+      const locker = await prisma.lockerBox.update({
+        where: { specificLockerBox: { label: label, lockerId: lockerId } },
         data: {
-        //   Location: {
-        //     connect: {
-        //       id: locationId
-        //     }
-        //   },
-          lockerBoxes: {
-            createMany: { data: lockerBoxes }
-          }
+          status: status
+          // Prescription: prescription
         }
       })
 
