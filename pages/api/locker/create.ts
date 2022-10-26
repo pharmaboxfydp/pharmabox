@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import { Role, User } from '../../../types/types'
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,11 +18,11 @@ export default async function handler(
       })
       const locker = await prisma.locker.create({
         data: {
-        //   Location: {
-        //     connect: {
-        //       id: locationId
-        //     }
-        //   },
+          //   Location: {
+          //     connect: {
+          //       id: locationId
+          //     }
+          //   },
           lockerBoxes: {
             createMany: { data: lockerBoxes }
           }
@@ -31,7 +31,6 @@ export default async function handler(
 
       res.status(200).json({ message: ' Success', locker })
     } catch (e) {
-      console.log(e)
       res.status(400).json({ message: 'Bad Request', error: e })
     }
   } else {

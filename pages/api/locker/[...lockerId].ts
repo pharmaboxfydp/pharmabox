@@ -18,7 +18,6 @@ export default async function handler(
       })
       res.status(200).json({ message: ' Success', lockers })
     } catch (e) {
-      console.log(e)
       res.status(400).json({ message: 'Bad Request', error: e })
     }
   } else {
