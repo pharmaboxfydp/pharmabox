@@ -10,6 +10,7 @@ export default async function handler(
     try {
       let { lockerId } = req.query
       let id = lockerId?.toString() || ''
+
       if (id == '') {
         res.status(400).json({ message: 'Empty Request' })
       }
