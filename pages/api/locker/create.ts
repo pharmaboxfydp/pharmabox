@@ -9,7 +9,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      res.status(200).json({ message: 'Success' })
+      res.status(200).json({ message: ' Success' })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }
