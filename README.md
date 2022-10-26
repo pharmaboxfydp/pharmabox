@@ -15,7 +15,7 @@ This is a [Next.js](https://nextjs.org/) project
 1. Install Postgress Locally: [postgressapp.com](https://postgresapp.com/downloads.html)
 2. Install Postico 2: [postico2](https://eggerapps.at/postico2/)
 3. Install Node Version Manager (NVM) [nvm-sh/NVM](https://github.com/nvm-sh/nvm)
-4. Create and populate `.env.development` and `.env.production` files in the root of the directory. **Never commit or share secrets and API keys**
+4. Create and populate `.env.development` and `.env.production` files in the root of the directory. **Never commit or share secrets and API keys**.
 
    ```bash
    # .env.development
