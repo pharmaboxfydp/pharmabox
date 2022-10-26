@@ -10,21 +10,14 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { locationId, locker_count } = req.body
+      let { locationId } = req.body
 
-      let lockerBoxes = Array.from({ length: locker_count }, (_, i) => {
-        let obj = { label: i + 1, status: 'empty' }
-        return obj
-      })
       const locker = await prisma.locker.create({
         data: {
-          //   Location: {
-          //     connect: {
-          //       id: locationId
-          //     }
-          //   },
-          lockerBoxes: {
-            createMany: { data: lockerBoxes }
+          Location: {
+            connect: {
+              id: locationId
+            }
           }
         }
       })
