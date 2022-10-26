@@ -88,7 +88,6 @@ model LockerBox {
   Locker       Locker?        @relation(fields: [lockerId], references: [id])
   lockerId     Int?
   Prescription Prescription[]
-
   @@unique(fields: [label,lockerId], name: "specificLockerBox")
   @@map(name: "locker_box")
 }
