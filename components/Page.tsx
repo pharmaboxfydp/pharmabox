@@ -15,10 +15,12 @@ export default function Page({
       <Navbar />
       <Box direction="row" fill>
         <Sidebar role={user.role} />
-        <Box overflow="scroll">
-          <PageErrorBoundary>
-            <Protector role={user.role}>{children}</Protector>
-          </PageErrorBoundary>
+        <Box overflow="scroll" fill="horizontal">
+          <Box fill>
+            <PageErrorBoundary>
+              <Protector role={user.role}>{children}</Protector>
+            </PageErrorBoundary>
+          </Box>
         </Box>
       </Box>
     </Box>
