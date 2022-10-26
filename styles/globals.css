@@ -7,6 +7,10 @@ body {
   font-family: europa, sans-serif;
 }
 
+/*
+Loading Progress Bar Css
+*/
+
 /* Make clicks pass-through */
 #nprogress {
   pointer-events: none;
@@ -103,4 +107,50 @@ body {
   box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.21);
   margin-bottom: 24px;
   border-radius: 8px;
+}
+
+/** Moving Gradients CSS for login page **/
+
+.moving-gradient {
+  background: linear-gradient(-45deg, #3d138d, #e73c7e, #23a6d5, #1f36aa);
+  background-size: 500% 500%;
+  -webkit-animation: Gradient 25s ease-in-out infinite;
+  -moz-animation: Gradient 25s ease-in-out infinite;
+  animation: Gradient 25s ease-in-out infinite;
+}
+
+@-webkit-keyframes Gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@-moz-keyframes Gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes Gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

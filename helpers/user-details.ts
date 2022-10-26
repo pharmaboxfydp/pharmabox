@@ -3,9 +3,6 @@ import { IncomingMessage, ServerResponse } from 'http'
 import prisma from '../lib/prisma'
 import { ServerSideAuth } from '@clerk/types/dist/ssr'
 
-const CACHE_TIME_SECONDS = 1000
-const CACHE_MAX_AGE = 1000
-
 export type SSRUserResponse =
   | Promise<{
       props: {
@@ -35,8 +32,7 @@ export async function getUserDetails(userId: string) {
 }
 
 export function SSRUser({
-  req,
-  res
+  req
 }: {
   req: IncomingMessage & { auth: ServerSideAuth }
   res: ServerResponse<IncomingMessage>
