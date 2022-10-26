@@ -8,9 +8,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let {
-        id
-      } = req.body.data
+      let { id } = req.body.data
 
       var patient = await prisma.patient.delete({
         where: {

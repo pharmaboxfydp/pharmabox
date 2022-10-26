@@ -8,14 +8,9 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let {
-        user_id,
-        pickup_enabled,
-        dob,
-        prescriptions
-      } = req.body.data
+      let { user_id, pickup_enabled, dob, prescriptions } = req.body.data
 
-      var patient = null;
+      var patient = null
       if (!prescriptions) {
         patient = await prisma.patient.update({
           where: {
@@ -23,11 +18,10 @@ export default async function handler(
           },
           data: {
             pickupEnabled: pickup_enabled,
-            dob: dob,
+            dob: dob
           }
         })
       } else {
-
         patient = await prisma.patient.update({
           where: {
             userId: user_id

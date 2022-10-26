@@ -8,14 +8,9 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let {
-        user_id,
-        pickup_enabled,
-        dob,
-        prescriptions
-      } = req.body.data
+      let { user_id, pickup_enabled, dob, prescriptions } = req.body.data
 
-      var patient = null;
+      var patient = null
       if (!prescriptions) {
         patient = await prisma.patient.create({
           data: {
@@ -25,7 +20,7 @@ export default async function handler(
               connect: {
                 id: user_id
               }
-            },
+            }
           }
         })
       } else {
@@ -42,7 +37,6 @@ export default async function handler(
           }
         })
       }
-
 
       res.status(200).json({ message: 'Success', patient: patient })
     } catch (e) {
