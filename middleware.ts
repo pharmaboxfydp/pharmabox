@@ -4,12 +4,13 @@ import type { NextRequest } from 'next/server'
 import { getAuth } from '@clerk/nextjs/server'
 
 export default withClerkMiddleware((req: NextRequest) => {
-  const { userId } = getAuth(req)
+  /* const { userId } = getAuth(req)
   if (!userId) {
+    debugger
     const signInUrl = new URL('/sign-in', req.url)
     signInUrl.searchParams.set('redirect_url', req.url)
     return NextResponse.redirect(signInUrl)
-  }
+  } */
   return NextResponse.next()
 })
 
