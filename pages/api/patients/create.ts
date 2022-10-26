@@ -10,33 +10,17 @@ export default async function handler(
     try {
       const { user_id, pickup_enabled, dob, prescriptions } = req.body.data
 
-      let patient = null
-      if (!prescriptions) {
-        patient = await prisma.patient.create({
-          data: {
-            pickupEnabled: pickup_enabled,
-            dob: dob,
-            user: {
-              connect: {
-                id: user_id
-              }
+      let patient = await prisma.patient.create({
+        data: {
+          pickupEnabled: pickup_enabled,
+          dob: dob,
+          user: {
+            connect: {
+              id: user_id
             }
           }
-        })
-      } else {
-        patient = await prisma.patient.create({
-          data: {
-            pickupEnabled: pickup_enabled,
-            dob: dob,
-            user: {
-              connect: {
-                id: user_id
-              }
-            },
-            prescriptions: prescriptions
-          }
-        })
-      }
+        }
+      })
 
       res.status(200).json({ message: 'Success', patient })
     } catch (e) {
