@@ -10,7 +10,11 @@ export default async function handler(
     try {
       let { lockerId } = req.query
       let id = lockerId?.toString() || ''
+      if (id == '') {
+        res.status(400).json({ message: 'Empty Request' })
+      }
       let int_id = parseInt(id)
+
       const lockers = await prisma.lockerBox.findMany({
         where: {
           lockerId: int_id

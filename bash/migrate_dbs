@@ -12,4 +12,4 @@ source .env.production
 set +o allexport
 
 echo $DATABASE_URL
-# npx prisma migrate dev
+npx prisma migrate dev
