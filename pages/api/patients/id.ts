@@ -8,15 +8,15 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { id } = req.body.data
+      const { id } = req.body.data
 
-      var patients = await prisma.patient.findUniqueOrThrow({
+      const patient = await prisma.patient.findUniqueOrThrow({
         where: {
           id: id
         }
       })
 
-      res.status(200).json({ message: 'Success', patient: patients })
+      res.status(200).json({ message: 'Success', patient })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }

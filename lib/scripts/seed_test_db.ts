@@ -55,8 +55,8 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
 
     const newUser: User = {
       id: user.id,
-      firstName: user.first_name || 'test',
-      lastName: user.last_name || 'user',
+      firstName: user.first_name || `Test-${index}`,
+      lastName: user.last_name || `User-${index}`,
       /** pick the first email by default if one exists */
       email: user.email_addresses[0].email_address,
       /** pick first phone number by default if one exists */

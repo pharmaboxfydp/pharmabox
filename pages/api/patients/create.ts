@@ -8,9 +8,9 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { user_id, pickup_enabled, dob, prescriptions } = req.body.data
+      const { user_id, pickup_enabled, dob, prescriptions } = req.body.data
 
-      var patient = null
+      let patient = null
       if (!prescriptions) {
         patient = await prisma.patient.create({
           data: {
@@ -38,7 +38,7 @@ export default async function handler(
         })
       }
 
-      res.status(200).json({ message: 'Success', patient: patient })
+      res.status(200).json({ message: 'Success', patient })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }

@@ -8,12 +8,12 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      var patients = await prisma.patient.findMany({
+      const patients = await prisma.patient.findMany({
         include: {
           user: true
         }
       })
-      res.status(200).json({ message: 'Success', patient: patients })
+      res.status(200).json({ message: 'Success', patients })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }

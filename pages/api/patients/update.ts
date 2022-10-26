@@ -8,9 +8,9 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { user_id, pickup_enabled, dob, prescriptions } = req.body.data
+      const { user_id, pickup_enabled, dob, prescriptions } = req.body.data
 
-      var patient = null
+      let patient = null
       if (!prescriptions) {
         patient = await prisma.patient.update({
           where: {
