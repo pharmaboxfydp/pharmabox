@@ -1,9 +1,7 @@
 import { withClerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { getAuth } from '@clerk/nextjs/server'
 
-export default withClerkMiddleware((req: NextRequest) => {
+export default withClerkMiddleware(() => {
   /* const { userId } = getAuth(req)
   if (!userId) {
     debugger

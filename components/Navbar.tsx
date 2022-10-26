@@ -1,5 +1,5 @@
 import { useUser } from '@clerk/nextjs'
-import { Avatar, Box, Button, Header, Nav, Spinner, Tip } from 'grommet'
+import { Avatar, Box, Button, Header, Nav, Spinner } from 'grommet'
 import Image from 'next/image'
 import Link from 'next/link'
 import theme from '../styles/theme'
