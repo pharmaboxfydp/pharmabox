@@ -4,9 +4,14 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import theme from '../styles/theme'
 import Logo from '../public/pharmabox_logo.svg'
+import { useEffect, useState } from 'react'
 
 export default function UserSignIn() {
+  const [loaded, setLoaded] = useState<boolean>(false)
   const router = useRouter()
+
+  useEffect(() => setLoaded(true), [])
+
   return (
     <Box
       align="center"
@@ -15,6 +20,7 @@ export default function UserSignIn() {
       direction="column"
       gap="medium"
       className="moving-gradient"
+      overflow="scroll"
     >
       <Image
         src={Logo}
@@ -23,11 +29,13 @@ export default function UserSignIn() {
         alt="Pharmabox Logo"
         style={{ userSelect: 'none', pointerEvents: 'none' }}
       />
-      <Clock
-        type="digital"
-        a11yTitle="Time"
-        style={{ color: theme.global.colors.white }}
-      />
+      {loaded && (
+        <Clock
+          type="digital"
+          a11yTitle="Time"
+          style={{ color: theme.global.colors.white }}
+        />
+      )}
       <SignIn
         redirectUrl={router.pathname}
         appearance={{
