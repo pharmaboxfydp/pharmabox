@@ -10,13 +10,16 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { lockerId } = req.body
+      const { lockerId } = req.body
+
+      const lockerBox = await prisma.lockerBox.deleteMany({
+        where: { lockerId: lockerId }
+      })
 
       const locker = await prisma.locker.delete({
         where: { id: lockerId }
       })
-
-      res.status(200).json({ message: ' Success', locker })
+      res.status(200).json({ message: ' Success', locker, lockerBox })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }

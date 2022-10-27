@@ -8,20 +8,19 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      let { lockerId } = req.query
-      let id = lockerId?.toString() || ''
+      const { lockerId } = req.query
+      const id = lockerId?.toString() || ''
 
-      if (id == '') {
+      if (!id) {
         res.status(400).json({ message: 'Empty Request' })
       }
-      let int_id = parseInt(id)
+      const int_id = parseInt(id)
 
-      const lockers = await prisma.lockerBox.findMany({
-        where: {
-          lockerId: int_id
-        }
+      const lockers = await prisma.locker.findUnique({
+        where: { id: int_id },
+        include: { lockerBoxes: true, Location: true }
       })
-      res.status(200).json({ message: ' Success', lockers })
+      res.status(200).json({ message: ' Success', lockers: lockers })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }

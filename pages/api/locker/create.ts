@@ -10,7 +10,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { locationId } = req.body
+      const { locationId } = req.body
 
       const locker = await prisma.locker.create({
         data: {

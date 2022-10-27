@@ -65,7 +65,7 @@ model Prescription {
 model Location {
   id           Int            @id @unique @default(autoincrement())
   address      String
-  phoneNumber  BigInt
+  phoneNumber  String?
   locker       Locker?        @relation(fields: [lockerId], references: [id])
   lockerId     Int?           @unique
   Prescription Prescription[]

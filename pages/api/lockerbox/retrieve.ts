@@ -8,12 +8,12 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { lockerId, label } = req.body
+      const { lockerId, label } = req.body
       const lockerBox = await prisma.lockerBox.findUnique({
         where: { specificLockerBox: { label: label, lockerId: lockerId } }
       })
       if (!lockerBox) {
-        res.status(400).json({ message: 'Locker not found' })
+        res.status(404).json({ message: 'Locker not found' })
       } else {
         res.status(200).json({ message: ' Success', lockerBox })
       }

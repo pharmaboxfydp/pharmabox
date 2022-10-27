@@ -10,7 +10,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      let { lockerId, label, status, prescription } = req.body
+      const { lockerId, label, status, prescription } = req.body
 
       const locker = await prisma.lockerBox.update({
         where: { specificLockerBox: { label: label, lockerId: lockerId } },
