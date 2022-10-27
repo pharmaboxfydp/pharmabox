@@ -46,6 +46,7 @@ model Staff {
   @@map(name: "staff")
 }
 
+
 model Prescription {
   id          Int       @id @unique @default(autoincrement())
   name        String
@@ -54,8 +55,8 @@ model Prescription {
   Patient     Patient?  @relation(fields: [patientId], references: [id])
   patientId   Int
   balance     Float
-  location    Location  @relation(fields: [locationId], references: [id])
-  lockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
+  Location    Location  @relation(fields: [locationId], references: [id])
+  LockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
   locationId  Int
   lockerBoxId Int
 
