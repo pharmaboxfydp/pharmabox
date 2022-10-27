@@ -14,7 +14,7 @@ export default async function handler(
         data: {
           pickupEnabled: pickup_enabled,
           dob: dob,
-          user: {
+          User: {
             connect: {
               id: user_id
             }
