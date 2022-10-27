@@ -8,7 +8,15 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { name, status, pickupTime, patientId, balance, locationId, lockerBoxId } = req.body
+      const {
+        name,
+        status,
+        pickupTime,
+        patientId,
+        balance,
+        locationId,
+        lockerBoxId
+      } = req.body
       let prescription = await prisma.prescription.create({
         data: {
           name: name,
@@ -42,4 +50,3 @@ export default async function handler(
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })
   }
 }
-

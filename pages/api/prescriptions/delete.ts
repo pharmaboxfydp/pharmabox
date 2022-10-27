@@ -9,7 +9,7 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const { id } = req.body
-      
+
       const prescription = await prisma.prescription.delete({
         where: {
           id: id
