@@ -66,7 +66,7 @@ model Location {
   id           Int            @id @unique @default(autoincrement())
   address      String
   phoneNumber  BigInt
-  locker       Locker         @relation(fields: [lockerId], references: [id])
+  Locker       Locker?        @relation(fields: [lockerId], references: [id])
   lockerId     Int            @unique
   Prescription Prescription[]
 
