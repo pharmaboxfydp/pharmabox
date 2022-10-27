@@ -2,21 +2,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 
-// retrieve prescriptions by prescriptionId
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // retrieve prescriptions by id, patientId, or don't specify body to retrieve all
   if (req.method === 'POST') {
     try {
-      const { id } = req.body.data
+      const { id, patientId } = req.body
+      let prescription = null
 
-      const prescription = await prisma.prescription.findUniqueOrThrow({
-        where: {
-          id: id
-        }
-      })
-
+      if (id) {
+        prescription = await prisma.prescription.findUniqueOrThrow({
+          where: {
+            id: id
+          }
+        })
+      }
+       else {
+        prescription = await prisma.prescription.findMany({
+          where: {
+              patientId: patientId
+          }
+        })
+      }
       res.status(200).json({ message: 'Success', prescription })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
