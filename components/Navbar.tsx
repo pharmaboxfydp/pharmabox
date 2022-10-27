@@ -34,7 +34,7 @@ function NavUserIcon() {
   }
 
   return (
-    <Link href="/user-profile" passHref>
+    <Link href="/settings/profile" passHref>
       <Button
         size="small"
         style={{ borderRadius: '4px' }}
@@ -46,8 +46,7 @@ function NavUserIcon() {
         hoverIndicator
         label={user.firstName}
         tip={{
-          content: 'View Profile',
-          dropProps: {}
+          content: 'Profile'
         }}
       />
     </Link>
