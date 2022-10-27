@@ -16,19 +16,17 @@ function getPaths(currentPath: string): string[] {
 function CrumbLink({
   path,
   label,
-  key,
   index,
   paths
 }: {
   path: string
   label: string
-  key: string
   index: number
   paths: { path: string; label: string; key: string }[]
 }) {
   if (index !== paths.length - 1) {
     return (
-      <Link href={path} key={key}>
+      <Link href={path}>
         <Box direction="row" gap="xsmall">
           {index !== 0 && <Text size="medium">/</Text>}
           <Anchor label={label} size="medium" weight="light" />
@@ -37,12 +35,10 @@ function CrumbLink({
     )
   }
   return (
-    <div key={key}>
-      <Box direction="row" gap="xsmall">
-        {index !== 0 && <Text size="medium">/</Text>}
-        <Text size="medium">{label}</Text>
-      </Box>
-    </div>
+    <Box direction="row" gap="xsmall">
+      {index !== 0 && <Text size="medium">/</Text>}
+      <Text size="medium">{label}</Text>
+    </Box>
   )
 }
 
@@ -56,13 +52,9 @@ export default function Breadcrumbs({ pages }: { pages: string[] }) {
   return (
     <Box direction="row" gap="small" pad="medium">
       {paths.map(({ path, label, key }, index, paths) => (
-        <CrumbLink
-          path={path}
-          label={label}
-          key={key}
-          index={index}
-          paths={paths}
-        />
+        <div key={key}>
+          <CrumbLink path={path} label={label} index={index} paths={paths} />
+        </div>
       ))}
     </Box>
   )

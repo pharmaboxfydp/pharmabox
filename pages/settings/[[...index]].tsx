@@ -2,11 +2,13 @@ import Head from 'next/head'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../../helpers/user-details'
 import Page from '../../components/Page'
-import { ServerPageProps } from '../../types/types'
-import { Anchor, Box, CheckBox, DateInput, Text } from 'grommet'
+import { Role, ServerPageProps } from '../../types/types'
+import { Anchor, Box, Text } from 'grommet'
 import Breadcrumbs from '../../components/Breadcrumbs'
 import Link from 'next/link'
 import { Information, UserProfile } from '@carbon/icons-react'
+import PatientSettings from '../../components/PatientSettings'
+import StaffSettings from '../../components/StaffSettings'
 const Settings = ({ user }: ServerPageProps) => {
   return (
     <>
@@ -31,7 +33,7 @@ const Settings = ({ user }: ServerPageProps) => {
             <Box pad="medium" gap="medium" border="right" flex="grow">
               <Box direction="row" gap="small">
                 <Information size={20} />
-                <Text size="small">Information</Text>
+                <Text size="small">Settings</Text>
               </Box>
               <Link href="/settings/profile" passHref>
                 <Anchor
@@ -42,20 +44,8 @@ const Settings = ({ user }: ServerPageProps) => {
               </Link>
             </Box>
             <Box pad="small" basis="auto" fill="horizontal" gap="small">
-              <Box gap="medium" pad="small">
-                <Text>Pickup Status</Text>
-                <CheckBox
-                  toggle
-                  label="Prescription Pickup"
-                  a11yTitle="Enable Pharmabox Presciption Pickup"
-                />
-              </Box>
-              <Box gap="medium" pad="small">
-                <Text>Date Of Birth</Text>
-                <Box width="medium">
-                  <DateInput format="mm/dd/yyyy" />
-                </Box>
-              </Box>
+              {user.role === Role.Patient && <PatientSettings user={user} />}
+              {user.role === Role.Staff && <StaffSettings user={user} />}
             </Box>
           </Box>
         </Box>
@@ -67,6 +57,7 @@ const Settings = ({ user }: ServerPageProps) => {
 export default Settings
 
 export const getServerSideProps = withServerSideAuth(
-  async ({ req, res }) => SSRUser({ req, res }),
+  async ({ req, res }) =>
+    SSRUser({ req, res, query: { include: { Staff: true, Patient: true } } }),
   { loadUser: true }
 )
