@@ -30,8 +30,8 @@ function CrumbLink({
     return (
       <Link href={path} key={key}>
         <Box direction="row" gap="xsmall">
-          <Text size="small">/</Text>
-          <Anchor label={label} size="small" />
+          {index !== 0 && <Text size="medium">/</Text>}
+          <Anchor label={label} size="medium" weight="light" />
         </Box>
       </Link>
     )
@@ -39,8 +39,8 @@ function CrumbLink({
   return (
     <div key={key}>
       <Box direction="row" gap="xsmall">
-        <Text size="small">/</Text>
-        <Text size="small">{label}</Text>
+        {index !== 0 && <Text size="medium">/</Text>}
+        <Text size="medium">{label}</Text>
       </Box>
     </div>
   )

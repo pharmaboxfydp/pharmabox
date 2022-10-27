@@ -4,10 +4,9 @@ import { SSRUser } from '../../../helpers/user-details'
 import Head from 'next/head'
 import Page from '../../../components/Page'
 import { ServerPageProps } from '../../../types/types'
-import { Anchor, Box, Text } from 'grommet'
+import { Box } from 'grommet'
 import theme from '../../../styles/theme'
-import { ArrowLeft } from '@carbon/icons-react'
-import Link from 'next/link'
+
 import Breadcrumbs from '../../../components/Breadcrumbs'
 
 const UserProfilePage = ({ user }: ServerPageProps) => {

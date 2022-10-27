@@ -158,3 +158,7 @@ h1[data-localization-key='userProfile.start.headerTitle__account'] {
     background-position: 0% 50%;
   }
 }
+
+label span {
+  font-size: 14px;
+}

@@ -3,11 +3,10 @@ import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../../helpers/user-details'
 import Page from '../../components/Page'
 import { ServerPageProps } from '../../types/types'
-import { Anchor, Box, Button, Text } from 'grommet'
+import { Anchor, Box, CheckBox, DateInput, Text } from 'grommet'
 import Breadcrumbs from '../../components/Breadcrumbs'
 import Link from 'next/link'
 import { Information, UserProfile } from '@carbon/icons-react'
-import theme from '../../styles/theme'
 const Settings = ({ user }: ServerPageProps) => {
   return (
     <>
@@ -36,14 +35,27 @@ const Settings = ({ user }: ServerPageProps) => {
               </Box>
               <Link href="/settings/profile" passHref>
                 <Anchor
-                  icon={<UserProfile size={24} />}
+                  icon={<UserProfile size={20} />}
                   label="Profile"
                   size="small"
                 />
               </Link>
             </Box>
-            <Box pad="medium" basis="auto" fill="horizontal">
-              This is some content
+            <Box pad="small" basis="auto" fill="horizontal" gap="small">
+              <Box gap="medium" pad="small">
+                <Text>Pickup Status</Text>
+                <CheckBox
+                  toggle
+                  label="Prescription Pickup"
+                  a11yTitle="Enable Pharmabox Presciption Pickup"
+                />
+              </Box>
+              <Box gap="medium" pad="small">
+                <Text>Date Of Birth</Text>
+                <Box width="medium">
+                  <DateInput format="mm/dd/yyyy" />
+                </Box>
+              </Box>
             </Box>
           </Box>
         </Box>
