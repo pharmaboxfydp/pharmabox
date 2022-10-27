@@ -60,7 +60,7 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
       /** pick the first email by default if one exists */
       email: user.email_addresses[0].email_address,
       /** pick first phone number by default if one exists */
-      phone: user.phone_numbers.length
+      phoneNumber: user.phone_numbers.length
         ? user.phone_numbers[0].phone_number
         : undefined,
       createdAt: createdAt.toISOString(),

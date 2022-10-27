@@ -109,6 +109,10 @@ Loading Progress Bar Css
   border-radius: 8px;
 }
 
+h1[data-localization-key='userProfile.start.headerTitle__account'] {
+  display: none;
+}
+
 /** Moving Gradients CSS for login page **/
 
 .moving-gradient {
@@ -153,4 +157,8 @@ Loading Progress Bar Css
   100% {
     background-position: 0% 50%;
   }
+}
+
+label span {
+  font-size: 14px;
 }

@@ -19,10 +19,10 @@ const theme = {
       active: 'rgba(221,221,221,0.5)',
       black: '#000000',
       border: {
-        dark: 'rgba(255,255,255,0.33)',
-        light: 'rgba(0,0,0,0.33)'
+        dark: 'rgba(255,255,255,0.15)',
+        light: 'rgba(0,0,0,0.1)'
       },
-      brand: '#00AEEF',
+      brand: '#3D138D',
       control: {
         dark: 'accent-1',
         light: 'brand'
@@ -244,7 +244,11 @@ const theme = {
       width: '0px',
       radius: '2px'
     },
-    primary: {},
+    primary: {
+      border: {
+        width: '0px'
+      }
+    },
     disabled: {
       opacity: 0.3
     },

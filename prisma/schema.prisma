@@ -15,7 +15,7 @@ model User {
   firstName    String   @default("Josh")
   lastName     String   @default("Wilkinson")
   email        String   @unique
-  phone        String?
+  phoneNumber  String?
   role         String   @default("patient")
   Patient      Patient?
   Staff        Staff?
@@ -29,10 +29,10 @@ model User {
 model Patient {
   id            Int            @id @unique @default(autoincrement())
   userId        String         @unique
-  user          User           @relation(fields: [userId], references: [id])
+  User          User           @relation(fields: [userId], references: [id])
   pickupEnabled Boolean        @default(false) @map(name: "pickup_enabled")
   dob           String?        @map(name: "date_of_birth")
-  prescriptions Prescription[]
+  Prescriptions Prescription[]
 
   @@map(name: "patients")
 }
@@ -40,7 +40,7 @@ model Patient {
 model Staff {
   id      Int     @id @unique @default(autoincrement())
   userId  String  @unique
-  user    User    @relation(fields: [userId], references: [id])
+  User    User    @relation(fields: [userId], references: [id])
   isAdmin Boolean @default(false) @map(name: "is_admin")
 
   @@map(name: "staff")
@@ -54,40 +54,32 @@ model Prescription {
   Patient     Patient?  @relation(fields: [patientId], references: [id])
   patientId   Int
   balance     Float
-  location    Location  @relation(fields: [locationId], references: [id])
-  lockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
+  Location    Location  @relation(fields: [locationId], references: [id])
+  LockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
   locationId  Int
   lockerBoxId Int
 
   @@map(name: "prescriptions")
 }
 
+
 model Location {
   id           Int            @id @unique @default(autoincrement())
   address      String
-  phoneNumber  BigInt
-  Locker       Locker?        @relation(fields: [lockerId], references: [id])
-  lockerId     Int            @unique
-  Prescription Prescription[]
+  phoneNumber  String    
+  Prescriptions Prescription[]
+  LockerBoxes  LockerBox[]   
 
   @@map(name: "locations")
-}
-
-model Locker {
-  id          Int         @id @unique @default(autoincrement())
-  Location    Location?
-  lockerBoxes LockerBox[]
-
-  @@map(name: "lockers")
 }
 
 model LockerBox {
   id           Int            @id @unique @default(autoincrement())
   label        Int
   status       String
-  Locker       Locker?        @relation(fields: [lockerId], references: [id])
-  lockerId     Int?
-  Prescription Prescription[]
-  @@unique(fields: [label,lockerId], name: "specificLockerBox")
+  Location     Location       @relation(fields: [locationId], references: [id])
+  locationId   Int
+  Prescriptions Prescription[]
+  @@unique(fields: [label,locationId], name: "specificLockerBox")
   @@map(name: "locker_box")
 }

@@ -105,6 +105,7 @@ export default function Sidebar({ role }: { role?: Role }) {
           />
         </Nav>
       }
+      flex="grow"
     >
       <Nav gap="xsmall">
         {urls.map(

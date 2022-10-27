@@ -30,7 +30,7 @@ export default async function handler(
             pickupEnabled: pickup_enabled,
             dob: dob,
 
-            prescriptions: prescriptions
+            Prescriptions: prescriptions
           }
         })
       }

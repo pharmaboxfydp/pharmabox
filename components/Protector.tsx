@@ -21,7 +21,7 @@ export default function Protector({
     staffPages.includes(router.pathname as StaffRootPages)
 
   if (isValidStaff || isValidPatient) {
-    return <Box>{children}</Box>
+    return <>{children}</>
   } else {
     return (
       <Box

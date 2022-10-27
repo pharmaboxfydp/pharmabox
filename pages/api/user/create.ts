@@ -39,7 +39,7 @@ export default async function handler(
         firstName: first_name,
         lastName: last_name,
         email: email_address,
-        phone: phone_number,
+        phoneNumber: phone_number,
         // send ISO strings to Postgres so that it can construct correct dates
         createdAt: createdAt.toISOString(),
         updatedAt: updatedAt.toISOString(),
