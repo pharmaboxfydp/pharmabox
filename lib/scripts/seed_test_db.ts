@@ -1,5 +1,5 @@
 /**
- * Aloow console statements for scripts
+ * Allow console statements for scripts
  */
 /* eslint-disable no-console */
 import prisma from '../prisma'

@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import { Role, User } from '../../../types/types'
@@ -49,8 +48,19 @@ export default async function handler(
       const user = await prisma.user.create({
         data: {
           ...payload,
+          /**
+           * always make users patients by default
+           */
           Patient: {
-            create: [{ userId: id, pickupEnabled: true, dob: '' }]
+            connectOrCreate: {
+              where: {
+                userId: id
+              },
+              create: {
+                pickupEnabled: true,
+                dob: null
+              }
+            }
           }
         }
       })
