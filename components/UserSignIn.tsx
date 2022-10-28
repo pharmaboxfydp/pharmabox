@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import theme from '../styles/theme'
 import Logo from '../public/pharmabox_logo.svg'
 import { useEffect, useState } from 'react'
+import { useClerk, useUser, SignedOut, SignedIn } from '@clerk/nextjs'
+import styles from '../styles/Home.module.css'
 
 export default function UserSignIn() {
   const [loaded, setLoaded] = useState<boolean>(false)
@@ -36,26 +38,22 @@ export default function UserSignIn() {
           style={{ color: theme.global.colors.white }}
         />
       )}
-      {router.pathname === '/sign-up' ? (
-        <SignUp
-          path="/sign-up"
-          routing="path"
-          signInUrl="/"
-          redirectUrl={router.pathname}
-        />
-      ) : (
-        <SignIn
-          redirectUrl={router.pathname}
-          signUpUrl="/sign-up"
-          path="/"
-          appearance={{
-            variables: {
-              colorPrimary: theme.global.colors['neutral-2'],
-              fontFamily: 'Europa'
-            }
-          }}
-        />
-      )}
+      <SignedOutCards />
     </Box>
+  )
+}
+const SignedOutCards = () => {
+  const { openSignIn, openSignUp } = useClerk()
+  return (
+    <>
+      <a onClick={() => openSignIn()} className={styles.card}>
+        <h2>Sign in &rarr;</h2>
+        <p>Show the sign in modal</p>
+      </a>
+      <a onClick={() => openSignUp()} className={styles.card}>
+        <h2>Sign up &rarr;</h2>
+        <p>Show the sign up modal</p>
+      </a>
+    </>
   )
 }
