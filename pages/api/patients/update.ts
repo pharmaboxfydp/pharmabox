@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { user_id, pickup_enabled, dob, prescriptions } = req.body.data
+      const { user_id, pickup_enabled, dob, prescriptions } = req.body
 
       let patient = null
       if (!prescriptions) {
