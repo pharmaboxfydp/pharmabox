@@ -38,10 +38,12 @@ model Patient {
 }
 
 model Staff {
-  id      Int     @id @unique @default(autoincrement())
-  userId  String  @unique
-  User    User    @relation(fields: [userId], references: [id])
-  isAdmin Boolean @default(false) @map(name: "is_admin")
+  id         Int      @id @unique @default(autoincrement())
+  userId     String   @unique
+  User       User     @relation(fields: [userId], references: [id])
+  isAdmin    Boolean  @default(false) @map(name: "is_admin")
+  Location   Location @relation(fields: [locationId], references: [id])
+  locationId Int
 
   @@map(name: "staff")
 }
@@ -62,24 +64,25 @@ model Prescription {
   @@map(name: "prescriptions")
 }
 
-
 model Location {
-  id           Int            @id @unique @default(autoincrement())
-  address      String
-  phoneNumber  String    
+  id            Int            @id @unique @default(autoincrement())
+  address       String
+  phoneNumber   String
   Prescriptions Prescription[]
-  LockerBoxes  LockerBox[]   
+  LockerBoxes   LockerBox[]
+  Staff         Staff[]
 
   @@map(name: "locations")
 }
 
 model LockerBox {
-  id           Int            @id @unique @default(autoincrement())
-  label        Int
-  status       String
-  Location     Location       @relation(fields: [locationId], references: [id])
-  locationId   Int
+  id            Int            @id @unique @default(autoincrement())
+  label         Int
+  status        String
+  Location      Location       @relation(fields: [locationId], references: [id])
+  locationId    Int
   Prescriptions Prescription[]
-  @@unique(fields: [label,locationId], name: "specificLockerBox")
+
+  @@unique(fields: [label, locationId], name: "specificLockerBox")
   @@map(name: "locker_box")
 }
