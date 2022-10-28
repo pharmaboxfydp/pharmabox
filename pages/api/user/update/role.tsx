@@ -35,6 +35,9 @@ export default async function handler(
             data: {
               role,
               Staff: {
+                connect: {
+                  userId: id
+                },
                 upsert: {
                   create: [{ userId: id }],
                   update: [{ userId: id }]
@@ -61,6 +64,9 @@ export default async function handler(
             data: {
               role,
               Patient: {
+                connect: {
+                  userId: id
+                },
                 upsert: {
                   create: [{ userId: id, pickupEnabled: true, dob: '' }],
                   update: [{ userId: id, pickupEnabled: true, dob: '' }]
