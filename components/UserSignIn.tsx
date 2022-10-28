@@ -1,4 +1,4 @@
-import { SignIn } from '@clerk/nextjs'
+import { SignIn, SignUp } from '@clerk/nextjs'
 import { Box, Clock } from 'grommet'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -36,15 +36,26 @@ export default function UserSignIn() {
           style={{ color: theme.global.colors.white }}
         />
       )}
-      <SignIn
-        redirectUrl={router.pathname}
-        appearance={{
-          variables: {
-            colorPrimary: theme.global.colors['neutral-2'],
-            fontFamily: 'Europa'
-          }
-        }}
-      />
+      {router.pathname === '/sign-up' ? (
+        <SignUp
+          path="/sign-up"
+          routing="path"
+          signInUrl="/"
+          redirectUrl={router.pathname}
+        />
+      ) : (
+        <SignIn
+          redirectUrl={router.pathname}
+          signUpUrl="/sign-up"
+          path="/"
+          appearance={{
+            variables: {
+              colorPrimary: theme.global.colors['neutral-2'],
+              fontFamily: 'Europa'
+            }
+          }}
+        />
+      )}
     </Box>
   )
 }
