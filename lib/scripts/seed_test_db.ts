@@ -35,6 +35,16 @@ async function getDevUsers(): Promise<UserJSON[]> {
  * @returns Promise<Prisma.BatchPayload>
  */
 async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
+  try {
+    await prisma.patient.deleteMany()
+  } catch (error) {
+    throw new Error(`${error}`)
+  }
+  try {
+    await prisma.staff.deleteMany()
+  } catch (error) {
+    throw new Error(`${error}`)
+  }
   /**
    * remove users from the users table
    */
@@ -44,7 +54,8 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
     throw new Error(`${error}`)
   }
 
-  const newUsers: User[] = []
+  const staffUsers: User[] = []
+  const patientUsers: User[] = []
 
   users.forEach(async (user, index) => {
     const numUses = users.length
@@ -69,11 +80,59 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
       role: userNumber < midpoint ? Role.Patient : Role.Staff
     }
 
-    newUsers.push(newUser)
+    switch (newUser.role) {
+      case Role.Patient: {
+        patientUsers.push(newUser)
+      }
+      case Role.Staff: {
+        staffUsers.push(newUser)
+      }
+      default: {
+        patientUsers.push(newUser)
+      }
+    }
   })
 
-  const createdUsers = await prisma.user.createMany({ data: newUsers })
-  return createdUsers
+  let createdUsers = []
+  staffUsers.forEach(async (staffUser) => {
+    const user = await prisma.user.create({
+      data: {
+        ...staffUser,
+
+        Staff: {
+          connectOrCreate: {
+            where: {
+              userId: staffUser.id
+            },
+            create: {}
+          }
+        }
+      }
+    })
+    createdUsers.push(user)
+  })
+
+  patientUsers.forEach(async (patientUser) => {
+    const user = await prisma.user.create({
+      data: {
+        ...patientUser,
+        Patient: {
+          connectOrCreate: {
+            where: {
+              userId: patientUser.id
+            },
+            create: {
+              pickupEnabled: true,
+              dob: null
+            }
+          }
+        }
+      }
+    })
+    createdUsers.push(user)
+  })
+
+  return { count: createdUsers.length }
 }
 
 /**

@@ -38,12 +38,12 @@ model Patient {
 }
 
 model Staff {
-  id         Int      @id @unique @default(autoincrement())
-  userId     String   @unique
-  User       User     @relation(fields: [userId], references: [id])
-  isAdmin    Boolean  @default(false) @map(name: "is_admin")
-  Location   Location @relation(fields: [locationId], references: [id])
-  locationId Int
+  id         Int       @id @unique @default(autoincrement())
+  userId     String    @unique
+  User       User      @relation(fields: [userId], references: [id])
+  isAdmin    Boolean   @default(false) @map(name: "is_admin")
+  Location   Location? @relation(fields: [locationId], references: [id])
+  locationId Int?
 
   @@map(name: "staff")
 }
