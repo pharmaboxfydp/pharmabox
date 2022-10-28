@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -o allexport
+source .env.development
+set +o allexport
+
+while getopts r:i:e: flag
+do
+    case "${flag}" in
+        r) role=${OPTARG};;
+        i) id=${OPTARG};;
+        e) env=${OPTARG};;
+    esac
+done
+echo "converting role: $role for user: $id in environment $env";
+
+npx ts-node lib/scripts/convert_user.ts $role $id $env
+
+echo "Done!"
