@@ -92,8 +92,8 @@ const SignedInCards = () => {
       <Page user={user}>
         <Box pad="medium">
           <Text>Hello {user?.id}</Text>
-          <Text>You are a {user?.role}</Text>
-          <Text>Your Email is: {user?.email}</Text>
+          {/* <Text>You are a {user?.role}</Text>
+          <Text>Your Email is: {user?.email}</Text> */}
         </Box>
       </Page>
     </div>

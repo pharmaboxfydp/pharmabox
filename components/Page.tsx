@@ -9,7 +9,7 @@ import Navbar from './Navbar'
 export default function Page({
   user,
   children
-}: PropsWithChildren<{ user: User }>) {
+}: PropsWithChildren<{ user: any }>) {
   return (
     <Box direction="column" fill>
       <Navbar />
