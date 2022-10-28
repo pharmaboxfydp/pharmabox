@@ -7,6 +7,13 @@ import { ServerPageProps } from '../types/types'
 import { Box, Text } from 'grommet'
 
 const Home = ({ user }: ServerPageProps) => {
+  if (!user) {
+    return (
+      <Box pad="medium">
+        <Text>User Not Found. Try refreshing your browser</Text>
+      </Box>
+    )
+  }
   return (
     <>
       <Head>
@@ -19,9 +26,9 @@ const Home = ({ user }: ServerPageProps) => {
       </Head>
       <Page user={user}>
         <Box pad="medium">
-          <Text>Hello {user.id}</Text>
-          <Text>You are a {user.role}</Text>
-          <Text>Your Email is: {user.email}</Text>
+          <Text>Hello {user?.id}</Text>
+          <Text>You are a {user?.role}</Text>
+          <Text>Your Email is: {user?.email}</Text>
         </Box>
       </Page>
     </>
