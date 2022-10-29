@@ -77,6 +77,33 @@ You can use Prisma Studio to help with development! You might run into issues wi
 1. Install `dotenv cli`. `npm install -g dotenv-cli`
 2. `dotenv -e .env.development -- npx prisma studio`
 
+## Scripts
+
+### Database Migration
+
+Running the script `bash/migrate_dbs` will perform migrations on **both production and local databases** to make sure they are in-sync. Be careful when running this script to avoid deleting data by accident. It is recommended that a backup (snapshot) of the database be made in AWS prior to running a heavy migration
+
+```bash
+sh bash/migrate_dbs
+```
+
+### Seed Test Database
+
+Running the script `bash/seed_test_dbs` will generate test data and users based on real users in `clerk`! If you are adding more tables be sure to also update this script!
+
+```bash
+sh bash/seed_test_dbs
+```
+
+### Convert Users
+
+This script `bash/convert_user` can convert a user either locally, (dev) or on prod from a `patient` to a `staff` or vise-versa. It takes three flags `-r --role`,`-i --id`, and `-e --env` to specify the user you want to convert. The user will be converted to the specified role and their previous role record will be removed It can be used as:
+
+```bash
+# converts user: user_abc123 to a staff member locally (i.e postgres://postgres:password@localhost:5432/pharmabox)
+bash/convert_user -r staff -i user_abc123 -e dev
+```
+
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -90,6 +117,6 @@ You can use Prisma Studio to help with development! You might run into issues wi
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->

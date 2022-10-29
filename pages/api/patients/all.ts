@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 
@@ -10,7 +9,7 @@ export default async function handler(
     try {
       const patients = await prisma.patient.findMany({
         include: {
-          user: true
+          User: true
         }
       })
       res.status(200).json({ message: 'Success', patients })

@@ -1,5 +1,5 @@
 /**
- * Aloow console statements for scripts
+ * Allow console statements for scripts
  */
 /* eslint-disable no-console */
 import prisma from '../prisma'
@@ -7,7 +7,6 @@ import fetch from 'node-fetch'
 import * as dotenv from 'dotenv'
 import { Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
-import { Prisma } from '@prisma/client'
 
 dotenv.config()
 
@@ -34,17 +33,35 @@ async function getDevUsers(): Promise<UserJSON[]> {
  * @param users
  * @returns Promise<Prisma.BatchPayload>
  */
-async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
+async function seedUsers(
+  users: UserJSON[]
+): Promise<{ count: number; patientUsers: User[]; staffUsers: User[] }> {
+  /**
+   * remove patients from patients table
+   */
+  try {
+    await prisma.patient.deleteMany({})
+  } catch (error) {
+    console.error(error)
+  }
+  /**
+   * remove staff from staff tablet
+   */
+  try {
+    await prisma.staff.deleteMany({})
+  } catch (error) {
+    console.error(error)
+  }
   /**
    * remove users from the users table
    */
   try {
-    await prisma.user.deleteMany()
+    await prisma.user.deleteMany({})
   } catch (error) {
-    throw new Error(`${error}`)
+    console.error(error)
   }
-
-  const newUsers: User[] = []
+  const staffUsers: User[] = []
+  const patientUsers: User[] = []
 
   users.forEach(async (user, index) => {
     const numUses = users.length
@@ -60,7 +77,7 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
       /** pick the first email by default if one exists */
       email: user.email_addresses[0].email_address,
       /** pick first phone number by default if one exists */
-      phone: user.phone_numbers.length
+      phoneNumber: user.phone_numbers.length
         ? user.phone_numbers[0].phone_number
         : undefined,
       createdAt: createdAt.toISOString(),
@@ -69,11 +86,53 @@ async function seedUsers(users: UserJSON[]): Promise<Prisma.BatchPayload> {
       role: userNumber < midpoint ? Role.Patient : Role.Staff
     }
 
-    newUsers.push(newUser)
+    if (newUser.role === Role.Patient) {
+      patientUsers.push(newUser)
+    }
+    if (newUser.role === Role.Staff) {
+      staffUsers.push(newUser)
+    }
   })
 
-  const createdUsers = await prisma.user.createMany({ data: newUsers })
-  return createdUsers
+  const count = staffUsers.length + patientUsers.length
+
+  staffUsers.forEach(async (staffUser) => {
+    await prisma.user.create({
+      data: {
+        ...staffUser,
+
+        Staff: {
+          connectOrCreate: {
+            where: {
+              userId: staffUser.id
+            },
+            create: {}
+          }
+        }
+      }
+    })
+  })
+
+  patientUsers.forEach(async (patientUser) => {
+    await prisma.user.create({
+      data: {
+        ...patientUser,
+        Patient: {
+          connectOrCreate: {
+            where: {
+              userId: patientUser.id
+            },
+            create: {
+              pickupEnabled: true,
+              dob: null
+            }
+          }
+        }
+      }
+    })
+  })
+
+  return { count, patientUsers, staffUsers }
 }
 
 /**
@@ -86,6 +145,15 @@ getDevUsers()
     seedUsers(users)
       .then((payload) => {
         console.info(`Created ${payload.count} Local Users`)
+        console.info('\x1b[36m%s\x1b[0m', 'PATIENTS -----')
+        console.table(payload.patientUsers, [
+          'id',
+          'firstName',
+          'email',
+          'role'
+        ])
+        console.info('\x1b[36m%s\x1b[0m', 'STAFF -----')
+        console.table(payload.staffUsers, ['id', 'firstName', 'email', 'role'])
       })
       .catch((error) => {
         throw new Error(error)

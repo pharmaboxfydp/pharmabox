@@ -28,7 +28,7 @@ export type User = {
   firstName: string | undefined
   lastName: string | undefined
   email: string
-  phone?: string
+  phoneNumber?: string
   pickup_enabled?: boolean
   role?: Role
   createdAt: string

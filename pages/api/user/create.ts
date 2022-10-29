@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import { Role, User } from '../../../types/types'
@@ -39,14 +38,32 @@ export default async function handler(
         firstName: first_name,
         lastName: last_name,
         email: email_address,
-        phone: phone_number,
+        phoneNumber: phone_number,
         // send ISO strings to Postgres so that it can construct correct dates
         createdAt: createdAt.toISOString(),
         updatedAt: updatedAt.toISOString(),
         // always make default users be patients on production
         role: Role.Patient
       }
-      const user = await prisma.user.create({ data: payload })
+      const user = await prisma.user.create({
+        data: {
+          ...payload,
+          /**
+           * always make users patients by default
+           */
+          Patient: {
+            connectOrCreate: {
+              where: {
+                userId: id
+              },
+              create: {
+                pickupEnabled: true,
+                dob: null
+              }
+            }
+          }
+        }
+      })
       res.status(200).json({ message: 'Success', user: user })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
