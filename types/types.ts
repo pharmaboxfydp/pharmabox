@@ -1,4 +1,5 @@
 import { UserJSON } from '@clerk/backend-core'
+import { Patient, Staff } from '@prisma/client'
 
 export enum Role {
   Staff = 'staff',
@@ -33,6 +34,8 @@ export type User = {
   role?: Role
   createdAt: string
   updatedAt: string
+  Patient?: Patient
+  Staff?: Staff
 }
 
 export interface ServerPageProps {
