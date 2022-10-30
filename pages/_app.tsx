@@ -6,7 +6,7 @@ import { ClerkProvider, SignedIn, SignedOut, ClerkLoaded } from '@clerk/nextjs'
 import NProgress from 'nprogress'
 // import Router from 'next/router'
 import { useRouter } from 'next/router'
-// import UserSignIn from '../components/UserSignIn'
+import UserSignIn from '../components/UserSignIn'
 
 NProgress.configure({
   minimum: 0.3,
@@ -36,9 +36,7 @@ function App({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
               </SignedIn>
               <SignedOut>
-                <div className="protected">
-                  <p>You need to be signed in to access this page.</p>
-                </div>
+                <UserSignIn />
               </SignedOut>
             </>
           )}

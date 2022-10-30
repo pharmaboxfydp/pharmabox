@@ -68,7 +68,7 @@ export default function Navbar() {
     >
       <Box direction="row" align="center" alignContent="start">
         <Box margin={{ horizontal: 'medium' }}>
-          <Link href="/" passHref>
+          <Link href="/home" passHref>
             <Button plain a11yTitle="Pharmabox">
               <Image src={Logo} alt="Pharmabox" height={18} width={124.5} />
             </Button>
