@@ -26,7 +26,10 @@ const Home: NextPage = () => {
 const InitialLoadingPage = () => {
   const router = useRouter()
   useEffect(() => {
-    router.push('/home')
+    async function wait() {
+      await setTimeout(() => router.push('/home'), 100)
+    }
+    wait()
   }, [router])
 
   return (
