@@ -7,6 +7,7 @@ import fetch from 'node-fetch'
 import * as dotenv from 'dotenv'
 import { Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
+import data from './test_data'
 
 dotenv.config()
 
@@ -96,7 +97,7 @@ async function seedUsers(
 
   const count = staffUsers.length + patientUsers.length
 
-  staffUsers.forEach(async (staffUser) => {
+  staffUsers.forEach(async (staffUser: User, index: number) => {
     await prisma.user.create({
       data: {
         ...staffUser,
@@ -135,15 +136,36 @@ async function seedUsers(
   return { count, patientUsers, staffUsers }
 }
 
+async function seedLocations(staff: User[]) {
+  const { locations } = data
+  await prisma.location.deleteMany({})
+  await prisma.location.createMany({ data: locations })
+  const loc1 = await prisma.location.findMany({})
+
+  staff.forEach(async (staffMember, index) => {
+    await prisma.staff.update({
+      where: { userId: staffMember.id },
+      data: {
+        Location: {
+          connect: {
+            id: loc1[index > Math.floor(staff.length) / 2 ? 1 : 0]?.id
+          }
+        }
+      }
+    })
+  })
+
+  return { loc1 }
+}
+
 /**
  * This script is responsible for removing and adding test users
  * to a local database and creating them in Clerk
  */
-
 getDevUsers()
   .then((users) => {
     seedUsers(users)
-      .then((payload) => {
+      .then(async (payload) => {
         console.info(`Created ${payload.count} Local Users`)
         console.info('\x1b[36m%s\x1b[0m', 'PATIENTS -----')
         console.table(payload.patientUsers, [
@@ -154,6 +176,10 @@ getDevUsers()
         ])
         console.info('\x1b[36m%s\x1b[0m', 'STAFF -----')
         console.table(payload.staffUsers, ['id', 'firstName', 'email', 'role'])
+        seedLocations(payload.staffUsers).then((res) => {
+          console.info('\x1b[36m%s\x1b[0m', 'LOCATIONS -----')
+          console.table(res.loc1, ['id'])
+        })
       })
       .catch((error) => {
         throw new Error(error)
