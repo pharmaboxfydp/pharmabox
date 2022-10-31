@@ -88,14 +88,13 @@ export default function PatientSettings({ user }: { user: User }) {
     const { value: dob } = event
 
     if (typeof dob !== 'string') {
-      toast.error('Invalid Birthdate', { icon: '❌' })
+      return false
     }
 
     const currentDate = Date.now()
     const attemptedDate = new Date(dob as string).getTime()
 
     if (attemptedDate >= currentDate) {
-      toast.error('Invalid Birthdate', { icon: '❌' })
       return false
     }
 
