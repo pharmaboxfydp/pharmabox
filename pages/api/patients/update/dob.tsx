@@ -1,4 +1,4 @@
-import { Patient } from '@prisma/client'
+import { Patient, Prisma } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../../lib/prisma'
 
@@ -10,15 +10,15 @@ export default async function handler(
     let patient: Patient | null = null
     try {
       const request = JSON.parse(req.body) as { data: Patient }
-      const { pickupEnabled: P, userId: I } = request.data
+      const { dob: D, userId: I } = request.data
       const userId: string = I
-      const pickupEnabled: boolean = P
+      const dob: string | null = D
       patient = await prisma.patient.update({
         where: {
           userId
         },
         data: {
-          pickupEnabled: pickupEnabled
+          dob: dob
         }
       })
     } catch (e) {
