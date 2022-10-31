@@ -177,7 +177,7 @@ getDevUsers()
         ])
         console.info('\x1b[36m%s\x1b[0m', 'STAFF -----')
         console.table(payload.staffUsers, ['id', 'firstName', 'email', 'role'])
-        seedLocations(payload.staffUsers).then((res) => console.log(res))
+        seedLocations(payload.staffUsers).then((res) => console.table(res))
       })
       .catch((error) => {
         throw new Error(error)
