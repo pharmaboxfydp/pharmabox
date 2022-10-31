@@ -140,7 +140,7 @@ async function seedUsers(
 async function seedLocations(staff: User[]) {
   const { locations } = data
   await prisma.location.deleteMany({})
-  const locs = await prisma.location.createMany({ data: locations })
+  await prisma.location.createMany({ data: locations })
   const loc1 = await prisma.location.findMany({})
 
   staff.forEach(async (staffMember, index) => {
@@ -156,7 +156,7 @@ async function seedLocations(staff: User[]) {
     })
   })
 
-  return { locs }
+  return { loc1 }
 }
 
 /**
@@ -166,7 +166,7 @@ async function seedLocations(staff: User[]) {
 getDevUsers()
   .then((users) => {
     seedUsers(users)
-      .then((payload) => {
+      .then(async (payload) => {
         console.info(`Created ${payload.count} Local Users`)
         console.info('\x1b[36m%s\x1b[0m', 'PATIENTS -----')
         console.table(payload.patientUsers, [
@@ -177,7 +177,10 @@ getDevUsers()
         ])
         console.info('\x1b[36m%s\x1b[0m', 'STAFF -----')
         console.table(payload.staffUsers, ['id', 'firstName', 'email', 'role'])
-        seedLocations(payload.staffUsers).then((res) => console.table(res))
+        seedLocations(payload.staffUsers).then((res) => {
+          console.info('\x1b[36m%s\x1b[0m', 'LOCATIONS -----')
+          console.table(res.loc1, ['id'])
+        })
       })
       .catch((error) => {
         throw new Error(error)
