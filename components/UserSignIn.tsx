@@ -47,12 +47,8 @@ const SignedOutCards = () => {
   return (
     <>
       <a onClick={() => openSignIn()} className={styles.card}>
-        <h2>Sign in &rarr;</h2>
-        <p>Show the sign in modal</p>
-      </a>
-      <a onClick={() => openSignUp()} className={styles.card}>
-        <h2>Sign up &rarr;</h2>
-        <p>Show the sign up modal</p>
+        <h2>Sign In &rarr;</h2>
+        {/* <p>Sign In</p> */}
       </a>
     </>
   )

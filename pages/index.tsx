@@ -9,17 +9,19 @@ import React from 'react'
 import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import UserSignIn from '../components/UserSignIn'
+import Lottie from 'lottie-react'
+import loadingAnimation from '../public/assets/loading.json'
 
 const Home: NextPage = () => {
   return (
-    <>
+    <div style={{ height: '100vh' }}>
       <SignedOut>
         <UserSignIn />
       </SignedOut>
       <SignedIn>
         <InitialLoadingPage />
       </SignedIn>
-    </>
+    </div>
   )
 }
 
@@ -33,7 +35,15 @@ const InitialLoadingPage = () => {
   }, [router])
 
   return (
-    <div style={{ height: '100vh' }}>
+    <div
+      style={{
+        height: '100vh',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <Head>
         <title>PharmaBox</title>
         <meta
@@ -42,8 +52,7 @@ const InitialLoadingPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <Text>Hello loading</Text>
+      <Lottie width={200} animationData={loadingAnimation} loop={true} />
     </div>
   )
 }

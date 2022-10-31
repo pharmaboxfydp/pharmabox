@@ -17,6 +17,7 @@
     "dotenv-cli": "^6.0.0",
     "grommet": "^2.27.0",
     "knex": "^2.3.0",
+    "lottie-react": "^2.3.1",
     "next": "12.3.1",
     "node-fetch": "^2.6.7",
     "nprogress": "^0.2.0",
