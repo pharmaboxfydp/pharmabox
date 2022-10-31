@@ -8,7 +8,6 @@ import * as dotenv from 'dotenv'
 import { Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
 import data from './test_data'
-import { Staff } from '@prisma/client'
 
 dotenv.config()
 
