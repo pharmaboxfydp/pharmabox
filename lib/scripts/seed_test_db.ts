@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv'
 import { Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
 import data from './test_data'
+import { Staff } from '@prisma/client'
 
 dotenv.config()
 
@@ -138,7 +139,23 @@ async function seedUsers(
 
 async function seedLocations(staff: User[]) {
   const { locations } = data
+  await prisma.location.deleteMany({})
   const locs = await prisma.location.createMany({ data: locations })
+  const loc1 = await prisma.location.findMany({})
+
+  staff.forEach(async (staffMember, index) => {
+    await prisma.staff.update({
+      where: { userId: staffMember.id },
+      data: {
+        Location: {
+          connect: {
+            id: loc1[index > Math.floor(staff.length) / 2 ? 1 : 0]?.id
+          }
+        }
+      }
+    })
+  })
+
   return { locs }
 }
 
