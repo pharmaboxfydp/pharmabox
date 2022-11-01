@@ -10,7 +10,7 @@ import MobileNav from './MobileNav'
 export default function Page({
   user,
   children
-}: PropsWithChildren<{ user: any }>) {
+}: PropsWithChildren<{ user: User }>) {
   return (
     <Box direction="column" fill>
       <Navbar />

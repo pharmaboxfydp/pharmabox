@@ -64,5 +64,6 @@ export function SSRUser<R>({
   if (userId) {
     return getUserDetails<R>({ userId, query })
   }
+
   return { props: { userId } }
 }
