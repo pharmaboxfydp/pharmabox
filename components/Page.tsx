@@ -1,10 +1,11 @@
-import { Box } from 'grommet'
+import { Box, ResponsiveContext } from 'grommet'
 import { PropsWithChildren } from 'react'
 import Sidebar from './Sidebar'
 import { User } from '../types/types'
 import Protector from './Protector'
 import PageErrorBoundary from './PageErrorBoundary'
 import Navbar from './Navbar'
+import CollabsableNav from './CollabsableNav'
 
 export default function Page({
   user,
@@ -13,16 +14,34 @@ export default function Page({
   return (
     <Box direction="column" fill>
       <Navbar />
-      <Box direction="row" fill>
-        <Sidebar role={user.role} />
-        <Box overflow="scroll" fill="horizontal">
-          <Box fill>
-            <PageErrorBoundary>
-              <Protector role={user.role}>{children}</Protector>
-            </PageErrorBoundary>
-          </Box>
-        </Box>
-      </Box>
+
+      <ResponsiveContext.Consumer>
+        {(responsive) =>
+          responsive === 'small' ? (
+            <Box direction="row" fill>
+              <Box overflow="scroll" fill="horizontal">
+                <Box fill>
+                  <PageErrorBoundary>
+                    <Protector role={user.role}>{children}</Protector>
+                  </PageErrorBoundary>
+                </Box>
+                <CollabsableNav role={user.role} />
+              </Box>
+            </Box>
+          ) : (
+            <Box direction="row" fill>
+              <Sidebar role={user.role} />
+              <Box overflow="scroll" fill="horizontal">
+                <Box fill>
+                  <PageErrorBoundary>
+                    <Protector role={user.role}>{children}</Protector>
+                  </PageErrorBoundary>
+                </Box>
+              </Box>
+            </Box>
+          )
+        }
+      </ResponsiveContext.Consumer>
     </Box>
   )
 }
