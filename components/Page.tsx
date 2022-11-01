@@ -5,7 +5,7 @@ import { User } from '../types/types'
 import Protector from './Protector'
 import PageErrorBoundary from './PageErrorBoundary'
 import Navbar from './Navbar'
-import CollabsableNav from './CollabsableNav'
+import MobileNav from './MobileNav'
 
 export default function Page({
   user,
@@ -25,7 +25,7 @@ export default function Page({
                     <Protector role={user.role}>{children}</Protector>
                   </PageErrorBoundary>
                 </Box>
-                <CollabsableNav role={user.role} />
+                <MobileNav role={user.role} />
               </Box>
             </Box>
           ) : (

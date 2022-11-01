@@ -3,13 +3,18 @@ import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../../helpers/user-details'
 import Page from '../../components/Page'
 import { Role, ServerPageProps } from '../../types/types'
-import { Anchor, Box, Text } from 'grommet'
+import { Anchor, Box, Text, ResponsiveContext, Button } from 'grommet'
 import Breadcrumbs from '../../components/Breadcrumbs'
 import Link from 'next/link'
 import { Information, UserProfile } from '@carbon/icons-react'
 import PatientSettings from '../../components/PatientSettings'
 import StaffSettings from '../../components/StaffSettings'
+import theme from '../../styles/theme'
+import { Logout } from '@carbon/icons-react'
+import SidebarButton from '../../components/SidebarButton'
+import { useClerk } from '@clerk/clerk-react'
 const Settings = ({ user }: ServerPageProps) => {
+  const { signOut } = useClerk()
   return (
     <>
       <Head>
@@ -46,6 +51,22 @@ const Settings = ({ user }: ServerPageProps) => {
             <Box pad="small" basis="auto" fill="horizontal" gap="small">
               {user.role === Role.Patient && <PatientSettings user={user} />}
               {user.role === Role.Staff && <StaffSettings user={user} />}
+
+              <div>
+                <ResponsiveContext.Consumer>
+                  {(responsive) =>
+                    responsive === 'small' ? (
+                      <SidebarButton
+                        icon={<Logout size={24} />}
+                        label={'Logout'}
+                        onClick={signOut}
+                      />
+                    ) : (
+                      <></>
+                    )
+                  }
+                </ResponsiveContext.Consumer>
+              </div>
             </Box>
           </Box>
         </Box>
