@@ -13,6 +13,8 @@ export default withClerkMiddleware((req: NextRequest) => {
 
 export const config = {
   matcher: [
+    '/',
+    '/home',
     '/api/patients/:path*',
     '/api/prescriptions/:path*',
     '/api/locations/:path*'
