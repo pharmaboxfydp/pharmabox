@@ -7,7 +7,7 @@ export enum Role {
 }
 
 export enum StaffRootPages {
-  Home = '/',
+  Home = '/home',
   Workflows = '/workflows',
   Patients = '/patients',
   Team = '/team',

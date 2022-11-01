@@ -1,9 +1,6 @@
 import Head from 'next/head'
-// import { useClerk, useUser, SignedOut, SignedIn } from '@clerk/nextjs'
 import { useRouter } from 'next/router'
-
-import { Box, Text } from 'grommet'
-
+import { Box } from 'grommet'
 import { SignedOut, SignedIn } from '@clerk/nextjs'
 import React from 'react'
 import { useEffect } from 'react'
@@ -14,24 +11,21 @@ import loadingAnimation from '../public/assets/loading.json'
 
 const Home: NextPage = () => {
   return (
-    <div style={{ height: '100vh' }}>
+    <Box fill>
       <SignedOut>
         <UserSignIn />
       </SignedOut>
       <SignedIn>
-        <InitialLoadingPage />
+        <Suspense />
       </SignedIn>
-    </div>
+    </Box>
   )
 }
 
-const InitialLoadingPage = () => {
+const Suspense = () => {
   const router = useRouter()
   useEffect(() => {
-    async function wait() {
-      await setTimeout(() => router.push('/home'), 350)
-    }
-    wait()
+    router.push('/home')
   }, [router])
 
   return (
