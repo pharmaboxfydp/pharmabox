@@ -47,7 +47,7 @@ const SignedOutCards = () => {
   return (
     <>
       <a onClick={() => openSignIn()} className={styles.card}>
-        <h2>Sign In &rarr;</h2>
+        <h2>Sign In</h2>
         {/* <p>Sign In</p> */}
       </a>
     </>
