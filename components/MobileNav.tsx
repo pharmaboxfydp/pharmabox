@@ -38,7 +38,7 @@ export default function CollapsableNav({ role }: { role?: Role }) {
       >
         {urls.map(
           ({ link, name, Icon }) =>
-            name !== 'Settings' && (
+            name !== '' && (
               <MobileBarButton
                 href={link}
                 key={link}

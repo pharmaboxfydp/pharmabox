@@ -29,7 +29,7 @@ const InitialLoadingPage = () => {
   const router = useRouter()
   useEffect(() => {
     async function wait() {
-      await setTimeout(() => router.push('/home'), 100)
+      await setTimeout(() => router.push('/home'), 350)
     }
     wait()
   }, [router])
