@@ -2,9 +2,10 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { Grommet, ThemeType } from 'grommet'
 import theme from '../styles/theme'
-import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs'
+import { ClerkProvider, SignedIn, SignedOut, ClerkLoaded } from '@clerk/nextjs'
 import NProgress from 'nprogress'
-import Router from 'next/router'
+// import Router from 'next/router'
+import { useRouter } from 'next/router'
 import UserSignIn from '../components/UserSignIn'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -17,9 +18,7 @@ NProgress.configure({
   showSpinner: false
 })
 
-Router.events.on('routeChangeStart', () => NProgress.start())
-Router.events.on('routeChangeComplete', () => NProgress.done())
-Router.events.on('routeChangeError', () => NProgress.done())
+const publicPages = ['/', '/sign-up', '/sign-in']
 
 const StyledContainer = styled(ToastContainer)`
   &&&.Toastify__toast-container {
@@ -35,27 +34,26 @@ const StyledContainer = styled(ToastContainer)`
 `
 
 function App({ Component, pageProps }: AppProps) {
+  const router = useRouter()
   return (
     <Grommet theme={theme as unknown as ThemeType} full>
       <ClerkProvider {...pageProps}>
-        <SignedIn>
-          <StyledContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-          <Component {...pageProps} />
-        </SignedIn>
-        <SignedOut>
-          <UserSignIn />
-        </SignedOut>
+        <ClerkLoaded>
+          {publicPages.includes(router.pathname) ? (
+            <main>
+              <Component {...pageProps} />
+            </main>
+          ) : (
+            <>
+              <SignedIn>
+                <Component {...pageProps} />
+              </SignedIn>
+              <SignedOut>
+                <UserSignIn />
+              </SignedOut>
+            </>
+          )}
+        </ClerkLoaded>
       </ClerkProvider>
     </Grommet>
   )

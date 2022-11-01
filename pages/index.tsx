@@ -1,21 +1,49 @@
 import Head from 'next/head'
+// import { useClerk, useUser, SignedOut, SignedIn } from '@clerk/nextjs'
+import { useRouter } from 'next/router'
 
-import { withServerSideAuth } from '@clerk/nextjs/ssr'
-import { SSRUser } from '../helpers/user-details'
-import Page from '../components/Page'
-import { ServerPageProps } from '../types/types'
 import { Box, Text } from 'grommet'
 
-const Home = ({ user }: ServerPageProps) => {
-  if (!user) {
-    return (
-      <Box pad="medium">
-        <Text>User Not Found. Try refreshing your browser</Text>
-      </Box>
-    )
-  }
+import { SignedOut, SignedIn } from '@clerk/nextjs'
+import React from 'react'
+import { useEffect } from 'react'
+import type { NextPage } from 'next'
+import UserSignIn from '../components/UserSignIn'
+import Lottie from 'lottie-react'
+import loadingAnimation from '../public/assets/loading.json'
+
+const Home: NextPage = () => {
   return (
-    <>
+    <div style={{ height: '100vh' }}>
+      <SignedOut>
+        <UserSignIn />
+      </SignedOut>
+      <SignedIn>
+        <InitialLoadingPage />
+      </SignedIn>
+    </div>
+  )
+}
+
+const InitialLoadingPage = () => {
+  const router = useRouter()
+  useEffect(() => {
+    async function wait() {
+      await setTimeout(() => router.push('/home'), 100)
+    }
+    wait()
+  }, [router])
+
+  return (
+    <div
+      style={{
+        height: '100vh',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <Head>
         <title>PharmaBox</title>
         <meta
@@ -24,20 +52,8 @@ const Home = ({ user }: ServerPageProps) => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Page user={user}>
-        <Box pad="medium">
-          <Text>Hello {user?.id}</Text>
-          <Text>You are a {user?.role}</Text>
-          <Text>Your Email is: {user?.email}</Text>
-        </Box>
-      </Page>
-    </>
+      <Lottie width={200} animationData={loadingAnimation} loop={true} />
+    </div>
   )
 }
-
 export default Home
-
-export const getServerSideProps = withServerSideAuth(
-  async ({ req, res }) => SSRUser({ req, res }),
-  { loadUser: true }
-)
