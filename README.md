@@ -102,6 +102,32 @@ This script `bash/convert_user` can convert a user either locally, (dev) or on p
 ```bash
 # converts user: user_abc123 to a staff member locally (i.e postgres://postgres:password@localhost:5432/pharmabox)
 bash/convert_user -r staff -i user_abc123 -e dev
+
+```
+
+### Locations
+
+this script `bash/locations` can create a location either locally (dev) or on prod. It takes the following flags
+
+- `-o --operation`: operation to perform `"create"` or `"delete"`
+- `-i --id`: id of location to be removed `number`
+- `-c --country`: Location Country `string`
+- `-p --phone`: Phone Number `string`
+- `-a --address`: Address `string`
+- `-e --env`: Environment: `"dev"` or `"prod"`
+
+**Create a location**
+
+```bash
+# creates a Canadian location with phone number and address locally
+bash/location -o create -c Canada -p "123-456-7890" -a "172 Forward Street South" -e dev
+```
+
+**Delete a location**
+
+```bash
+# deletes location of id 6764
+bash/location -o delete -i 6764
 ```
 
 ## Contributors

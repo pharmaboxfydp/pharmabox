@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o allexport
+source .env.development
+set +o allexport
+
+while getopts o:i:c:p:a:e: flag
+do
+    case "${flag}" in
+        o) operation=${OPTARG};;
+        i) id=${OPTARG};;
+        c) country=${OPTARG};;
+        p) phone=${OPTARG};;
+        a) address=${OPTARG};;
+        e) env=${OPTARG};;
+
+    esac
+done
+echo "Performing operation: $operation for location $phone";
+
+npx ts-node lib/scripts/location.ts "$operation" "$id" "$country" "$phone" "$address" "$env"
+
+echo "Done!"

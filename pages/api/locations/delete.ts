@@ -8,8 +8,11 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { id } = req.body
-
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+      const { id: I } = req.body.data
+      const id: number = I as number
       const location = await prisma.location.delete({
         where: {
           id: id
