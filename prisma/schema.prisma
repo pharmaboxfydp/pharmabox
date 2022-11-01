@@ -48,7 +48,6 @@ model Staff {
   @@map(name: "staff")
 }
 
-
 model Prescription {
   id          Int       @id @unique @default(autoincrement())
   name        String

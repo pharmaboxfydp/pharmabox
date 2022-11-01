@@ -7,6 +7,9 @@ import NProgress from 'nprogress'
 // import Router from 'next/router'
 import { useRouter } from 'next/router'
 import UserSignIn from '../components/UserSignIn'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import styled from 'styled-components'
 
 NProgress.configure({
   minimum: 0.3,
@@ -19,6 +22,19 @@ NProgress.configure({
 // Router.events.on('routeChangeComplete', () => NProgress.done())
 // Router.events.on('routeChangeError', () => NProgress.done())
 const publicPages = ['/', '/sign-up', '/sign-in']
+
+const StyledContainer = styled(ToastContainer)`
+  &&&.Toastify__toast-container {
+    font-family: 'Europa';
+  }
+  .Toastify__toast {
+  }
+  .Toastify__toast-body {
+  }
+  .Toastify__progress-bar {
+    background: ${theme.global.colors['accent-1']};
+  }
+`
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter()

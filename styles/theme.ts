@@ -335,6 +335,9 @@ const theme = {
       knob: {}
     }
   },
+  notification: {
+    direction: 'row'
+  },
   clock: {
     analog: {
       hour: {
