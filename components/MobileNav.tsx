@@ -10,7 +10,7 @@ export default function CollapsableNav({ role }: { role?: Role }) {
   return (
     <Header
       background={theme.global.colors['neutral-2']}
-      //   height="xxsmmall"
+      height="xxsmmall"
       border={{
         color: theme.global.colors['light-1'],
         side: 'bottom',
