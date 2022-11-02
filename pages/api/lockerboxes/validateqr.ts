@@ -9,30 +9,39 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { qrCode } = req.body
-      let unfilled_prescriptions = await prisma.prescription.findMany({
+      const { qrCode } = JSON.parse(req.body)
+      const unfilledPrescriptions = await prisma.prescription.findMany({
         where: {
           status: Status.Unfilled
         }
       })
 
-      unfilled_prescriptions.forEach(async (prescription) => {
-        let is_valid_code = await argon2.verify(qrCode, prescription.pickupCode)
-        if (is_valid_code) {
-          await prisma.prescription.update({
-            data: {
-              status: Status.Filled
-            },
-            where: {
-              id: prescription.id
-            }
-          })
+      let isValidCode: boolean = false
+      let prescriptionId: number | null = null
 
-          res.status(200).json({ message: ' Success', qrCode })
+      unfilledPrescriptions.forEach(async (prescription) => {
+        let isVerified = await argon2.verify(qrCode, prescription.pickupCode)
+        if (isVerified) {
+          isValidCode = true
+          prescriptionId = prescription.id
         }
       })
 
-      res.status(200).json({ message: 'INVALID QR code', qrCode })
+      if (isValidCode && prescriptionId) {
+        const prescription = await prisma.prescription.update({
+          data: {
+            status: Status.Filled
+          },
+          where: {
+            id: prescriptionId
+          }
+        })
+        return res
+          .status(200)
+          .json({ message: ' Success', qrCode, prescription })
+      }
+
+      return res.status(401).json({ message: 'Invalid QR code', qrCode })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }
