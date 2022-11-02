@@ -18,7 +18,7 @@ const BASE_URL = `https://api.clerk.dev/v1`
  * @returns User[]
  */
 async function getDevUsers(): Promise<UserJSON[]> {
-  const response = await fetch(`${BASE_URL}/users`, {
+  const response = await fetch(`${BASE_URL}/users?limit=100`, {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
