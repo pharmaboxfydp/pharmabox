@@ -130,6 +130,29 @@ bash/location -o create -c Canada -p "123-456-7890" -a "172 Forward Street South
 bash/location -o delete -i 6764
 ```
 
+### Teams
+
+this script `bash/teams` allows you to add a staff member to a team and also remove a staff member from a team. It takes the following flags:
+
+- `-o --operation`: operation to perform `"add"` or `"remove"`
+- `-s --userId`: the user Id of the staff member `string`
+- `-l --locationId`: the location id of the location `number`
+- `-e --env`: Environment `"dev"` or `"prod"`
+
+**Add a team member**
+
+```bash
+# add a team member of the following id to team (location) number 251
+bash/team -o add -s user_2GvN7SlipkYqc0YlsNWuGkQDLtT -l 251 -e dev
+```
+
+**Remove a team member from a team (Location)**
+
+```bash
+# remove a team member of the following id from its current location
+bash/team -o remove  -s user_2GvN7SlipkYqc0YlsNWuGkQDLtT -e dev
+```
+
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
