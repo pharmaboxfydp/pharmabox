@@ -9,7 +9,8 @@ type Env = 'prod' | 'dev'
 
 const role: Role = process.argv[2] as Role
 const userId: string = process.argv[3] as string
-const environment: Env = process.argv[4] as Env
+const admin: string = process.argv[4]
+const environment: Env = process.argv[5] as Env
 
 const BASE_URL =
   environment === 'dev'
@@ -22,7 +23,8 @@ async function updateUser({ id, role }: { id: string; role: Role }) {
     body: JSON.stringify({
       data: {
         id,
-        role
+        role,
+        isAdmin: admin === 'admin' ? true : false
       }
     })
   })
@@ -32,7 +34,8 @@ async function updateUser({ id, role }: { id: string; role: Role }) {
 
 updateUser({ id: userId, role })
   .then((response) => {
-    console.info(response)
+    console.log('\x1b[36m%s\x1b[0m', 'CONVERTED USER ----')
+    console.table(response, ['role', 'id', 'email'])
   })
   .catch((error) => {
     console.error('Conversion Failed')
