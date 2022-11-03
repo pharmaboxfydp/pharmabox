@@ -14,9 +14,23 @@ export default async function handler(
       const { locationId: LI, userId: UI } = req.body.data
       const userId: string = UI
       const locationId: number = parseInt(LI)
+
+      const currentTeamMembers = await prisma.user.findMany({
+        where: {
+          Staff: {
+            locationId: locationId
+          }
+        },
+        include: {
+          Staff: true
+        }
+      })
+      // if the user is the first member on the team, make them an admin by default
+      const isAdmin: boolean = currentTeamMembers.length === 0
       const staff = await prisma.staff.update({
         where: { userId: userId },
         data: {
+          isAdmin,
           Location: {
             connect: {
               id: locationId

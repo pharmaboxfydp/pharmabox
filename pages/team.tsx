@@ -10,9 +10,9 @@ import { Logout } from '@carbon/icons-react'
 import SidebarButton from '../components/SidebarButton'
 import { useClerk } from '@clerk/nextjs'
 import useTeam from '../hooks/team'
+import TeamMembersTable from '../components/TeamMembersTable'
 const Team = ({ user }: ServerPageProps) => {
   const { signOut } = useClerk()
-  const { team, isLoading, isError } = useTeam(user)
   return (
     <>
       <Head>
@@ -35,22 +35,7 @@ const Team = ({ user }: ServerPageProps) => {
           <Box direction="row" border="top" fill>
             <Box pad="medium" basis="auto" fill="horizontal" gap="medium">
               <Text>Team Members</Text>
-              <Card pad="medium">
-                {!isLoading && !isError && (
-                  <DataTable
-                    columns={[
-                      {
-                        property: 'firstName',
-                        primary: true,
-                        header: <Text>First Name</Text>
-                      },
-                      { property: 'lastName', header: <Text>Last Name</Text> },
-                      { property: 'email', header: <Text>Email</Text> }
-                    ]}
-                    data={team ?? []}
-                  />
-                )}
-              </Card>
+              <TeamMembersTable user={user} />
               <div>
                 <ResponsiveContext.Consumer>
                   {(responsive) =>
