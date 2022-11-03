@@ -64,7 +64,12 @@ export default function TeamMembersTable({ user }: { user: User }) {
               render: ({ Staff }) => {
                 const isAdmin = Staff?.isAdmin
                 const role = isAdmin ? 'Admin' : 'Member'
-                if (user.Staff?.isAdmin) {
+                /**
+                 * allow edit roles if the current user is an administrator
+                 * and if there are more than one user on the team.
+                 */
+                const canEdit = user.Staff?.isAdmin && team && team?.length > 1
+                if (canEdit) {
                   return (
                     <Text size="small">
                       <Select options={['Admin', 'Member']} defaultValue={role}>
