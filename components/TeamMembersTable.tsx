@@ -1,12 +1,13 @@
-import { DataTable, Text, Box, Card, Select } from 'grommet'
+import { DataTable, Text, Box, Select } from 'grommet'
 import useTeam from '../hooks/team'
 import { User } from '../types/types'
 import Skeleton from 'react-loading-skeleton'
 import { ErrorFilled } from '@carbon/icons-react'
 import theme from '../styles/theme'
+import CardNotification from './CardNotification'
 
 export default function TeamMembersTable({ user }: { user: User }) {
-  let { team, isLoading, isError } = useTeam(user)
+  const { team, isLoading, isError } = useTeam(user)
 
   if (isLoading && !isError) {
     return (
@@ -19,23 +20,14 @@ export default function TeamMembersTable({ user }: { user: User }) {
 
   if (isError) {
     return (
-      <Box
-        pad="medium"
-        direction="row"
-        flex="grow"
-        gap="medium"
-        align="center"
-        justify="center"
-      >
-        <Card align="center" gap="medium" pad="large">
-          <ErrorFilled size={32} color={theme.global.colors['status-error']} />
-          <Text textAlign="center">
-            Oops! It looks like Pharmabox was not able to load your team. Try
-            refreshing your page. If the issue persists, contact your system
-            administrator.
-          </Text>
-        </Card>
-      </Box>
+      <CardNotification>
+        <ErrorFilled size={32} color={theme.global.colors['status-error']} />
+        <Text textAlign="center">
+          Oops! It looks like Pharmabox was not able to load your team. Try
+          refreshing your page. If the issue persists, contact your system
+          administrator.
+        </Text>
+      </CardNotification>
     )
   }
 
