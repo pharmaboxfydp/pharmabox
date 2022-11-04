@@ -5,7 +5,6 @@ import {
   Select,
   Button,
   Layer,
-  Heading,
   Spinner,
   Tip
 } from 'grommet'
