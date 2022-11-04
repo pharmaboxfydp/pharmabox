@@ -39,7 +39,7 @@ export default function useTeam(user: User): UseTeam {
     })
     if (response.status === 200) {
       mutate(`/api/team/${user.Staff?.locationId}`)
-      toast.success('User Invite Sent', { icon: '✨' })
+      toast.success(`Invite sent to ${email}`, { icon: '✨' })
     } else {
       toast.error('Unable to invite user', { icon: '❌' })
     }
