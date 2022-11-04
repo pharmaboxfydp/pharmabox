@@ -97,11 +97,60 @@ sh bash/seed_test_dbs
 
 ### Convert Users
 
-This script `bash/convert_user` can convert a user either locally, (dev) or on prod from a `patient` to a `staff` or vise-versa. It takes three flags `-r --role`,`-i --id`, and `-e --env` to specify the user you want to convert. The user will be converted to the specified role and their previous role record will be removed It can be used as:
+This script `bash/convert_user` can convert a user either locally, (dev) or on prod from a `patient` to a `staff` or vise-versa. It takes four flags `-r --role`,`-i --id`, `-t --type` and `-e --env` to specify the user you want to convert. The user will be converted to the specified role and their previous role record will be removed It can be used as:
 
 ```bash
-# converts user: user_abc123 to a staff member locally (i.e postgres://postgres:password@localhost:5432/pharmabox)
-bash/convert_user -r staff -i user_abc123 -e dev
+# converts user: user_abc123 to a staff member locally as admin
+bash/convert_user -r staff -i user_abc123 -t admin -e dev
+
+```
+
+### Locations
+
+this script `bash/locations` can create a location either locally (dev) or on prod. It takes the following flags
+
+- `-o --operation`: operation to perform `"create"` or `"delete"`
+- `-i --id`: id of location to be removed `number`
+- `-c --country`: Location Country `string`
+- `-p --phone`: Phone Number `string`
+- `-a --address`: Address `string`
+- `-e --env`: Environment: `"dev"` or `"prod"`
+
+**Create a location**
+
+```bash
+# creates a Canadian location with phone number and address locally
+bash/location -o create -c Canada -p "123-456-7890" -a "172 Forward Street South" -e dev
+```
+
+**Delete a location**
+
+```bash
+# deletes location of id 6764
+bash/location -o delete -i 6764
+```
+
+### Teams
+
+this script `bash/teams` allows you to add a staff member to a team and also remove a staff member from a team. It takes the following flags:
+
+- `-o --operation`: operation to perform `"add"` or `"remove"`
+- `-s --userId`: the user Id of the staff member `string`
+- `-l --locationId`: the location id of the location `number`
+- `-e --env`: Environment `"dev"` or `"prod"`
+
+**Add a team member**
+
+```bash
+# add a team member of the following id to team (location) number 251
+bash/team -o add -s user_2GvN7SlipkYqc0YlsNWuGkQDLtT -l 251 -e dev
+```
+
+**Remove a team member from a team (Location)**
+
+```bash
+# remove a team member of the following id from its current location
+bash/team -o remove  -s user_2GvN7SlipkYqc0YlsNWuGkQDLtT -e dev
 ```
 
 ## Contributors

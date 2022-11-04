@@ -51,7 +51,7 @@ model Staff {
 model Prescription {
   id          Int       @id @unique @default(autoincrement())
   name        String
-  status      String
+  status      String    @default("Unfilled")
   pickupTime  DateTime?
   Patient     Patient?  @relation(fields: [patientId], references: [id])
   patientId   Int
@@ -60,6 +60,7 @@ model Prescription {
   LockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
   locationId  Int
   lockerBoxId Int
+  pickupCode  String
 
   @@map(name: "prescriptions")
 }

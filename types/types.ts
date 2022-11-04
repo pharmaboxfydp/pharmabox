@@ -15,6 +15,11 @@ export type PrescriptionAndLocation = Prescription & { Location: Location } & {
   LockerBox: LockerBox
 }
 
+export enum Status {
+  AwaitingPickup = 'AwaitingPickup',
+  PickupCompleted = 'PickupCompleted'
+}
+
 export enum StaffRootPages {
   Home = '/home',
   Workflows = '/workflows',

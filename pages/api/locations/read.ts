@@ -9,7 +9,12 @@ export default async function handler(
   // retrieve location by id or don't specify body to retrieve all
   if (req.method === 'POST') {
     try {
-      const { id } = req.body
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+      const { id: I } = req.body.data
+
+      const id: number = I as number
       let location = null
 
       if (id) {

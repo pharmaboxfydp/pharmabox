@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 
@@ -8,9 +7,14 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { address, phoneNumber } = req.body
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+      const { address: A, phoneNumber: P } = req.body.data
+      const address = JSON.stringify(A) as string
+      const phoneNumber = P as string
 
-      let location = await prisma.location.create({
+      const location = await prisma.location.create({
         data: {
           address: address,
           phoneNumber: phoneNumber

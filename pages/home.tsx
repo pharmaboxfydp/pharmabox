@@ -106,7 +106,7 @@ const Home = ({ user }: ServerPageProps) => {
             <Tab title="Ready for Pickup">
               <Box pad="medium">
                 {prescriptions.map(
-                  ({ id, name, Location, LockerBox, balance }) => (
+                  ({ id, name, Location, LockerBox, balance, pickupCode }) => (
                     <Card
                       key={id}
                       pad="medium"
@@ -124,7 +124,7 @@ const Home = ({ user }: ServerPageProps) => {
                             <Button
                               label="QR Code"
                               onClick={() => {
-                                setQrCode(name)
+                                setQrCode(pickupCode)
                                 setShowQrCode(true)
                               }}
                               style={{
