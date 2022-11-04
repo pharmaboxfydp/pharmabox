@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import theme from '../styles/theme'
-
+import useSWR from 'swr'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
@@ -29,24 +29,24 @@ const Home = ({ user }: ServerPageProps) => {
   const [qrCode, setQrCode] = useState('')
   const [showQrCode, setShowQrCode] = useState(false)
 
+  const fetcher = (url: URL) =>
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        patientId: user.Patient?.id
+      })
+    })
+      .then((response) => response.json())
+      .catch()
+      .finally(() => setLoading(false))
+  const { data, error } = useSWR('/api/prescriptions/read', fetcher)
+
   const onClose = () => setShowQrCode(false)
   useEffect(() => {
-    async function fetchPrescriptions() {
-      fetch('/api/prescriptions/read', {
-        method: 'POST',
-        body: JSON.stringify({
-          patientId: user.Patient?.id
-        })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setPrescriptions(data.prescription)
-        })
-        .catch()
-        .finally(() => setLoading(false))
+    if (data) {
+      setPrescriptions(data.prescription)
     }
-    fetchPrescriptions()
-  }, [user.Patient?.id])
+  }, [data, error])
   if (loading) {
     return <></>
   }
