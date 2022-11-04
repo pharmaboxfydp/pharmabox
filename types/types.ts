@@ -6,6 +6,11 @@ export enum Role {
   Patient = 'patient'
 }
 
+export enum Permissions {
+  Member = 'Member',
+  Admin = 'Admin'
+}
+
 export enum StaffRootPages {
   Home = '/home',
   Workflows = '/workflows',

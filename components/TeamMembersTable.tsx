@@ -1,6 +1,6 @@
 import { DataTable, Text, Box, Select } from 'grommet'
 import useTeam from '../hooks/team'
-import { User } from '../types/types'
+import { Permissions, User } from '../types/types'
 import Skeleton from 'react-loading-skeleton'
 import { ErrorFilled } from '@carbon/icons-react'
 import theme from '../styles/theme'
@@ -56,8 +56,10 @@ export default function TeamMembersTable({ user }: { user: User }) {
               property: 'lastLoggedIn',
               header: <Text size="small">Last Login</Text>,
               render: ({ lastLoggedIn }) => {
-                const date = new Date(lastLoggedIn)
-                return <Text size="small">{date.toDateString()}</Text>
+                const date = lastLoggedIn
+                  ? (() => new Date(lastLoggedIn))().toDateString()
+                  : '-'
+                return <Text size="small">{date}</Text>
               }
             },
             {
@@ -65,7 +67,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
               header: <Text size="small">Role</Text>,
               render: ({ Staff }) => {
                 const isAdmin = Staff?.isAdmin
-                const role = isAdmin ? 'Admin' : 'Member'
+                const role = isAdmin ? Permissions.Admin : Permissions.Member
                 /**
                  * allow edit roles if the current user is an administrator
                  * and if there are more than one user on the team.
@@ -75,7 +77,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
                   return (
                     <Text size="small">
                       <Select
-                        options={['Admin', 'Member']}
+                        options={[Permissions.Admin, Permissions.Member]}
                         defaultValue={role}
                         onChange={({ value }) => {
                           updateRole({ value, member: Staff as Staff })

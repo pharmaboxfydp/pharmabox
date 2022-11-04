@@ -1,6 +1,7 @@
 import { Staff } from '@prisma/client'
 import { toast } from 'react-toastify'
 import { useSWRConfig } from 'swr'
+import { Permissions } from '../types/types'
 
 export default function useRole() {
   const { mutate } = useSWRConfig()
@@ -17,7 +18,7 @@ export default function useRole() {
       body: JSON.stringify({
         data: {
           userId: member.userId,
-          isAdmin: value === 'Admin' ? true : false
+          isAdmin: value === Permissions.Admin ? true : false
         }
       })
     })
