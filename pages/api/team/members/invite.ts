@@ -65,7 +65,12 @@ export default async function handler(
           },
           body: JSON.stringify({
             email_address: email,
-            public_metadata: { is_admin: isAdmin, location_id: locationId }
+            public_metadata: {
+              is_admin: isAdmin,
+              location_id: locationId,
+              is_staff: true,
+              redirect_url: 'https://pharmabox.vercel.app'
+            }
           })
         })
         const invite = await response.json()
@@ -76,13 +81,11 @@ export default async function handler(
             existingUser: false
           })
         } else {
-          res
-            .status(400)
-            .json({
-              message: 'Unable to send email invite',
-              error: invite,
-              existingUser: false
-            })
+          res.status(400).json({
+            message: 'Unable to send email invite',
+            error: invite,
+            existingUser: false
+          })
         }
       }
     } catch (e) {

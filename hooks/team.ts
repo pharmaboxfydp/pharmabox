@@ -1,5 +1,6 @@
 import { User } from '../types/types'
 import useSWR, { useSWRConfig } from 'swr'
+import { toast } from 'react-toastify'
 
 export interface AddTeamMember {
   email: string
@@ -11,7 +12,13 @@ export interface UseTeam {
   team: User[] | null
   isLoading: boolean
   isError: Error
-  addTeamMember: ({ email, locationId, isAdmin }: AddTeamMember) => void
+  addTeamMember: ({ email, locationId, isAdmin }: AddTeamMember) => Promise<{
+    message: string
+    existingUser: boolean
+    emailInvite?: Record<string, any>
+    staffUser?: User
+    error?: Error
+  }>
 }
 
 const fetcher = (
@@ -31,9 +38,13 @@ export default function useTeam(user: User): UseTeam {
       })
     })
     if (response.status === 200) {
-      const res = await response.json()
       mutate(`/api/team/${user.Staff?.locationId}`)
+      toast.success('User Invite Sent', { icon: '✨' })
+    } else {
+      toast.error('Unable to invite user', { icon: '❌' })
     }
+    const res = await response.json()
+    return res
   }
 
   return {
