@@ -9,9 +9,15 @@ export default async function handler(
   // retrieve prescriptions by id, patientId, or don't specify body to retrieve all
   if (req.method === 'POST') {
     try {
-      const { id, patientId } = req.body
-      let prescription = null
+      let data = null
+      if (typeof req.body === 'string') {
+        data = JSON.parse(req.body)
+      } else {
+        data = req.body
+      }
+      const { id, patientId } = data
 
+      let prescription = null
       if (id) {
         prescription = await prisma.prescription.findUniqueOrThrow({
           where: {
