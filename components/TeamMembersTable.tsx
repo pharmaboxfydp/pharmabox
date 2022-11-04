@@ -5,9 +5,12 @@ import Skeleton from 'react-loading-skeleton'
 import { ErrorFilled } from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
+import { Staff } from '@prisma/client'
+import useRole from '../hooks/role'
 
 export default function TeamMembersTable({ user }: { user: User }) {
   const { team, isLoading, isError } = useTeam(user)
+  const { updateRole } = useRole()
 
   if (isLoading && !isError) {
     return (
@@ -72,7 +75,13 @@ export default function TeamMembersTable({ user }: { user: User }) {
                 if (canEdit) {
                   return (
                     <Text size="small">
-                      <Select options={['Admin', 'Member']} defaultValue={role}>
+                      <Select
+                        options={['Admin', 'Member']}
+                        defaultValue={role}
+                        onChange={({ value }) => {
+                          updateRole({ value, member: Staff as Staff })
+                        }}
+                      >
                         {(option) => (
                           <Box pad="xsmall">
                             <Text size="small">{option}</Text>
