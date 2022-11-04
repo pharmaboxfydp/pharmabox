@@ -72,7 +72,7 @@ export default function InviteStaff({ user }: { user: User }) {
                   </Heading>
 
                   <Button
-                    icon={<Close />}
+                    icon={<Close size={16} />}
                     onClick={() => setShowAddUserModal(false)}
                   />
                 </Box>
