@@ -6,6 +6,11 @@ export enum Role {
   Patient = 'patient'
 }
 
+export enum Status {
+  AwaitingPickup = 'AwaitingPickup',
+  PickupCompleted = 'PickupCompleted'
+}
+
 export enum StaffRootPages {
   Home = '/home',
   Workflows = '/workflows',
