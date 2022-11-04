@@ -34,7 +34,7 @@ export type User = {
   role?: Role
   createdAt: string
   updatedAt: string
-  lastLoggedIn: string
+  lastLoggedIn?: string
   Patient?: Patient
   Staff?: Staff
 }

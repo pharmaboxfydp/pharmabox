@@ -17,7 +17,8 @@ export default async function handler(
         phone_numbers,
         primary_phone_number_id,
         created_at,
-        updated_at
+        updated_at,
+        public_metadata
       } = req.body.data
       let email_address: string = ''
       email_address =
