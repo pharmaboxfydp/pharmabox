@@ -7,8 +7,8 @@ export enum Role {
 }
 
 export enum Status {
-  Filled = 'Filled',
-  Unfilled = 'Unfilled'
+  AwaitingPickup = 'AwaitingPickup',
+  PickupCompleted = 'PickupCompleted'
 }
 
 export enum StaffRootPages {
