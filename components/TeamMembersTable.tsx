@@ -1,15 +1,51 @@
-import { DataTable, Text, Box, Select } from 'grommet'
+import {
+  DataTable,
+  Text,
+  Box,
+  Select,
+  Button,
+  Layer,
+  Heading,
+  Spinner,
+  Tip
+} from 'grommet'
 import useTeam from '../hooks/team'
 import { Permissions, User } from '../types/types'
 import Skeleton from 'react-loading-skeleton'
-import { ErrorFilled } from '@carbon/icons-react'
+import { Close, ErrorFilled } from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
 import { Staff } from '@prisma/client'
 import useRole from '../hooks/role'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function TeamMembersTable({ user }: { user: User }) {
-  let { team, isLoading, isError } = useTeam(user)
+  const [showRemoveUser, setShowRemoveUser] = useState<boolean>(false)
+  const [removeUserTarget, setRemoveUserTarget] = useState<null | User>(null)
+  const [isFetching, setIsFetching] = useState<boolean>(false)
+  const { team, isLoading, isError, removeTeamMember } = useTeam(user)
+
+  function stopUserRemove() {
+    setShowRemoveUser(false)
+    setRemoveUserTarget(null)
+  }
+  async function handleUserRemove() {
+    setIsFetching(true)
+    if (removeUserTarget?.Staff?.id) {
+      await removeTeamMember({
+        userId: removeUserTarget.Staff.userId
+      })
+      stopUserRemove()
+      return true
+    } else {
+      toast.error('Unable to remove user', { icon: '❌' })
+      setIsFetching(false)
+      stopUserRemove()
+      return false
+    }
+  }
+
   const { updateRole } = useRole()
   if (isLoading && !isError) {
     return (
@@ -94,6 +130,29 @@ export default function TeamMembersTable({ user }: { user: User }) {
                 }
                 return <Text size="small">{role}</Text>
               }
+            },
+            {
+              property: 'action',
+              render: (user) => {
+                return (
+                  <>
+                    <Tip
+                      content={
+                        <Text size="xsmall">Remove {user.email} from team</Text>
+                      }
+                    >
+                      <Button
+                        icon={<Close size={16} />}
+                        a11yTitle="Remove user from team"
+                        onClick={() => {
+                          setShowRemoveUser(true)
+                          setRemoveUserTarget(user)
+                        }}
+                      />
+                    </Tip>
+                  </>
+                )
+              }
             }
           ]}
           step={10}
@@ -102,6 +161,52 @@ export default function TeamMembersTable({ user }: { user: User }) {
           data={team ?? []}
         />
       </Box>
+      {showRemoveUser && (
+        <Layer onEsc={stopUserRemove} onClickOutside={stopUserRemove}>
+          <Box pad="medium">
+            {!isFetching ? (
+              <>
+                <Box flex={false} direction="row" justify="between">
+                  <Box pad="small">
+                    <Text size="medium" weight="bold">
+                      Remove Teammate
+                    </Text>
+                  </Box>
+                  <Button icon={<Close size={16} />} onClick={stopUserRemove} />
+                </Box>
+                <Box pad="small" gap="medium">
+                  <Text size="small">
+                    Remove {removeUserTarget?.email} from your team?
+                  </Text>
+                  <Box flex={false} direction="row" justify="between">
+                    <Button
+                      label="Cancel"
+                      size="small"
+                      onClick={stopUserRemove}
+                    />
+                    <Button
+                      label="Remove Team Member"
+                      primary
+                      size="small"
+                      color={theme.global.colors['status-critical']}
+                      onClick={handleUserRemove}
+                    />
+                  </Box>
+                </Box>
+              </>
+            ) : (
+              <Box pad="large" align="center" gap="medium" animation="fadeIn">
+                <Text>Removing Teammate...</Text>
+                <Spinner
+                  size="xlarge"
+                  border={false}
+                  background="linear-gradient(to right, #fc466b, #683ffb)"
+                />
+              </Box>
+            )}
+          </Box>
+        </Layer>
+      )}
     </>
   )
 }

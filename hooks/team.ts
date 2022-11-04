@@ -19,6 +19,11 @@ export interface UseTeam {
     staffUser?: User
     error?: Error
   }>
+  removeTeamMember: ({
+    userId
+  }: {
+    userId: string
+  }) => Promise<Record<string, any>>
 }
 
 const fetcher = (
@@ -55,10 +60,30 @@ export default function useTeam(user: User): UseTeam {
     return res
   }
 
+  async function removeTeamMember({ userId }: { userId: string }) {
+    const response = await fetch('/api/team/members/remove', {
+      method: 'POST',
+      body: JSON.stringify({
+        data: {
+          userId
+        }
+      })
+    })
+    if (response.status === 200) {
+      mutate(`/api/team/${user.Staff?.locationId}`)
+      toast.success('Member removed from team', { icon: '👍' })
+    } else {
+      toast.error('Unable to remove user', { icon: '❌' })
+    }
+    const res = await response.json()
+    return res
+  }
+
   return {
     team: data?.teamMembers ?? null,
     isLoading: !error && !data,
     isError: error,
-    addTeamMember
+    addTeamMember,
+    removeTeamMember
   }
 }
