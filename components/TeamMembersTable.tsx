@@ -37,6 +37,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
         userId: removeUserTarget.Staff.userId
       })
       stopUserRemove()
+      setIsFetching(false)
       return true
     } else {
       toast.error('Unable to remove user', { icon: '❌' })
