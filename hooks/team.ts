@@ -28,7 +28,15 @@ const fetcher = (
 
 export default function useTeam(user: User): UseTeam {
   const { mutate } = useSWRConfig()
-  const { data, error } = useSWR(`/api/team/${user.Staff?.locationId}`, fetcher)
+  const { data, error } = useSWR(
+    `/api/team/${user.Staff?.locationId}`,
+    fetcher,
+    {
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: false
+    }
+  )
 
   async function addTeamMember({ email, locationId, isAdmin }: AddTeamMember) {
     const response = await fetch('/api/team/members/invite', {
