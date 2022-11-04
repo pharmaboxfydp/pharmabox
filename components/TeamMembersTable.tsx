@@ -9,9 +9,8 @@ import { Staff } from '@prisma/client'
 import useRole from '../hooks/role'
 
 export default function TeamMembersTable({ user }: { user: User }) {
-  const { team, isLoading, isError } = useTeam(user)
+  let { team, isLoading, isError } = useTeam(user)
   const { updateRole } = useRole()
-
   if (isLoading && !isError) {
     return (
       <Box gap="medium">

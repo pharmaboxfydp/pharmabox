@@ -4,19 +4,19 @@ import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
 import { ServerPageProps } from '../types/types'
-import { Box, Card, DataTable, ResponsiveContext, Text } from 'grommet'
+import { Box, ResponsiveContext, Text } from 'grommet'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { Logout } from '@carbon/icons-react'
 import SidebarButton from '../components/SidebarButton'
 import { useClerk } from '@clerk/nextjs'
-import useTeam from '../hooks/team'
 import TeamMembersTable from '../components/TeamMembersTable'
+
 const Team = ({ user }: ServerPageProps) => {
   const { signOut } = useClerk()
   return (
     <>
       <Head>
-        <title>PharmaBox</title>
+        <title>PharmaBox | Team</title>
         <meta
           name="description"
           content="Pharmabox Notifications. Login to continue"

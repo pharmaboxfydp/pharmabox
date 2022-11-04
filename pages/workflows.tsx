@@ -18,7 +18,7 @@ const Workflows = ({ user }: ServerPageProps) => {
       </Head>
       <Page user={user}>
         <Box pad="medium">
-          <Text>Workflows</Text>
+          <Text>Coming Soon!</Text>
         </Box>
       </Page>
     </>

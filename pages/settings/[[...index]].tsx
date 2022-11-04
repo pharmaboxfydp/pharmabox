@@ -9,16 +9,16 @@ import Link from 'next/link'
 import { Information, UserProfile } from '@carbon/icons-react'
 import PatientSettings from '../../components/PatientSettings'
 import StaffSettings from '../../components/StaffSettings'
-import theme from '../../styles/theme'
 import { Logout } from '@carbon/icons-react'
 import SidebarButton from '../../components/SidebarButton'
 import { useClerk } from '@clerk/clerk-react'
+
 const Settings = ({ user }: ServerPageProps) => {
   const { signOut } = useClerk()
   return (
     <>
       <Head>
-        <title>PharmaBox</title>
+        <title>PharmaBox | Settings</title>
         <meta
           name="description"
           content="Pharmabox Notifications. Login to continue"
