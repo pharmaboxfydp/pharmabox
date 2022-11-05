@@ -17,7 +17,8 @@ export default async function handler(
         phone_numbers,
         primary_phone_number_id,
         created_at,
-        updated_at
+        updated_at,
+        public_metadata
       } = req.body.data
       let email_address: string = ''
       email_address =
@@ -32,7 +33,13 @@ export default async function handler(
 
       let createdAt: Date = new Date(created_at)
       let updatedAt: Date = new Date(updated_at)
-
+      const {
+        is_admin: isAdmin,
+        location_id: locationId,
+        is_staff: isStaff
+      } = public_metadata
+      if (isStaff) {
+      }
       const payload: User = {
         id: id,
         firstName: first_name,
@@ -43,25 +50,37 @@ export default async function handler(
         createdAt: createdAt.toISOString(),
         updatedAt: updatedAt.toISOString(),
         // always make default users be patients on production
-        role: Role.Patient
+        role: isStaff ? Role.Staff : Role.Patient
       }
       const user = await prisma.user.create({
         data: {
           ...payload,
-          /**
-           * always make users patients by default
-           */
-          Patient: {
-            connectOrCreate: {
-              where: {
-                userId: id
-              },
-              create: {
-                pickupEnabled: true,
-                dob: null
+          ...(!isStaff && {
+            Patient: {
+              connectOrCreate: {
+                where: {
+                  userId: id
+                },
+                create: {
+                  pickupEnabled: true,
+                  dob: null
+                }
               }
             }
-          }
+          }),
+          ...(isStaff && {
+            Staff: {
+              connectOrCreate: {
+                where: {
+                  userid: id
+                },
+                create: {
+                  isAdmin,
+                  locationId
+                }
+              }
+            }
+          })
         }
       })
       res.status(200).json({ message: 'Success', user: user })

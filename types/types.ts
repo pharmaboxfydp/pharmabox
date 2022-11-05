@@ -21,6 +21,10 @@ export type PharmacyLocation = Location & {
   LockerBoxes: Array<LockerBox>
 }
 
+export enum Permissions {
+  Member = 'Member',
+  Admin = 'Admin'
+}
 export enum Status {
   AwaitingPickup = 'AwaitingPickup',
   PickupCompleted = 'PickupCompleted'
@@ -54,6 +58,7 @@ export type User = {
   role?: Role
   createdAt: string
   updatedAt: string
+  lastLoggedIn?: string
   Patient?: Patient
   Staff?: Staff
 }
