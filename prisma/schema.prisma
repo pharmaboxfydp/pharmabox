@@ -66,12 +66,16 @@ model Prescription {
 }
 
 model Location {
-  id            Int            @id @unique @default(autoincrement())
-  address       String
-  phoneNumber   String
-  Prescriptions Prescription[]
-  LockerBoxes   LockerBox[]
-  Staff         Staff[]
+  id                Int            @id @unique @default(autoincrement())
+  streetAddress     String         @default("")
+  cardinalDirection String?
+  city              String         @default("")
+  province          String         @default("")
+  country           String         @default("")
+  phoneNumber       String         @default("")
+  Prescriptions     Prescription[]
+  LockerBoxes       LockerBox[]
+  Staff             Staff[]
 
   @@map(name: "locations")
 }
