@@ -1,6 +1,8 @@
 -- AlterTable
-ALTER TABLE "locations" ALTER COLUMN "phoneNumber" SET DEFAULT '',
-ALTER COLUMN "city" SET DEFAULT '',
-ALTER COLUMN "country" SET DEFAULT '',
-ALTER COLUMN "province" SET DEFAULT '',
-ALTER COLUMN "streetAddress" SET DEFAULT '';
+ALTER TABLE "locations" DROP COLUMN "address",
+ALTER COLUMN "phoneNumber" SET DEFAULT '',
+ADD COLUMN     "cardinalDirection" TEXT,
+ADD COLUMN     "city" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "country" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "province" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "streetAddress" TEXT NOT NULL DEFAULT '';
