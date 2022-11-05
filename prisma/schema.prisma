@@ -67,12 +67,12 @@ model Prescription {
 
 model Location {
   id                Int            @id @unique @default(autoincrement())
-  streetAddress     String
+  streetAddress     String         @default("")
   cardinalDirection String?
-  city              String
-  province          String
-  country           String
-  phoneNumber       String
+  city              String         @default("")
+  province          String         @default("")
+  country           String         @default("")
+  phoneNumber       String         @default("")
   Prescriptions     Prescription[]
   LockerBoxes       LockerBox[]
   Staff             Staff[]
