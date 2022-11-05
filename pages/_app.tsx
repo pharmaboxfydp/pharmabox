@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import UserSignIn from '../components/UserSignIn'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 import styled from 'styled-components'
 import Router from 'next/router'
 

@@ -83,6 +83,7 @@ async function seedUsers(
         : undefined,
       createdAt: createdAt.toISOString(),
       updatedAt: updatedAt.toISOString(),
+      lastLoggedIn: updatedAt.toISOString(),
       // make half the users patients, and the other half staff locally
       role: userNumber < midpoint ? Role.Patient : Role.Staff
     }
@@ -97,7 +98,10 @@ async function seedUsers(
 
   const count = staffUsers.length + patientUsers.length
 
-  staffUsers.forEach(async (staffUser: User, index: number) => {
+  staffUsers.forEach(async (staffUser: User, index) => {
+    const numUses = staffUsers.length
+    const userNumber = index + 1
+    const midpoint = Math.max(numUses / 2)
     await prisma.user.create({
       data: {
         ...staffUser,
@@ -107,7 +111,9 @@ async function seedUsers(
             where: {
               userId: staffUser.id
             },
-            create: {}
+            create: {
+              isAdmin: userNumber < midpoint ?? false
+            }
           }
         }
       }
