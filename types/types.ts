@@ -15,6 +15,12 @@ export type PrescriptionAndLocation = Prescription & { Location: Location } & {
   LockerBox: LockerBox
 }
 
+export type PharmacyLocation = Location & {
+  Prescriptions: Array<Prescription>
+} & {
+  LockerBoxes: Array<LockerBox>
+}
+
 export enum Status {
   AwaitingPickup = 'AwaitingPickup',
   PickupCompleted = 'PickupCompleted'

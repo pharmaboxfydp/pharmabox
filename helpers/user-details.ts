@@ -47,7 +47,8 @@ export async function getUserDetails<R>({
       },
       ...(withQuery && query),
       include: {
-        Patient: true
+        Patient: true,
+        Staff: true
       }
     })
     .then((user) => {
