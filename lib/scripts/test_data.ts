@@ -1,26 +1,29 @@
 import { faker } from '@faker-js/faker'
-const data: { locations: { address: string; phoneNumber: string }[] } = {
+import { Location } from '@prisma/client'
+const data: {
+  locations: {
+    streetAddress: string
+    cardinalDirection: string
+    city: string
+    country: string
+    province: string
+    phoneNumber: string
+  }[]
+} = {
   locations: []
 }
-
 function seedLocations(count: number) {
   for (let i = 0; i < count; i++) {
-    const address = {
-      buildingNumber: faker.address.buildingNumber(),
+    const newLocation = {
+      streetAddress: faker.address.streetAddress(),
       cardinalDirection: faker.address.cardinalDirection(),
       city: faker.address.city(),
       country: faker.address.country(),
-      coordinate: faker.address.nearbyGPSCoordinate(),
-      region: faker.address.stateAbbr(),
-      street: faker.address.street(),
-      address: faker.address.streetAddress(true)
+      province: faker.address.stateAbbr(),
+      phoneNumber: faker.phone.number()
     }
-    const phoneNumber = faker.phone.number()
 
-    data.locations.push({
-      address: JSON.stringify(address),
-      phoneNumber: phoneNumber
-    })
+    data.locations.push(newLocation)
   }
 }
 
