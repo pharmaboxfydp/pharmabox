@@ -8,14 +8,29 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { id, address, phoneNumber } = req.body
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+      const {
+        id,
+        streetAddress,
+        cardinalDirection,
+        city,
+        province,
+        country,
+        phoneNumber
+      } = req.body.data
 
       const location = await prisma.location.update({
         where: {
           id: id
         },
         data: {
-          address: address,
+          streetAddress: streetAddress,
+          cardinalDirection: cardinalDirection,
+          city: city,
+          province: province,
+          country: country,
           phoneNumber: phoneNumber
         }
       })
