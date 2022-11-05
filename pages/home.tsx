@@ -52,7 +52,6 @@ const Home = ({ user }: ServerPageProps) => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
           setPharmacyLocation(data.location)
         })
         .catch()
