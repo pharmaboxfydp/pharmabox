@@ -1,3 +1,4 @@
+import { Location } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 
@@ -10,13 +11,22 @@ export default async function handler(
       if (typeof req.body === 'string') {
         req.body = JSON.parse(req.body)
       }
-      const { address: A, phoneNumber: P } = req.body.data
-      const address = JSON.stringify(A) as string
-      const phoneNumber = P as string
+      const {
+        streetAddress,
+        cardinalDirection,
+        city,
+        province,
+        country,
+        phoneNumber
+      } = req.body.data
 
       const location = await prisma.location.create({
         data: {
-          address: address,
+          streetAddress: streetAddress,
+          cardinalDirection: cardinalDirection,
+          city: city,
+          province: province,
+          country: country,
           phoneNumber: phoneNumber
         }
       })
