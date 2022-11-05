@@ -10,6 +10,10 @@ export enum Permissions {
   Member = 'Member',
   Admin = 'Admin'
 }
+export enum Status {
+  AwaitingPickup = 'AwaitingPickup',
+  PickupCompleted = 'PickupCompleted'
+}
 
 export enum StaffRootPages {
   Home = '/home',
