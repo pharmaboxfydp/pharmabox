@@ -46,10 +46,6 @@ export async function getUserDetails<R>({
         id: userId
       },
       ...(withQuery && query)
-      // include: {
-      //   Patient: true,
-      //   Staff: true
-      // }
     })
     .then((user) => {
       return { props: { user: serialize<R, User>(user) } }

@@ -23,6 +23,7 @@ import QRCodeModal from '../components/QrCode'
 import PatientPrescriptions from '../components/PatientPrescriptions'
 import PharmacyLocationView from '../components/PharmacyLocation'
 import { Prescription } from '.prisma/client'
+import Skeleton from 'react-loading-skeleton'
 
 const Home = ({ user }: ServerPageProps) => {
   const [prescriptions, setPrescriptions] = useState<
@@ -84,8 +85,13 @@ const Home = ({ user }: ServerPageProps) => {
 
   const onClose = () => setShowQrCode(false)
 
-  if (loading) {
-    return <></>
+  if (loading && !error) {
+    return (
+      <Box gap="medium">
+        <Skeleton count={1} height={30} />
+        <Skeleton count={5} height={30} style={{ lineHeight: '3' }} />
+      </Box>
+    )
   }
   return (
     <>
