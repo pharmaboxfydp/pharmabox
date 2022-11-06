@@ -15,8 +15,13 @@ export default async function handler(
       ) {
         throw new Error('Expected page and take of type string')
       }
+
       const patients = await prisma.patient.findMany({
-        ...(page && take && { skip: parseInt(page), take: parseInt(take) }),
+        ...(page &&
+          take && {
+            skip: (parseInt(page) - 1) * parseInt(take),
+            take: parseInt(take)
+          }),
         include: {
           User: true,
           Prescriptions: true
