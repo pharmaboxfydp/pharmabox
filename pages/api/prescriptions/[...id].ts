@@ -23,13 +23,11 @@ export default async function handler(
 
       res.status(200).json({ message: 'Success', prescription: prescription })
     } catch (e) {
-      res
-        .status(400)
-        .json({
-          message: 'Bad Request',
-          prescription: null,
-          error: e?.toString()
-        })
+      res.status(400).json({
+        message: 'Bad Request',
+        prescription: null,
+        error: e?.toString()
+      })
     }
   } else {
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })
