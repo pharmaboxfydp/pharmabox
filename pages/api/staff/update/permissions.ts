@@ -22,7 +22,7 @@ export default async function handler(
         }
       })
     } catch (e) {
-      res.status(400).json({ message: 'Bad Request', error: e })
+      res.status(400).json({ message: 'Bad Request', error: e?.toString() })
     }
     res.status(200).json({ message: 'Success', staff })
   } else {

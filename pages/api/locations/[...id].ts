@@ -6,20 +6,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // retrieve location by id or don't specify body to retrieve all
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
     try {
-      if (typeof req.body === 'string') {
-        req.body = JSON.parse(req.body)
+      const { id } = req.query
+      let locationId = null
+      if (id?.length === 1) {
+        locationId = parseInt(id[0])
+      } else if (id?.length && id?.length > 1) {
+        throw new Error('Invalid Request. Expected 1 Id')
       }
-      const { id: I } = req.body
-      const id: number = I as number
+
       let location = null
 
-      if (id) {
+      if (locationId) {
         location = await prisma.location.findUniqueOrThrow({
           where: {
-            id: id
+            id: locationId
           },
           include: {
             Prescriptions: true,
@@ -31,7 +33,7 @@ export default async function handler(
       }
       res.status(200).json({ message: 'Success', location })
     } catch (e) {
-      res.status(400).json({ message: 'Bad Request', error: e })
+      res.status(400).json({ message: 'Bad Request', error: e?.toString() })
     }
   } else {
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })

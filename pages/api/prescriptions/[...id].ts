@@ -1,3 +1,4 @@
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 
@@ -11,21 +12,24 @@ export default async function handler(
       if (id?.length !== 1) {
         throw new Error('Invalid Request. Expected 1 Id')
       }
-      const locationId: number = parseInt(id[0])
 
-      const teamMembers = await prisma.user.findMany({
+      const prescriptionId: number = parseInt(id[0])
+
+      const prescription = await prisma.prescription.findUniqueOrThrow({
         where: {
-          Staff: {
-            locationId: locationId
-          }
-        },
-        include: {
-          Staff: true
+          id: prescriptionId
         }
       })
-      res.status(200).json({ message: 'Succcess', teamMembers })
+
+      res.status(200).json({ message: 'Success', prescription: prescription })
     } catch (e) {
-      res.status(400).json({ message: 'Bad Request', error: e?.toString() })
+      res
+        .status(400)
+        .json({
+          message: 'Bad Request',
+          prescription: null,
+          error: e?.toString()
+        })
     }
   } else {
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })

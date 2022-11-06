@@ -110,7 +110,7 @@ export default async function handler(
         res.status(400).json({ message: 'Role Assignment Not Allowed' })
       }
     } catch (e) {
-      res.status(400).json({ message: 'Bad Request', error: e })
+      res.status(400).json({ message: 'Bad Request', error: e?.toString() })
     }
   } else {
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })
