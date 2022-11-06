@@ -1,9 +1,24 @@
 import { UserJSON } from '@clerk/backend-core'
-import { Patient, Staff } from '@prisma/client'
+import {
+  Patient,
+  Staff,
+  Prescription,
+  Location,
+  LockerBox
+} from '@prisma/client'
 
 export enum Role {
   Staff = 'staff',
   Patient = 'patient'
+}
+export type PrescriptionAndLocation = Prescription & { Location: Location } & {
+  LockerBox: LockerBox
+}
+
+export type PharmacyLocation = Location & {
+  Prescriptions: Prescription[]
+} & {
+  LockerBoxes: LockerBox[]
 }
 
 export enum Permissions {

@@ -12,8 +12,7 @@ export default async function handler(
       if (typeof req.body === 'string') {
         req.body = JSON.parse(req.body)
       }
-      const { id: I } = req.body.data
-
+      const { id: I } = req.body
       const id: number = I as number
       let location = null
 
@@ -21,6 +20,10 @@ export default async function handler(
         location = await prisma.location.findUniqueOrThrow({
           where: {
             id: id
+          },
+          include: {
+            Prescriptions: true,
+            LockerBoxes: true
           }
         })
       } else {

@@ -9,9 +9,17 @@ export default async function handler(
   // retrieve prescriptions by id, patientId, or don't specify body to retrieve all
   if (req.method === 'POST') {
     try {
-      const { id, patientId } = req.body
-      let prescription = null
+      let data = null
+      if (typeof req.body === 'string') {
+        data = JSON.parse(req.body)
+      } else {
+        data = req.body
+      }
+      const { id: I, patientId: P } = data
+      const id: number = I as number
+      const patientId: number = P as number
 
+      let prescription = null
       if (id) {
         prescription = await prisma.prescription.findUniqueOrThrow({
           where: {
@@ -22,12 +30,18 @@ export default async function handler(
         prescription = await prisma.prescription.findMany({
           where: {
             patientId: patientId
+          },
+          include: {
+            Location: true,
+            LockerBox: true
           }
         })
       }
-      res.status(200).json({ message: 'Success', prescription })
+      res.status(200).json({ message: 'Success', prescription: prescription })
     } catch (e) {
-      res.status(400).json({ message: 'Bad Request', error: e })
+      res
+        .status(400)
+        .json({ message: 'Bad Request', prescription: null, error: e })
     }
   } else {
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })
