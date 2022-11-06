@@ -6,16 +6,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
     try {
-      const { locationId, lockerCount } = req.body
-
-      const lockerBoxes = Array.from({ length: lockerCount }, (_, i) => {
-        return { locationId: locationId, label: i + 1, status: 'empty' }
+      const { id } = req.query
+      if (id?.length !== 1) {
+        throw new Error('Invalid Request. Expected 1 Id')
+      }
+      const locationId = parseInt(id[0])
+      const location = await prisma.location.findUniqueOrThrow({
+        where: {
+          id: locationId
+        },
+        include: {
+          Prescriptions: true,
+          LockerBoxes: true
+        }
       })
-      const lockers = await prisma.lockerBox.createMany({ data: lockerBoxes })
 
-      res.status(200).json({ message: ' Success', lockers })
+      res.status(200).json({ message: 'Success', location })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e?.toString() })
     }

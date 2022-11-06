@@ -6,12 +6,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // retrieve location by id or don't specify body to retrieve all
+  // Called automatically for /api/locations/
   if (req.method === 'GET') {
     try {
-      res.status(200).json({ message: 'Success' })
+      const location = await prisma.location.findMany()
+
+      res.status(200).json({ message: 'Success', location })
     } catch (e) {
-      res.status(400).json({ message: 'Bad Request', error: e })
+      res.status(400).json({ message: 'Bad Request', error: e?.toString() })
     }
   } else {
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })
