@@ -15,7 +15,9 @@ export default async function handler(
       } else {
         data = req.body
       }
-      const { id, patientId } = data
+      const { id: I, patientId: P } = data
+      const id: number = I as number
+      const patientId: number = P as number
 
       let prescription = null
       if (id) {

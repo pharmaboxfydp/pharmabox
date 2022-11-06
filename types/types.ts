@@ -16,9 +16,9 @@ export type PrescriptionAndLocation = Prescription & { Location: Location } & {
 }
 
 export type PharmacyLocation = Location & {
-  Prescriptions: Array<Prescription>
+  Prescriptions: Prescription[]
 } & {
-  LockerBoxes: Array<LockerBox>
+  LockerBoxes: LockerBox[]
 }
 
 export enum Permissions {

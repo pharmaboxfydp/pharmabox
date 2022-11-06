@@ -4,7 +4,7 @@ import useSWR from 'swr'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
-import { ServerPageProps } from '../types/types'
+import { ServerPageProps, Status } from '../types/types'
 import {
   Box,
   Text,
@@ -19,10 +19,16 @@ import {
 } from 'grommet'
 import { useEffect, useState } from 'react'
 import { PrescriptionAndLocation, PharmacyLocation } from '../types/types'
-import QRCode from 'react-qr-code'
+import QRCodeModal from '../components/QrCode'
+import PatientPrescriptions from '../components/PatientPrescriptions'
+import PharmacyLocationView from '../components/PharmacyLocation'
+import { Prescription } from '.prisma/client'
 
 const Home = ({ user }: ServerPageProps) => {
   const [prescriptions, setPrescriptions] = useState<
+    Array<PrescriptionAndLocation>
+  >([])
+  const [previousPrescriptions, setPreviousPrescriptions] = useState<
     Array<PrescriptionAndLocation>
   >([])
   const [pharmacyLocation, setPharmacyLocation] = useState<PharmacyLocation>()
@@ -40,7 +46,22 @@ const Home = ({ user }: ServerPageProps) => {
         })
       })
         .then((response) => response.json())
-        .then((data) => setPrescriptions(data.prescription))
+        .then((data) => {
+          let prevPrescriptions: PrescriptionAndLocation[] = []
+          let activePrescriptions: PrescriptionAndLocation[] = []
+
+          data.prescription?.forEach(
+            (prescription: PrescriptionAndLocation) => {
+              if (prescription.status === Status.AwaitingPickup) {
+                activePrescriptions.push(prescription)
+              } else if (prescription.status === Status.PickupCompleted) {
+                prevPrescriptions.push(prescription)
+              }
+            }
+          )
+          setPreviousPrescriptions(prevPrescriptions)
+          setPrescriptions(activePrescriptions)
+        })
         .catch()
         .finally(() => setLoading(false))
     } else if (userRole === 'staff') {
@@ -62,10 +83,7 @@ const Home = ({ user }: ServerPageProps) => {
   const { data, error } = useSWR(user.role, fetcher)
 
   const onClose = () => setShowQrCode(false)
-  // useEffect(() => {
-  //   if (data) {
-  //   }
-  // }, [data, error])
+
   if (loading) {
     return <></>
   }
@@ -80,120 +98,17 @@ const Home = ({ user }: ServerPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Page user={user}>
-        {showQrCode && (
-          <Layer
-            id="hello world"
-            position="center"
-            onClickOutside={onClose}
-            onEsc={onClose}
-            margin="large"
-          >
-            <Box pad={'xlarge'}>
-              <Card
-                key={'qrCode'}
-                pad="medium"
-                margin="medium"
-                justify="center"
-                align="center"
-                gap="medium"
-                background={theme.global.colors['light-1']}
-              >
-                <CardHeader>
-                  <h2>Scan To Unlock</h2>
-                </CardHeader>
-                <CardBody>
-                  <QRCode value={qrCode} />
-                </CardBody>
-                <CardFooter>
-                  <Button
-                    label="Close"
-                    margin={'large'}
-                    onClick={onClose}
-                    style={{
-                      background: theme.global.colors['status-critical'],
-                      borderRadius: '4px'
-                    }}
-                    size="large"
-                  />
-                </CardFooter>
-              </Card>
-            </Box>
-          </Layer>
-        )}
+        {showQrCode && <QRCodeModal qrCode={qrCode} onClose={onClose} />}
         <Box pad="medium">
           {user.role === 'patient' ? (
-            <Tabs justify="start">
-              <Tab title="Ready for Pickup">
-                <Box pad="medium">
-                  {prescriptions.map(
-                    ({
-                      id,
-                      name,
-                      Location,
-                      LockerBox,
-                      balance,
-                      pickupCode
-                    }) => (
-                      <Card
-                        key={id}
-                        pad="medium"
-                        margin="medium"
-                        gap="medium"
-                        background={theme.global.colors['light-1']}
-                      >
-                        <CardHeader>{name}</CardHeader>
-                        <CardBody>
-                          <Box>
-                            <div>{Location.streetAddress}</div>
-                            <div>{Location.phoneNumber}</div>
-                            <div>Lockerbox: {LockerBox.label}</div>
-                            <Box align="start" pad="none">
-                              <Button
-                                label="QR Code"
-                                onClick={() => {
-                                  setQrCode(pickupCode)
-                                  setShowQrCode(true)
-                                }}
-                                style={{
-                                  background: theme.global.colors['status-ok'],
-                                  borderRadius: '4px'
-                                }}
-                                size="medium"
-                              />
-                            </Box>
-                          </Box>
-                        </CardBody>
-                        <CardFooter>
-                          <p>Amount Due: ${balance}</p>
-                        </CardFooter>
-                      </Card>
-                    )
-                  )}
-                </Box>
-              </Tab>
-              <Tab title="Previous Pickups"></Tab>
-            </Tabs>
+            <PatientPrescriptions
+              prescriptions={prescriptions}
+              previousPrescriptions={previousPrescriptions}
+              setQrCode={setQrCode}
+              setShowQrCode={setShowQrCode}
+            />
           ) : (
-            <>
-              {pharmacyLocation && (
-                <Card
-                  pad="medium"
-                  margin="medium"
-                  gap="medium"
-                  background={theme.global.colors['light-1']}
-                >
-                  <CardHeader>{pharmacyLocation.id}</CardHeader>
-                  <CardBody>
-                    <Box>
-                      <div>{pharmacyLocation.streetAddress}</div>
-                      <div>{pharmacyLocation.phoneNumber}</div>
-                      {/* <div>Lockerbox: {LockerBox.label}</div> */}
-                    </Box>
-                  </CardBody>
-                  <CardFooter>{/* <p>Amount Due: ${balance}</p> */}</CardFooter>
-                </Card>
-              )}
-            </>
+            <PharmacyLocationView pharmacyLocation={pharmacyLocation} />
           )}
         </Box>
       </Page>
@@ -204,6 +119,7 @@ const Home = ({ user }: ServerPageProps) => {
 export default Home
 
 export const getServerSideProps = withServerSideAuth(
-  async ({ req, res }) => SSRUser({ req, res }),
+  async ({ req, res }) =>
+    SSRUser({ req, res, query: { include: { Staff: true, Patient: true } } }),
   { loadUser: true }
 )
