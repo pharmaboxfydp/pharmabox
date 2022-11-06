@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Box, Header, ResponsiveContext, Text } from 'grommet'
+import { Box, ResponsiveContext } from 'grommet'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
