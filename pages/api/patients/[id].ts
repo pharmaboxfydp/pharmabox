@@ -14,7 +14,8 @@ export default async function handler(
       const patient = await prisma.patient.findUniqueOrThrow({
         where: {
           id: parseInt(id)
-        }
+        },
+        include: { User: true, Prescriptions: true }
       })
 
       res.status(200).json({ message: 'Success', patient })

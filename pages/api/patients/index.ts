@@ -18,7 +18,8 @@ export default async function handler(
       const patients = await prisma.patient.findMany({
         ...(page && take && { skip: parseInt(page), take: parseInt(take) }),
         include: {
-          User: true
+          User: true,
+          Prescriptions: true
         }
       })
       res.status(200).json({ message: 'Success', patients })

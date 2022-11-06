@@ -8,6 +8,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { useClerk } from '@clerk/nextjs'
 import { Logout } from '@carbon/icons-react'
 import SidebarButton from '../components/SidebarButton'
+import PatientsTable from '../components/PatientsTable'
 
 const Patients = ({ user }: ServerPageProps) => {
   const { signOut } = useClerk()
@@ -32,6 +33,7 @@ const Patients = ({ user }: ServerPageProps) => {
           <Breadcrumbs pages={['Patients']} />
           <Box direction="row" border="top" fill>
             <Box pad="medium" basis="auto" fill="horizontal" gap="medium">
+              <PatientsTable />
               <div>
                 <ResponsiveContext.Consumer>
                   {(responsive) =>

@@ -9,10 +9,7 @@ export interface UsePatients {
   isError: Error
 }
 
-export interface UserPagination {
-  page: number
-  take: number
-}
+export type UserPagination = Record<string, string | string[] | undefined>
 
 const fetcher = (
   ...arg: [string, Record<string, any>]
@@ -23,7 +20,7 @@ export default function usePatients(pagination?: UserPagination): UsePatients {
   // const { mutate } = useSWRConfig()
 
   const url = `/api/patients/${
-    pagination
+    pagination && pagination?.take && pagination?.page
       ? `?${new URLSearchParams({
           take: pagination.take.toString(),
           page: pagination.page.toString()
