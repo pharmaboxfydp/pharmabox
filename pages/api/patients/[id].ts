@@ -7,11 +7,13 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { id } = req.body.data
-
+      const { id } = req.query
+      if (typeof id !== 'string') {
+        throw new Error('Expected one id of type string')
+      }
       const patient = await prisma.patient.findUniqueOrThrow({
         where: {
-          id: id
+          id: parseInt(id)
         }
       })
 

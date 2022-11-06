@@ -17,7 +17,7 @@ const Logbook = ({ user }: ServerPageProps) => {
   return (
     <>
       <Head>
-        <title>PharmaBox</title>
+        <title>PharmaBox | Logbook</title>
         <meta
           name="description"
           content="Pharmabox Notifications. Login to continue"
