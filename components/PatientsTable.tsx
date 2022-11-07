@@ -1,4 +1,4 @@
-import { DataTable, Text, Box, Pagination, TextInput } from 'grommet'
+import { DataTable, Text, Box, Pagination, TextInput, Anchor } from 'grommet'
 import { atom, useAtom } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
 import { ErrorFilled } from '@carbon/icons-react'
@@ -164,7 +164,13 @@ export default function PatientsTable() {
                     <Text size="small" weight="bolder">
                       Email:
                     </Text>{' '}
-                    {user.email}
+                    <Anchor
+                      weight="normal"
+                      target="_blank"
+                      href={`mailto:${user.email}`}
+                    >
+                      {user.email}
+                    </Anchor>
                   </Text>
                 </Box>
               )
