@@ -6,7 +6,7 @@ import theme from '../styles/theme'
 import CardNotification from './CardNotification'
 import usePatients from '../hooks/patients'
 import { useRouter } from 'next/router'
-import { isEmpty } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import { debounce } from 'ts-debounce'
 
 export type PatientsPageState = {
@@ -72,7 +72,23 @@ export default function PatientsTable() {
   /**
    * if there is no query present, then set it to the default
    */
-  if (isEmpty(router.query)) quietlySetQuery(pageState)
+  if (isEmpty(router.query)) {
+    quietlySetQuery(pageState)
+  } else {
+    /**
+     * if there is a valid query present then use that
+     */
+    if (!isEqual(router.query, pageState)) {
+      if (router.query.step && router.query.page) {
+        updatePageState(router.query as PatientsPageState)
+      } else {
+        /**
+         * otherwise use the default since the curernt one is not valid
+         */
+        quietlySetQuery(pageState)
+      }
+    }
+  }
 
   const {
     isLoading,
