@@ -32,6 +32,7 @@ const patientsPaginationState = atom<PatientsPageState>({
 
 const DEBOUNCE_MS: number = 500
 const FALLBACK_PATIENTS_PER_PAGE: number = 10
+const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
 export default function PatientsTable() {
   const [pageState, updatePageState] = useAtom(patientsPaginationState)
@@ -221,8 +222,11 @@ export default function PatientsTable() {
                 onChange={({ target: { value } }) =>
                   debounceStepSizeChange(value)
                 }
+                // we cannot have less than 1 patient in a table
                 min={1}
-                max={100}
+                // enforce max to prevent client-side DDoS
+                max={MAX_ALLOWABLE_PATIENT_DISPLAYED}
+                // enforce step size of 1
                 step={1}
               />
             </Box>
