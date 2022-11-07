@@ -30,7 +30,7 @@ const Logbook = ({ user }: ServerPageProps) => {
           direction="column"
           align="start"
           fill
-          className="Settings"
+          className="logbook"
         >
           <Breadcrumbs pages={['Logbook']} />
           <Box direction="row" border="top" fill>
