@@ -8,7 +8,6 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const { page, take } = req.query
-
       if (
         (page || take) &&
         (typeof page !== 'string' || typeof take !== 'string')
@@ -27,7 +26,8 @@ export default async function handler(
           Prescriptions: true
         }
       })
-      res.status(200).json({ message: 'Success', patients })
+      const numPatients: number = await prisma.patient.count()
+      res.status(200).json({ message: 'Success', patients, numPatients })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }

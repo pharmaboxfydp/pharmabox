@@ -1,31 +1,87 @@
-import {
-  DataTable,
-  Text,
-  Box,
-  Select,
-  Button,
-  Layer,
-  Spinner,
-  Tip,
-  Tag
-} from 'grommet'
-
+import { DataTable, Text, Box, Pagination, TextInput } from 'grommet'
+import { atom, useAtom } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
 import { ErrorFilled } from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
-import { toast } from 'react-toastify'
 import usePatients from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty } from 'lodash'
+import { debounce } from 'ts-debounce'
+
+export type PatientsPageState = {
+  step: string
+  page: string
+}
+
+export interface UpdateQueryParams {
+  page: number
+  startIndex: number
+  endIndex: number
+}
+
+/**
+ * imparatively define an atom
+ * so that we do not loose our pagination when navigating
+ * to a different page
+ */
+const patientsPaginationState = atom<PatientsPageState>({
+  step: '5',
+  page: '1'
+})
+
+const DEBOUNCE_MS: number = 500
+const FALLBACK_PATIENTS_PER_PAGE: number = 10
 
 export default function PatientsTable() {
-  const step = 5
+  const [pageState, updatePageState] = useAtom(patientsPaginationState)
   const router = useRouter()
-  const query = isEmpty(router.query)
-    ? { take: `${step}`, page: '1' }
-    : router.query
-  const { isLoading, isError, patients } = usePatients(query)
+
+  function updateQueryParams({
+    page,
+    startIndex,
+    endIndex
+  }: UpdateQueryParams) {
+    const newState = {
+      step: (endIndex - startIndex).toString(),
+      page: page.toString()
+    }
+    updatePageState(newState)
+    quietlySetQuery(newState)
+  }
+
+  const debounceStepSizeChange = debounce(
+    (step: string) =>
+      updateQueryParams({
+        endIndex: parseInt(step),
+        startIndex: 0,
+        page: parseInt(pageState.page)
+      }),
+    DEBOUNCE_MS
+  )
+
+  function quietlySetQuery(state: PatientsPageState) {
+    router.push(
+      `${router.pathname}/?${new URLSearchParams(state).toString()}`,
+      undefined,
+      { shallow: true }
+    )
+  }
+
+  /**
+   * if there is no query present, then set it to the default
+   */
+  if (isEmpty(router.query)) quietlySetQuery(pageState)
+
+  const {
+    isLoading,
+    isError,
+    patients,
+    numPatients: totalPatientsCount
+  } = usePatients(pageState)
+
+  const step: number = parseInt(pageState.step)
+  const page: number = parseInt(pageState.page)
 
   if (isLoading && !isError) {
     return (
@@ -140,11 +196,49 @@ export default function PatientsTable() {
               )
             }
           ]}
-          step={10}
-          paginate
           resizeable
           data={patients ?? []}
         />
+        <Box
+          align="center"
+          pad="medium"
+          direction="row"
+          gap="small"
+          justify="between"
+          border="top"
+        >
+          <Box direction="row" gap="xsmall">
+            <Box pad="small">
+              <Text size="xsmall">Show</Text>
+            </Box>
+            <Box width="xsmall">
+              <TextInput
+                type="number"
+                size="xsmall"
+                textAlign="center"
+                defaultValue={step}
+                style={{ height: '40px' }}
+                onChange={({ target: { value } }) =>
+                  debounceStepSizeChange(value)
+                }
+                min={1}
+                max={100}
+                step={1}
+              />
+            </Box>
+            <Box pad="small">
+              <Text size="xsmall">Patients / Page</Text>
+            </Box>
+          </Box>
+          <Pagination
+            step={step}
+            page={page}
+            numberItems={totalPatientsCount ?? FALLBACK_PATIENTS_PER_PAGE}
+            onChange={({ page, startIndex, endIndex }) =>
+              updateQueryParams({ page, startIndex, endIndex })
+            }
+          />
+        </Box>
       </Box>
     </>
   )

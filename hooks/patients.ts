@@ -10,6 +10,7 @@ export interface FullPatient extends Patient {
 
 export interface UsePatients {
   patients: FullPatient[] | null
+  numPatients: number | null
   isLoading: boolean
   isError: Error
 }
@@ -18,16 +19,14 @@ export type UserPagination = Record<string, string | string[] | undefined>
 
 const fetcher = (
   ...arg: [string, Record<string, any>]
-): Promise<{ message: string; patients: FullPatient[] }> =>
+): Promise<{ message: string; patients: FullPatient[]; numPatients: number }> =>
   fetch(...arg).then((res) => res.json())
 
 export default function usePatients(pagination?: UserPagination): UsePatients {
-  // const { mutate } = useSWRConfig()
-
   const url = `/api/patients/${
-    pagination && pagination?.take && pagination?.page
+    pagination && pagination?.step && pagination?.page
       ? `?${new URLSearchParams({
-          take: pagination.take.toString(),
+          take: pagination.step.toString(),
           page: pagination.page.toString()
         })}`
       : ''
@@ -41,6 +40,7 @@ export default function usePatients(pagination?: UserPagination): UsePatients {
 
   return {
     patients: data?.patients ?? null,
+    numPatients: data?.numPatients ?? null,
     isLoading: !error && !data,
     isError: error
   }
