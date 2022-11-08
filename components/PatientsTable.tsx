@@ -43,6 +43,7 @@ export default function PatientsTable() {
     startIndex,
     endIndex
   }: UpdateQueryParams) {
+    console.log(page)
     const newState = {
       step: (endIndex - startIndex).toString(),
       page: page.toString()
@@ -95,7 +96,7 @@ export default function PatientsTable() {
     isError,
     patients,
     numPatients: totalPatientsCount
-  } = usePatients(pageState)
+  } = usePatients(router.query)
 
   const step: number = parseInt(pageState.step)
   const page: number = parseInt(pageState.page)
