@@ -4,17 +4,12 @@ import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
 import { ServerPageProps } from '../types/types'
-import { Box, Header, ResponsiveContext, Text } from 'grommet'
+import { Box, Header, Text } from 'grommet'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { Logout } from '@carbon/icons-react'
-import SidebarButton from '../components/SidebarButton'
-import { useClerk } from '@clerk/nextjs'
 import TeamMembersTable from '../components/TeamMembersTable'
 import InviteStaff from '../components/InviteStaff'
 
 const Team = ({ user }: ServerPageProps) => {
-  const { signOut } = useClerk()
-
   const isCurrentUserAdmin = user.Staff?.isAdmin
   return (
     <>
@@ -41,21 +36,7 @@ const Team = ({ user }: ServerPageProps) => {
                 <Text>Team Members</Text>
                 <Box> {isCurrentUserAdmin && <InviteStaff user={user} />}</Box>
               </Header>
-
               <TeamMembersTable user={user} />
-              <div>
-                <ResponsiveContext.Consumer>
-                  {(responsive) =>
-                    responsive === 'small' && (
-                      <SidebarButton
-                        icon={<Logout size={24} />}
-                        label={'Logout'}
-                        onClick={signOut}
-                      />
-                    )
-                  }
-                </ResponsiveContext.Consumer>
-              </div>
             </Box>
           </Box>
         </Box>

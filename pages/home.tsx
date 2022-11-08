@@ -1,28 +1,15 @@
 import Head from 'next/head'
-import theme from '../styles/theme'
 import useSWR from 'swr'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
 import { ServerPageProps, Status } from '../types/types'
-import {
-  Box,
-  Text,
-  Tabs,
-  Tab,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Button,
-  Layer
-} from 'grommet'
-import { useEffect, useState } from 'react'
+import { Box } from 'grommet'
+import { useState } from 'react'
 import { PrescriptionAndLocation, PharmacyLocation } from '../types/types'
 import QRCodeModal from '../components/QrCode'
 import PatientPrescriptions from '../components/PatientPrescriptions'
 import PharmacyLocationView from '../components/PharmacyLocation'
-import { Prescription } from '.prisma/client'
 import Skeleton from 'react-loading-skeleton'
 
 const Home = ({ user }: ServerPageProps) => {
@@ -33,7 +20,6 @@ const Home = ({ user }: ServerPageProps) => {
     Array<PrescriptionAndLocation>
   >([])
   const [pharmacyLocation, setPharmacyLocation] = useState<PharmacyLocation>()
-  const [location, setLocation] = useState<Location>()
   const [loading, setLoading] = useState(true)
   const [qrCode, setQrCode] = useState('')
   const [showQrCode, setShowQrCode] = useState(false)
@@ -81,7 +67,7 @@ const Home = ({ user }: ServerPageProps) => {
     }
   }
 
-  const { data, error } = useSWR(user.role, fetcher)
+  const { error } = useSWR(user.role, fetcher)
 
   const onClose = () => setShowQrCode(false)
 
