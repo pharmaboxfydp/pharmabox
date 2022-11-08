@@ -1,4 +1,12 @@
-import { DataTable, Text, Box, Pagination, TextInput, Anchor } from 'grommet'
+import {
+  DataTable,
+  Text,
+  Box,
+  Pagination,
+  TextInput,
+  Anchor,
+  ResponsiveContext
+} from 'grommet'
 import { atom, useAtom } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
 import { ErrorFilled } from '@carbon/icons-react'
@@ -8,6 +16,7 @@ import usePatients from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
 import { debounce } from 'ts-debounce'
+import { useContext } from 'react'
 
 export type PatientsPageState = {
   step: string
@@ -35,6 +44,7 @@ const FALLBACK_PATIENTS_PER_PAGE: number = 10
 const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
 export default function PatientsTable() {
+  const size = useContext(ResponsiveContext)
   const [pageState, updatePageState] = useAtom(patientsPaginationState)
   const router = useRouter()
 
@@ -99,6 +109,7 @@ export default function PatientsTable() {
 
   const step: number = parseInt(router?.query?.step as string)
   const page: number = parseInt(router?.query?.page as string)
+  const shouldPinColums = size === 'small'
 
   if (isLoading && !isError) {
     return (
@@ -124,8 +135,9 @@ export default function PatientsTable() {
 
   return (
     <>
-      <Box>
+      <Box overflow="auto">
         <DataTable
+          pin
           sortable
           columns={[
             {
@@ -139,6 +151,7 @@ export default function PatientsTable() {
               render: ({ User }) => <Text size="small">{User.lastName}</Text>
             },
             {
+              pin: shouldPinColums,
               property: 'Date of Birth',
               header: <Text size="small">Date of Birth</Text>,
               render: ({ dob }) => (
@@ -159,6 +172,7 @@ export default function PatientsTable() {
             {
               property: 'Contact',
               header: <Text size="small">Contact</Text>,
+              pin: shouldPinColums,
               render: ({ User: user }) => (
                 <Box direction="column">
                   <Text size="small" color={theme.global.colors['dark-2']}>
@@ -194,6 +208,7 @@ export default function PatientsTable() {
             {
               property: 'Pickup',
               header: <Text size="small">Pickup</Text>,
+              pin: shouldPinColums,
               render: ({ pickupEnabled }) => (
                 <Box
                   round

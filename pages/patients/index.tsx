@@ -1,17 +1,13 @@
 import Head from 'next/head'
-import { Box, ResponsiveContext } from 'grommet'
+import { Box } from 'grommet'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../../helpers/user-details'
 import Page from '../../components/Page'
 import { ServerPageProps } from '../../types/types'
 import Breadcrumbs from '../../components/Breadcrumbs'
-import { useClerk } from '@clerk/nextjs'
-import { Logout } from '@carbon/icons-react'
-import SidebarButton from '../../components/SidebarButton'
 import PatientsTable from '../../components/PatientsTable'
 
 const Patients = ({ user }: ServerPageProps) => {
-  const { signOut } = useClerk()
   return (
     <>
       <Head>
@@ -34,19 +30,6 @@ const Patients = ({ user }: ServerPageProps) => {
           <Box direction="row" border="top" fill>
             <Box pad="medium" basis="auto" fill="horizontal" gap="medium">
               <PatientsTable />
-              <div>
-                <ResponsiveContext.Consumer>
-                  {(responsive) =>
-                    responsive === 'small' && (
-                      <SidebarButton
-                        icon={<Logout size={24} />}
-                        label={'Logout'}
-                        onClick={signOut}
-                      />
-                    )
-                  }
-                </ResponsiveContext.Consumer>
-              </div>
             </Box>
           </Box>
         </Box>

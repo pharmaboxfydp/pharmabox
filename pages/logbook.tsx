@@ -1,7 +1,5 @@
 import Head from 'next/head'
-import { Box, Header, ResponsiveContext, Text } from 'grommet'
-import SidebarButton from '../components/SidebarButton'
-import { Logout } from '@carbon/icons-react'
+import { Box, Header, Text } from 'grommet'
 import Lottie from 'lottie-react'
 import constructionAnimation from '../public/assets/construction.json'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
@@ -9,11 +7,8 @@ import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
 import { ServerPageProps } from '../types/types'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { useClerk } from '@clerk/nextjs'
 
 const Logbook = ({ user }: ServerPageProps) => {
-  const { signOut } = useClerk()
-
   return (
     <>
       <Head>
@@ -48,19 +43,6 @@ const Logbook = ({ user }: ServerPageProps) => {
                   autoPlay
                 />
               </Box>
-              <div>
-                <ResponsiveContext.Consumer>
-                  {(responsive) =>
-                    responsive === 'small' && (
-                      <SidebarButton
-                        icon={<Logout size={24} />}
-                        label={'Logout'}
-                        onClick={signOut}
-                      />
-                    )
-                  }
-                </ResponsiveContext.Consumer>
-              </div>
             </Box>
           </Box>
         </Box>
