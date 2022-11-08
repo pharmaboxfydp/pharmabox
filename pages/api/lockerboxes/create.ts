@@ -1,6 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { LockerBox } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
+import { LockerBoxState } from '../../../types/types'
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,12 +10,33 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      const { locationId, lockerCount } = req.body
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+      const { lockerCount: C, locationId: I } = req.body.data
+      const lockerCount: number = parseInt(C)
+      const locationId: number = parseInt(I)
 
-      const lockerBoxes = Array.from({ length: lockerCount }, (_, i) => {
-        return { locationId: locationId, label: i + 1, status: 'empty' }
+      const lockerBoxes = Array.from({ length: lockerCount }, (_, index) => {
+        return {
+          label: index + 1,
+          status: LockerBoxState.empty,
+          locationId
+        }
       })
-      const lockers = await prisma.lockerBox.createMany({ data: lockerBoxes })
+      const lockers: LockerBox[] = []
+      lockerBoxes.forEach(async (box) => {
+        const locker = await prisma.lockerBox.create({
+          data: {
+            label: box.label,
+            status: box.status,
+            Location: {
+              connect: { id: box.locationId }
+            }
+          }
+        })
+        lockers.push(locker)
+      })
 
       res.status(200).json({ message: ' Success', lockers })
     } catch (e) {

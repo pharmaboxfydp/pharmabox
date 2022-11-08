@@ -30,6 +30,11 @@ export enum Status {
   PickupCompleted = 'PickupCompleted'
 }
 
+export enum LockerBoxState {
+  empty = 'empty',
+  full = 'full'
+}
+
 export enum StaffRootPages {
   Home = '/home',
   Workflows = '/workflows',
