@@ -56,7 +56,7 @@ export default function PatientsTable() {
       updateQueryParams({
         endIndex: parseInt(step),
         startIndex: 0,
-        page: parseInt(pageState.page)
+        page: parseInt(router?.query?.page as string)
       }),
     DEBOUNCE_MS
   )
