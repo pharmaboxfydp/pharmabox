@@ -97,8 +97,8 @@ export default function PatientsTable() {
     numPatients: totalPatientsCount
   } = usePatients(router.query)
 
-  const step: number = parseInt(pageState.step)
-  const page: number = parseInt(pageState.page)
+  const step: number = parseInt(router?.query?.step as string)
+  const page: number = parseInt(router?.query?.page as string)
 
   if (isLoading && !isError) {
     return (
