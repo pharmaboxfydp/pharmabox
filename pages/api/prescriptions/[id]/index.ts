@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import prisma from '../../../lib/prisma'
+import prisma from '../../../../lib/prisma'
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,21 +8,22 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const { id } = req.query
+
       if (typeof id !== 'string') {
-        throw new Error('Invalid Request. Expected stringId')
+        throw new Error('Expected prescription id of type string')
       }
 
-      const location = await prisma.location.findUniqueOrThrow({
+      const prescription = await prisma.prescription.findUniqueOrThrow({
         where: {
           id: parseInt(id)
-        },
-        include: {
-          LockerBoxes: true
         }
       })
-      res.status(200).json({ message: 'Succcess', location })
-    } catch (error) {
-      res.status(400).json({ message: 'Bad Request', error })
+
+      res.status(200).json({ message: 'Success', prescription: prescription })
+    } catch (e) {
+      res
+        .status(400)
+        .json({ message: 'Bad Request', prescription: null, error: e })
     }
   } else {
     res.status(405).json({ message: `Method: ${req.method} Not Allowed` })

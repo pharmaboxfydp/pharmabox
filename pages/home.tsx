@@ -92,15 +92,13 @@ const Home = ({ user }: ServerPageProps) => {
       <Page user={user}>
         {showQrCode && <QRCodeModal qrCode={qrCode} onClose={onClose} />}
         <Box pad="medium">
-          {user.role === 'patient' ? (
+          {user.role === 'patient' && (
             <PatientPrescriptions
               prescriptions={prescriptions}
               previousPrescriptions={previousPrescriptions}
               setQrCode={setQrCode}
               setShowQrCode={setShowQrCode}
             />
-          ) : (
-            <PharmacyLocationView pharmacyLocation={pharmacyLocation} />
           )}
         </Box>
       </Page>
