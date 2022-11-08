@@ -137,8 +137,8 @@ export default function PatientsTable() {
     <>
       <Box overflow="auto">
         <DataTable
-          pin
           sortable
+          pin
           columns={[
             {
               property: 'First Name',
@@ -209,11 +209,11 @@ export default function PatientsTable() {
               property: 'Pickup',
               header: <Text size="small">Pickup</Text>,
               pin: shouldPinColums,
-              render: ({ pickupEnabled }) => (
+              render: ({ pickupEnabled, dob }) => (
                 <Box
                   round
                   background={
-                    pickupEnabled
+                    pickupEnabled && dob
                       ? theme.global.colors['status-ok']
                       : theme.global.colors['dark-3']
                   }

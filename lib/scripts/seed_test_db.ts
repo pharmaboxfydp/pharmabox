@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv'
 import { Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
 import data from './test_data'
+import { faker } from '@faker-js/faker'
 
 dotenv.config()
 
@@ -120,7 +121,10 @@ async function seedUsers(
     })
   })
 
-  patientUsers.forEach(async (patientUser) => {
+  patientUsers.forEach(async (patientUser, index) => {
+    const numUses = patientUsers.length
+    const userNumber = index + 1
+    const midpoint = Math.max(numUses / 2)
     await prisma.user.create({
       data: {
         ...patientUser,
@@ -131,7 +135,10 @@ async function seedUsers(
             },
             create: {
               pickupEnabled: true,
-              dob: null
+              dob:
+                userNumber < midpoint
+                  ? faker.date.birthdate().toDateString()
+                  : null
             }
           }
         }
