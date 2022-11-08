@@ -43,7 +43,6 @@ export default function PatientsTable() {
     startIndex,
     endIndex
   }: UpdateQueryParams) {
-    console.log(page)
     const newState = {
       step: (endIndex - startIndex).toString(),
       page: page.toString()
