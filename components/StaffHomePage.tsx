@@ -72,7 +72,7 @@ function LockerboxesStatus({ user }: { user: User }) {
   return (
     <Box gap="small" round="small" border pad="medium" overflow="auto" fill>
       <Text weight="bold">Locker Status</Text>
-      <Box overflow={{ vertical: 'scroll' }}>
+      <Box overflow={{ vertical: 'scroll' }} pad="small">
         {lockerboxes?.map(
           ({
             label,
@@ -139,56 +139,58 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
   return (
     <Box gap="small" border pad="medium" round="small" overflow="auto" fill>
       <Text weight="bold">Prescriptions Awaiting Pickup</Text>
-      {activePrescriptions?.map(
-        ({
-          id,
-          name,
-          LockerBox: { label },
-          Patient: { dob, id: patientId }
-        }: {
-          id: number
-          name: string
-          LockerBox: LockerBox
-          Patient: Patient
-        }) => (
-          <Box key={label + Math.random()} height={{ min: '180px' }}>
-            <Card pad="small" gap="small" width="medium">
-              <CardHeader>
-                <Box direction="row" gap="medium">
-                  <Medication size={24} />
+      <Box overflow={{ vertical: 'scroll' }} pad="small">
+        {activePrescriptions?.map(
+          ({
+            id,
+            name,
+            LockerBox: { label },
+            Patient: { dob, id: patientId }
+          }: {
+            id: number
+            name: string
+            LockerBox: LockerBox
+            Patient: Patient
+          }) => (
+            <Box key={label + Math.random()} height={{ min: '180px' }}>
+              <Card pad="small" gap="small" width="medium">
+                <CardHeader>
+                  <Box direction="row" gap="medium">
+                    <Medication size={24} />
+                    <Text size="small" weight="bold">
+                      {name}
+                    </Text>
+                    <Text size="small">Box: {label}</Text>
+                  </Box>
+                </CardHeader>
+                <CardBody gap="small">
                   <Text size="small" weight="bold">
-                    {name}
+                    Patient Information
                   </Text>
-                  <Text size="small">Box: {label}</Text>
-                </Box>
-              </CardHeader>
-              <CardBody gap="small">
-                <Text size="small" weight="bold">
-                  Patient Information
-                </Text>
-                <Box direction="row" gap="medium">
-                  <Text size="small">
-                    Date of Birth:{'  '}
-                    {(() => (dob ? new Date(dob).toDateString() : '-'))()}
-                  </Text>
-                  <Box direction="row" gap="small">
-                    <Person size={20} />
-                    <Text size="small">{patientId}</Text>
+                  <Box direction="row" gap="medium">
+                    <Text size="small">
+                      Date of Birth:{'  '}
+                      {(() => (dob ? new Date(dob).toDateString() : '-'))()}
+                    </Text>
+                    <Box direction="row" gap="small">
+                      <Person size={20} />
+                      <Text size="small">{patientId}</Text>
+                    </Box>
                   </Box>
-                </Box>
-              </CardBody>
-              <CardFooter>
-                <Box direction="row" justify="between">
-                  <Box direction="row">
-                    <QID size={20} />
-                    <Text size="small">{id}</Text>
+                </CardBody>
+                <CardFooter>
+                  <Box direction="row" justify="between">
+                    <Box direction="row">
+                      <QID size={20} />
+                      <Text size="small">{id}</Text>
+                    </Box>
                   </Box>
-                </Box>
-              </CardFooter>
-            </Card>
-          </Box>
-        )
-      )}
+                </CardFooter>
+              </Card>
+            </Box>
+          )
+        )}
+      </Box>
     </Box>
   )
 }
