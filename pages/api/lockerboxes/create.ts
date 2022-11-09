@@ -22,7 +22,7 @@ export default async function handler(
       })
 
       const lockers = await prisma.lockerBox.createMany({ data: lockerBoxes })
-      res.status(200).json({ message: ' Success', lockers })
+      res.status(200).json({ message: 'Success', lockers })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }

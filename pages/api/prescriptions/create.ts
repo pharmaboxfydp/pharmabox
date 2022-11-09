@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
-import { Status } from '../../../types/types'
+import { Status, LockerBoxState } from '../../../types/types'
 
 export default async function handler(
   req: NextApiRequest,
@@ -43,7 +43,7 @@ export default async function handler(
       const lockerBox = await prisma.lockerBox.update({
         where: { id: lockerBoxId },
         data: {
-          status: status
+          status: LockerBoxState.full
         }
       })
 

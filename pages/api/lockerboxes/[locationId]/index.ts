@@ -18,7 +18,7 @@ export default async function handler(
       if (!lockerboxes) {
         res.status(404).json({ message: 'Locker not found' })
       } else {
-        res.status(200).json({ message: ' Success', lockerboxes })
+        res.status(200).json({ message: 'Success', lockerboxes })
       }
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
