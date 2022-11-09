@@ -16,7 +16,7 @@ import {
   TextInput
 } from 'grommet'
 import { capitalize } from 'lodash'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useLockerboxes } from '../hooks/lockerbox'
 import usePatients, { FullPatient } from '../hooks/patients'
@@ -181,19 +181,27 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
   )
 }
 
-function mapPatientsToValues(patients: FullPatient[]): string[] {
-  return patients.map(
-    ({ User, dob }) => `${User.firstName} ${User.lastName} ${dob}`
-  )
+function mapPatientsToValues(
+  patients: FullPatient[]
+): { search: string; id: number; patient: Patient }[] {
+  return patients.map((patient) => ({
+    search: `${patient.User.firstName} ${patient.User.lastName} ${patient.dob}`,
+    id: patient.id,
+    patient
+  }))
 }
 
-function PrescriptionCreationBar({ user }: { user: User }) {
-  const { activePatients } = usePatients()
-  const [patientOptions, setPatientOptions] = useState<string[]>(
-    mapPatientsToValues(activePatients as FullPatient[])
+function PrescriptionCreationBar({
+  activePatients
+}: {
+  activePatients: FullPatient[]
+}) {
+  const defaultOptions = useMemo(
+    () => (activePatients ? mapPatientsToValues(activePatients) : []),
+    [activePatients]
   )
-
-  console.log(patientOptions)
+  const [options, setOptions] = useState(defaultOptions)
+  const [targetPatient, setTargetPatient] = useState()
 
   return (
     <Box
@@ -211,17 +219,28 @@ function PrescriptionCreationBar({ user }: { user: User }) {
               size="small"
               id="patient"
               name="patient"
-              options={activePatients ?? []}
-              onSearch={(text) => {}}
+              options={options}
+              onSearch={(text) => {
+                const escapedText = text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
+                const exp = new RegExp(escapedText, 'i')
+                setOptions(
+                  defaultOptions.filter(({ search }) => exp.test(search))
+                )
+              }}
+              onClose={() => setOptions(defaultOptions)}
+              onChange={(event) => {
+                debugger
+              }}
             >
-              {({ User, dob }) => (
-                <Box pad="xsmall" width="100%">
+              {(option) => {
+                return (
                   <Text size="small">
-                    {User.firstName} {User.lastName}{' '}
-                    {(() => (dob ? new Date(dob).toDateString() : ''))()}
+                    <option data-value={JSON.stringify(option)}>
+                      {option.search}
+                    </option>
                   </Text>
-                </Box>
-              )}
+                )
+              }}
             </Select>
           </FormField>
           <Button type="submit" label="Create Prescription" />
@@ -232,6 +251,7 @@ function PrescriptionCreationBar({ user }: { user: User }) {
 }
 
 export default function StaffHomePage({ user }: { user: User }) {
+  const { activePatients } = usePatients()
   return (
     <Grid
       fill
@@ -245,7 +265,9 @@ export default function StaffHomePage({ user }: { user: User }) {
       ]}
     >
       <Box gridArea="fulfill">
-        <PrescriptionCreationBar user={user} />
+        {activePatients && (
+          <PrescriptionCreationBar activePatients={activePatients} />
+        )}
       </Box>
       <Box gridArea="left-pannel">
         <LocationPrescriptionStatus user={user} />
