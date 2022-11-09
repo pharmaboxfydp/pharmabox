@@ -1,11 +1,11 @@
 import { Location, Prescription } from '@prisma/client'
 import useSWR from 'swr'
-import { Status, User } from '../types/types'
+import { PrescriptionAndLocation, Status, User } from '../types/types'
 
 export interface UsePatientPrescriptions {
-  prescriptions: Prescription[] | null
-  activePrescriptions: Prescription[] | null
-  prevPrescriptions: Prescription[] | null
+  prescriptions: PrescriptionAndLocation[] | null
+  activePrescriptions: PrescriptionAndLocation[] | null
+  prevPrescriptions: PrescriptionAndLocation[] | null
   isLoading: boolean
   isError: boolean
 }
@@ -19,11 +19,13 @@ export interface UsePrescription {
 const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
   fetch(...arg).then((res) => res.json())
 
-export function usePatientPrescriptions(user: User): UsePatientPrescriptions {
+export function usePatientPrescriptions(
+  patientId: number | undefined
+): UsePatientPrescriptions {
   const { data, error } = useSWR<{
     message: string
-    prescriptions: Prescription[]
-  }>(`/api/prescriptions/patient/${user.Patient?.id}`, fetcher, {
+    prescriptions: PrescriptionAndLocation[]
+  }>(`/api/prescriptions/patient/${patientId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: false
@@ -48,11 +50,11 @@ export function usePatientPrescriptions(user: User): UsePatientPrescriptions {
   }
 }
 
-export function usePrescription(id: number): UsePrescription {
+export function usePrescription(prescriptionId: number): UsePrescription {
   const { data, error } = useSWR<{
     message: string
     prescription: Prescription
-  }>(`/api/prescriptions/${id}`, fetcher, {
+  }>(`/api/prescriptions/${prescriptionId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: false

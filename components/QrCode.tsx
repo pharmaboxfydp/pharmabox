@@ -1,52 +1,42 @@
-import Head from 'next/head'
 import theme from '../styles/theme'
-import {
-  Box,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Button,
-  Layer
-} from 'grommet'
+import { Box, Button, Layer, Text } from 'grommet'
 import QRCode from 'react-qr-code'
 
-const QRCodeModal = ({ qrCode, onClose }: { qrCode: string; onClose: any }) => {
+const QRCodeModal = ({
+  qrCode,
+  onClose,
+  lockerBox
+}: {
+  qrCode: string
+  onClose: any
+  lockerBox: number | null
+}) => {
   return (
-    <Layer
-      position="center"
-      onClickOutside={onClose}
-      onEsc={onClose}
-      margin="large"
-    >
-      <Box pad={'xlarge'}>
-        <Card
-          pad="medium"
-          margin="medium"
-          justify="center"
-          align="center"
-          gap="medium"
-          background={theme.global.colors['light-1']}
-        >
-          <CardHeader>
-            <h2>Scan To Unlock</h2>
-          </CardHeader>
-          <CardBody style={{ minHeight: 256, minWidth: 256 }}>
-            <QRCode value={qrCode} />
-          </CardBody>
-          <CardFooter>
-            <Button
-              label="Close"
-              margin={'large'}
-              onClick={onClose}
-              style={{
-                background: theme.global.colors['status-critical'],
-                borderRadius: '4px'
-              }}
-              size="large"
-            />
-          </CardFooter>
-        </Card>
+    <Layer position="center" onClickOutside={onClose} onEsc={onClose}>
+      <Box pad="medium" gap="medium" animation="fadeIn" overflow="scroll">
+        <Text weight="bolder">Scan QR Code</Text>
+        <Text>
+          Scan the QR Code below at the Pharmabox.{' '}
+          {lockerBox && (
+            <>
+              Then retreive your prescription from{' '}
+              <Text weight="bold">Locker {lockerBox}</Text>
+            </>
+          )}
+        </Text>
+        <Box align="center">
+          <QRCode value={qrCode} />
+        </Box>
+        <Button
+          label="Close"
+          onClick={onClose}
+          style={{
+            background: theme.global.colors['status-critical'],
+            borderRadius: '4px',
+            color: theme.global.colors.white
+          }}
+          size="small"
+        />
       </Box>
     </Layer>
   )
