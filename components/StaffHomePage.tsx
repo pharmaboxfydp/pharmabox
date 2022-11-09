@@ -181,8 +181,19 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
   )
 }
 
+function mapPatientsToValues(patients: FullPatient[]): string[] {
+  return patients.map(
+    ({ User, dob }) => `${User.firstName} ${User.lastName} ${dob}`
+  )
+}
+
 function PrescriptionCreationBar({ user }: { user: User }) {
   const { activePatients } = usePatients()
+  const [patientOptions, setPatientOptions] = useState<string[]>(
+    mapPatientsToValues(activePatients as FullPatient[])
+  )
+
+  console.log(patientOptions)
 
   return (
     <Box
@@ -213,7 +224,7 @@ function PrescriptionCreationBar({ user }: { user: User }) {
               )}
             </Select>
           </FormField>
-          <Button type="submit" label="Invite" primary />
+          <Button type="submit" label="Create Prescription" />
         </Box>
       </Form>
     </Box>
