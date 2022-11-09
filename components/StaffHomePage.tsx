@@ -2,17 +2,24 @@ import { ErrorFilled, Medication, Person, QID } from '@carbon/icons-react'
 import { LockerBox, Patient } from '@prisma/client'
 import {
   Box,
+  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
+  Form,
+  FormField,
   Grid,
+  Select,
   Tag,
-  Text
+  Text,
+  TextInput
 } from 'grommet'
 import { capitalize } from 'lodash'
+import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useLockerboxes } from '../hooks/lockerbox'
+import usePatients, { FullPatient } from '../hooks/patients'
 import { useLocationPrescriptions } from '../hooks/prescriptions'
 import theme from '../styles/theme'
 import { LockerBoxState, User } from '../types/types'
@@ -174,6 +181,45 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
   )
 }
 
+function PrescriptionCreationBar({ user }: { user: User }) {
+  const { activePatients } = usePatients()
+
+  return (
+    <Box
+      gap="small"
+      border
+      pad="medium"
+      round="small"
+      overflow="auto"
+      direction="row"
+    >
+      <Form id="new-prescription-form">
+        <Box direction="row" fill="horizontal" justify="between">
+          <FormField lable="Patient" htmlFor="patient" name="patient">
+            <Select
+              size="small"
+              id="patient"
+              name="patient"
+              options={activePatients ?? []}
+              onSearch={(text) => {}}
+            >
+              {({ User, dob }) => (
+                <Box pad="xsmall" width="100%">
+                  <Text size="small">
+                    {User.firstName} {User.lastName}{' '}
+                    {(() => (dob ? new Date(dob).toDateString() : ''))()}
+                  </Text>
+                </Box>
+              )}
+            </Select>
+          </FormField>
+          <Button type="submit" label="Invite" primary />
+        </Box>
+      </Form>
+    </Box>
+  )
+}
+
 export default function StaffHomePage({ user }: { user: User }) {
   return (
     <Grid
@@ -182,12 +228,14 @@ export default function StaffHomePage({ user }: { user: User }) {
       columns={['auto', 'flex']}
       gap="small"
       areas={[
-        { name: 'fulfill', start: [0, 0], end: [0, 0] },
+        { name: 'fulfill', start: [0, 0], end: [1, 1] },
         { name: 'left-pannel', start: [0, 1], end: [0, 1] },
         { name: 'right-pannel', start: [1, 1], end: [1, 1] }
       ]}
     >
-      <Box gridArea="fulfill">text</Box>
+      <Box gridArea="fulfill">
+        <PrescriptionCreationBar user={user} />
+      </Box>
       <Box gridArea="left-pannel">
         <LocationPrescriptionStatus user={user} />
       </Box>
