@@ -10,6 +10,7 @@ export interface FullPatient extends Patient {
 
 export interface UsePatients {
   patients: FullPatient[] | null
+  activePatients: FullPatient[] | null
   numPatients: number | null
   isLoading: boolean
   isError: Error
@@ -38,9 +39,14 @@ export default function usePatients(pagination?: UserPagination): UsePatients {
     revalidateOnReconnect: false
   })
 
+  const activePatients =
+    data?.patients.filter((patient) => patient.pickupEnabled && patient.dob) ??
+    null
+
   return {
     patients: data?.patients ?? null,
     numPatients: data?.numPatients ?? null,
+    activePatients,
     isLoading: !error && !data,
     isError: error
   }

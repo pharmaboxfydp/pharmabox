@@ -11,8 +11,12 @@ export enum Role {
   Staff = 'staff',
   Patient = 'patient'
 }
-export type PrescriptionAndLocation = Prescription & { Location: Location } & {
+export type PrescriptionAndLocationAndPatient = Prescription & {
+  Location: Location
+} & {
   LockerBox: LockerBox
+} & {
+  Patient: Patient
 }
 
 export type PharmacyLocation = Location & {
@@ -28,6 +32,11 @@ export enum Permissions {
 export enum Status {
   AwaitingPickup = 'AwaitingPickup',
   PickupCompleted = 'PickupCompleted'
+}
+
+export enum LockerBoxState {
+  empty = 'empty',
+  full = 'full'
 }
 
 export enum StaffRootPages {

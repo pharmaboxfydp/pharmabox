@@ -1,21 +1,26 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import prisma from '../../../lib/prisma'
+import prisma from '../../../../lib/prisma'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
     try {
-      const { locationId, label } = req.body
-      const lockerBox = await prisma.lockerBox.findUnique({
-        where: { specificLockerBox: { label: label, locationId: locationId } }
+      const { label, locationId } = req.query
+      const lockerbox = await prisma.lockerBox.findUnique({
+        where: {
+          specificLockerBox: {
+            label: parseInt(label as string),
+            locationId: parseInt(locationId as string)
+          }
+        }
       })
-      if (!lockerBox) {
+      if (!lockerbox) {
         res.status(404).json({ message: 'Locker not found' })
       } else {
-        res.status(200).json({ message: 'Success', lockerBox })
+        res.status(200).json({ message: 'Success', lockerbox })
       }
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })

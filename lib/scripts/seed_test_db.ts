@@ -5,13 +5,19 @@
 import prisma from '../prisma'
 import fetch from 'node-fetch'
 import * as dotenv from 'dotenv'
-import { Role, User } from '../../types/types'
+import { LockerBoxState, Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
 import data from './test_data'
+import { faker } from '@faker-js/faker'
 
 dotenv.config()
 
 const BASE_URL = `https://api.clerk.dev/v1`
+
+function randInt(min: number, max: number) {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 /**
  * Get users from our dev database
@@ -120,7 +126,10 @@ async function seedUsers(
     })
   })
 
-  patientUsers.forEach(async (patientUser) => {
+  patientUsers.forEach(async (patientUser, index) => {
+    const numUses = patientUsers.length
+    const userNumber = index + 1
+    const midpoint = Math.max(numUses / 2)
     await prisma.user.create({
       data: {
         ...patientUser,
@@ -131,7 +140,10 @@ async function seedUsers(
             },
             create: {
               pickupEnabled: true,
-              dob: null
+              dob:
+                userNumber < midpoint
+                  ? faker.date.birthdate().toDateString()
+                  : null
             }
           }
         }
@@ -146,7 +158,7 @@ async function seedLocations(staff: User[]) {
   const { locations } = data
   await prisma.location.deleteMany({})
   await prisma.location.createMany({ data: locations })
-  const loc1 = await prisma.location.findMany({})
+  const seededLocations = await prisma.location.findMany({})
 
   staff.forEach(async (staffMember, index) => {
     await prisma.staff.update({
@@ -154,14 +166,43 @@ async function seedLocations(staff: User[]) {
       data: {
         Location: {
           connect: {
-            id: loc1[index > Math.floor(staff.length) / 2 ? 1 : 0]?.id
+            id: seededLocations[index > Math.floor(staff.length) / 2 ? 1 : 0]
+              ?.id
           }
         }
       }
     })
   })
 
-  return { loc1 }
+  return { seededLocations }
+}
+
+async function seedLockerBoxes() {
+  await prisma.lockerBox.deleteMany({})
+  prisma.location.findMany({}).then((locations) => {
+    const locationIds = locations.map((location) => location.id)
+    locationIds.forEach(async (locationId: number) => {
+      const lockerCount = randInt(1, 5)
+      const lockerBoxes = Array.from({ length: lockerCount }, (_, index) => {
+        return {
+          label: index + 1,
+          status: LockerBoxState.empty,
+          locationId
+        }
+      })
+      lockerBoxes.forEach(async (box) => {
+        await prisma.lockerBox.create({
+          data: {
+            label: box.label,
+            status: box.status,
+            Location: {
+              connect: { id: box.locationId }
+            }
+          }
+        })
+      })
+    })
+  })
 }
 
 /**
@@ -184,7 +225,10 @@ getDevUsers()
         console.table(payload.staffUsers, ['id', 'firstName', 'email', 'role'])
         seedLocations(payload.staffUsers).then((res) => {
           console.info('\x1b[36m%s\x1b[0m', 'LOCATIONS -----')
-          console.table(res.loc1, ['id'])
+          console.table(res.seededLocations, ['id'])
+          seedLockerBoxes().then(() => {
+            console.info('\x1b[36m%s\x1b[0m', 'CREATED LOCKER BOXES')
+          })
         })
       })
       .catch((error) => {
