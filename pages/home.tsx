@@ -6,6 +6,8 @@ import { Role, ServerPageProps } from '../types/types'
 import { Box } from 'grommet'
 
 import PatientHomePage from '../components/PatientHomePage'
+import Breadcrumbs from '../components/Breadcrumbs'
+import StaffHomePage from '../components/StaffHomePage'
 
 const Home = ({ user }: ServerPageProps) => {
   return (
@@ -19,8 +21,15 @@ const Home = ({ user }: ServerPageProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Page user={user}>
-        <Box pad="medium">
-          {user.role === Role.Patient && <PatientHomePage user={user} />}
+        <Box animation="fadeIn" fill className="logbook">
+          <Breadcrumbs pages={['Home']} />
+          <Box border="top" fill pad="medium">
+            {/**
+             * do an exact match so that we never conditinally render the wrong page
+             */}
+            {user.role === Role.Patient && <PatientHomePage user={user} />}
+            {user.role === Role.Staff && <StaffHomePage user={user} />}
+          </Box>
         </Box>
       </Page>
     </>
