@@ -1,8 +1,19 @@
-import { ErrorFilled, QID } from '@carbon/icons-react'
-import { Box, Card, CardBody, CardHeader, Grid, Tag, Text } from 'grommet'
+import { ErrorFilled, Medication, Person, QID } from '@carbon/icons-react'
+import { LockerBox, Patient } from '@prisma/client'
+import {
+  Box,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Grid,
+  Tag,
+  Text
+} from 'grommet'
 import { capitalize } from 'lodash'
 import Skeleton from 'react-loading-skeleton'
 import { useLockerboxes } from '../hooks/lockerbox'
+import { useLocationPrescriptions } from '../hooks/prescriptions'
 import theme from '../styles/theme'
 import { LockerBoxState, User } from '../types/types'
 import CardNotification from './CardNotification'
@@ -40,47 +51,123 @@ function LockerboxesStatus({ user }: { user: User }) {
     )
   }
   return (
-    <Box gap="small" border>
+    <Box gap="small" round="small" border pad="medium" overflow="auto" fill>
       <Text weight="bold">Locker Status</Text>
-      {lockerboxes?.map(
+      <Box overflow={{ vertical: 'scroll' }}>
+        {lockerboxes?.map(
+          ({
+            label,
+            id,
+            status
+          }: {
+            label: number
+            id: number
+            status: string
+          }) => (
+            <Box key={label} height={{ min: '96px' }}>
+              <Card width="small" pad="small" gap="small">
+                <CardHeader>
+                  <Text size="small" weight="bold">
+                    Locker Number:{' '}
+                    <Text size="small" weight="bold">
+                      {label}
+                    </Text>
+                  </Text>
+                </CardHeader>
+                <CardBody>
+                  <Box direction="row" justify="between">
+                    <Box direction="row">
+                      <QID size={24} />
+                      <Text>{id}</Text>
+                    </Box>
+                    <Box
+                      round
+                      background={
+                        status === LockerBoxState.empty
+                          ? theme.global.colors['status-ok']
+                          : theme.global.colors['status-warning']
+                      }
+                      style={{ color: theme.global.colors.white }}
+                    >
+                      <Tag
+                        size="xsmall"
+                        name="Status"
+                        value={capitalize(status)}
+                      />
+                    </Box>
+                  </Box>
+                </CardBody>
+              </Card>
+            </Box>
+          )
+        )}
+      </Box>
+    </Box>
+  )
+}
+
+function LocationPrescriptionStatus({ user }: { user: User }) {
+  const { activePrescriptions, isLoading, isError } =
+    useLocationPrescriptions(user)
+  if (isLoading) {
+    return <Loading />
+  }
+  if (isError) {
+    return (
+      <Error message="Oops! It looks like Pharmabox was not able to load prescriptions. Try refreshing your page. If the issue persists, contact support." />
+    )
+  }
+  return (
+    <Box gap="small" border pad="medium" round="small" overflow="auto" fill>
+      <Text weight="bold">Prescriptions Awaiting Pickup</Text>
+      {activePrescriptions?.map(
         ({
-          label,
           id,
-          status
+          name,
+          LockerBox: { label },
+          Patient: { dob, id: patientId }
         }: {
-          label: number
           id: number
-          status: string
+          name: string
+          LockerBox: LockerBox
+          Patient: Patient
         }) => (
-          <Card key={label} width="small" pad="small" gap="small">
-            <CardHeader>
-              <Text size="small" weight="bold">
-                Locker Number:{' '}
+          <Box key={label + Math.random()} height={{ min: '180px' }}>
+            <Card pad="small" gap="small" width="medium">
+              <CardHeader>
+                <Box direction="row" gap="medium">
+                  <Medication size={24} />
+                  <Text size="small" weight="bold">
+                    {name}
+                  </Text>
+                  <Text size="small">Box: {label}</Text>
+                </Box>
+              </CardHeader>
+              <CardBody gap="small">
                 <Text size="small" weight="bold">
-                  {label}
+                  Patient Information
                 </Text>
-              </Text>
-            </CardHeader>
-            <CardBody>
-              <Box direction="row" justify="between">
-                <Box direction="row">
-                  <QID size={24} />
-                  <Text>{id}</Text>
+                <Box direction="row" gap="medium">
+                  <Text size="small">
+                    Date of Birth:{'  '}
+                    {(() => (dob ? new Date(dob).toDateString() : '-'))()}
+                  </Text>
+                  <Box direction="row" gap="small">
+                    <Person size={20} />
+                    <Text size="small">{patientId}</Text>
+                  </Box>
                 </Box>
-                <Box
-                  round
-                  background={
-                    status === LockerBoxState.empty
-                      ? theme.global.colors['status-ok']
-                      : theme.global.colors['status-warning']
-                  }
-                  style={{ color: theme.global.colors.white }}
-                >
-                  <Tag size="xsmall" name="Status" value={capitalize(status)} />
+              </CardBody>
+              <CardFooter>
+                <Box direction="row" justify="between">
+                  <Box direction="row">
+                    <QID size={20} />
+                    <Text size="small">{id}</Text>
+                  </Box>
                 </Box>
-              </Box>
-            </CardBody>
-          </Card>
+              </CardFooter>
+            </Card>
+          </Box>
         )
       )}
     </Box>
@@ -93,6 +180,7 @@ export default function StaffHomePage({ user }: { user: User }) {
       fill
       rows={['auto', 'flex']}
       columns={['auto', 'flex']}
+      gap="small"
       areas={[
         { name: 'fulfill', start: [0, 0], end: [0, 0] },
         { name: 'left-pannel', start: [0, 1], end: [0, 1] },
@@ -100,7 +188,9 @@ export default function StaffHomePage({ user }: { user: User }) {
       ]}
     >
       <Box gridArea="fulfill">text</Box>
-      <Box gridArea="left-pannel">text</Box>
+      <Box gridArea="left-pannel">
+        <LocationPrescriptionStatus user={user} />
+      </Box>
       <Box gridArea="right-pannel">
         <LockerboxesStatus user={user} />
       </Box>

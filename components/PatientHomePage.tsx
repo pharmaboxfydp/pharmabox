@@ -13,7 +13,7 @@ import {
   Tip,
   Anchor
 } from 'grommet'
-import { PrescriptionAndLocation, User } from '../types/types'
+import { PrescriptionAndLocationAndPatient, User } from '../types/types'
 import { usePatientPrescriptions } from '../hooks/prescriptions'
 import Skeleton from 'react-loading-skeleton'
 import CardNotification from './CardNotification'
@@ -58,7 +58,7 @@ function ActivePatientPrescriptionCards({
   isLoading,
   shouldBeDisabled
 }: {
-  prescriptions: PrescriptionAndLocation[] | null
+  prescriptions: PrescriptionAndLocationAndPatient[] | null
   isError: boolean
   isLoading: boolean
   shouldBeDisabled: boolean
@@ -129,7 +129,7 @@ function PreviousPatientPrescriptionCards({
   isError,
   isLoading
 }: {
-  prescriptions: PrescriptionAndLocation[] | null
+  prescriptions: PrescriptionAndLocationAndPatient[] | null
   isError: boolean
   isLoading: boolean
 }) {

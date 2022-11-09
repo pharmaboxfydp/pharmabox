@@ -1,11 +1,11 @@
-import { Location, Prescription } from '@prisma/client'
+import { Location, Patient, Prescription } from '@prisma/client'
 import useSWR from 'swr'
-import { PrescriptionAndLocation, Status, User } from '../types/types'
+import { PrescriptionAndLocationAndPatient, Status, User } from '../types/types'
 
 export interface UsePatientPrescriptions {
-  prescriptions: PrescriptionAndLocation[] | null
-  activePrescriptions: PrescriptionAndLocation[] | null
-  prevPrescriptions: PrescriptionAndLocation[] | null
+  prescriptions: PrescriptionAndLocationAndPatient[] | null
+  activePrescriptions: PrescriptionAndLocationAndPatient[] | null
+  prevPrescriptions: PrescriptionAndLocationAndPatient[] | null
   isLoading: boolean
   isError: boolean
 }
@@ -24,8 +24,37 @@ export function usePatientPrescriptions(
 ): UsePatientPrescriptions {
   const { data, error } = useSWR<{
     message: string
-    prescriptions: PrescriptionAndLocation[]
+    prescriptions: PrescriptionAndLocationAndPatient[]
   }>(`/api/prescriptions/patient/${patientId}`, fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: false
+  })
+
+  const activePrescriptions =
+    data?.prescriptions.filter(
+      (prescription) => prescription.status === Status.AwaitingPickup
+    ) ?? null
+
+  const prevPrescriptions =
+    data?.prescriptions.filter(
+      (prescription) => prescription.status === Status.PickupCompleted
+    ) ?? null
+
+  return {
+    prescriptions: data?.prescriptions ?? null,
+    activePrescriptions,
+    prevPrescriptions,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
+export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
+  const { data, error } = useSWR<{
+    message: string
+    prescriptions: PrescriptionAndLocationAndPatient[]
+  }>(`/api/prescriptions/location/${user?.Staff?.locationId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: false
