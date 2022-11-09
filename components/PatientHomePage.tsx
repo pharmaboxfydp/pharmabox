@@ -8,15 +8,24 @@ import {
   Button,
   Tabs,
   Tab,
-  Text
+  Text,
+  Notification,
+  Tip,
+  Anchor
 } from 'grommet'
 import { PrescriptionAndLocation, User } from '../types/types'
 import { usePatientPrescriptions } from '../hooks/prescriptions'
 import Skeleton from 'react-loading-skeleton'
 import CardNotification from './CardNotification'
-import { CheckmarkOutline, ErrorFilled, QrCode } from '@carbon/icons-react'
+import {
+  CheckmarkOutline,
+  ErrorFilled,
+  Help,
+  QrCode
+} from '@carbon/icons-react'
 import { useState } from 'react'
 import QRCodeModal from './QrCode'
+import Link from 'next/link'
 
 function Loading() {
   return (
@@ -46,11 +55,13 @@ function Error() {
 function ActivePatientPrescriptionCards({
   prescriptions,
   isError,
-  isLoading
+  isLoading,
+  shouldBeDisabled
 }: {
   prescriptions: PrescriptionAndLocation[] | null
   isError: boolean
   isLoading: boolean
+  shouldBeDisabled: boolean
 }) {
   const [qrCode, setQrCode] = useState<string>('')
   const [lockerBox, setLockerBox] = useState<number | null>(null)
@@ -97,6 +108,7 @@ function ActivePatientPrescriptionCards({
                         setLockerBox(LockerBox.label)
                       }}
                       primary
+                      disabled={shouldBeDisabled}
                     />
                   </Box>
                 </Box>
@@ -156,25 +168,61 @@ function PreviousPatientPrescriptionCards({
   )
 }
 
-export default function PatientPrescriptions({ user }: { user: User }) {
+export default function PatientHomePage({ user }: { user: User }) {
+  const [dismissWarning, setDismissWarning] = useState<boolean>(false)
+
   const { activePrescriptions, prevPrescriptions, isError, isLoading } =
     usePatientPrescriptions(user?.Patient?.id)
+
+  const shouldBeDisabled = !user.Patient?.dob
   return (
-    <Tabs justify="start">
-      <Tab title="Ready for Pickup">
-        <ActivePatientPrescriptionCards
-          prescriptions={activePrescriptions}
-          isError={isError}
-          isLoading={isLoading}
-        />
-      </Tab>
-      <Tab title="Previous Pickups">
-        <PreviousPatientPrescriptionCards
-          prescriptions={prevPrescriptions}
-          isError={isError}
-          isLoading={isLoading}
-        />
-      </Tab>
-    </Tabs>
+    <>
+      {shouldBeDisabled && !dismissWarning && (
+        <Box animation="fadeIn" pad="small">
+          <Notification
+            status="critical"
+            onClose={() => setDismissWarning(true)}
+            message={
+              <Box pad="xxsmall" gap="xsmall" direction="row">
+                <Text size="small">
+                  You must{' '}
+                  <Link href="/settings" passHref>
+                    <Anchor>provide your birthdate</Anchor>
+                  </Link>{' '}
+                  before you can begin using Pharmabox
+                </Text>
+                <Tip
+                  content={
+                    <Text size="small">
+                      Pharmabox requires your date of birth to help confirm your
+                      identity at the pharmacy
+                    </Text>
+                  }
+                >
+                  <Help size={20} />
+                </Tip>
+              </Box>
+            }
+          />
+        </Box>
+      )}
+      <Tabs justify="start">
+        <Tab title="Ready for Pickup">
+          <ActivePatientPrescriptionCards
+            prescriptions={activePrescriptions}
+            isError={isError}
+            isLoading={isLoading}
+            shouldBeDisabled={shouldBeDisabled}
+          />
+        </Tab>
+        <Tab title="Previous Pickups">
+          <PreviousPatientPrescriptionCards
+            prescriptions={prevPrescriptions}
+            isError={isError}
+            isLoading={isLoading}
+          />
+        </Tab>
+      </Tabs>
+    </>
   )
 }

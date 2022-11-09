@@ -5,7 +5,7 @@ import Page from '../components/Page'
 import { Role, ServerPageProps } from '../types/types'
 import { Box } from 'grommet'
 
-import PatientPrescriptions from '../components/PatientPrescriptions'
+import PatientHomePage from '../components/PatientHomePage'
 
 const Home = ({ user }: ServerPageProps) => {
   return (
@@ -20,7 +20,7 @@ const Home = ({ user }: ServerPageProps) => {
       </Head>
       <Page user={user}>
         <Box pad="medium">
-          {user.role === Role.Patient && <PatientPrescriptions user={user} />}
+          {user.role === Role.Patient && <PatientHomePage user={user} />}
         </Box>
       </Page>
     </>
