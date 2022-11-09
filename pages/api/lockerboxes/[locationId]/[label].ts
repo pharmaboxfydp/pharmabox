@@ -9,7 +9,7 @@ export default async function handler(
   if (req.method === 'GET') {
     try {
       const { label, locationId } = req.query
-      const lockerBox = await prisma.lockerBox.findUnique({
+      const lockerbox = await prisma.lockerBox.findUnique({
         where: {
           specificLockerBox: {
             label: parseInt(label as string),
@@ -17,10 +17,10 @@ export default async function handler(
           }
         }
       })
-      if (!lockerBox) {
+      if (!lockerbox) {
         res.status(404).json({ message: 'Locker not found' })
       } else {
-        res.status(200).json({ message: ' Success', lockerBox })
+        res.status(200).json({ message: ' Success', lockerbox })
       }
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })

@@ -44,8 +44,8 @@ function Error() {
       <CardNotification>
         <ErrorFilled size={32} color={theme.global.colors['status-error']} />
         <Text textAlign="center">
-          Oops! It looks like Pharmabox was not able to your prescriptions. Try
-          refreshing your page. If the issue persists, contact support.
+          Oops! It looks like Pharmabox was not able to load your prescriptions.
+          Try refreshing your page. If the issue persists, contact support.
         </Text>
       </CardNotification>
     </>
