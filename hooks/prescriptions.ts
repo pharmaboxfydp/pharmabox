@@ -1,5 +1,7 @@
 import { Location, Patient, Prescription } from '@prisma/client'
-import useSWR from 'swr'
+import { toast } from 'react-toastify'
+import useSWR, { useSWRConfig } from 'swr'
+
 import { PrescriptionAndLocationAndPatient, Status, User } from '../types/types'
 
 export interface UsePatientPrescriptions {
@@ -11,9 +13,24 @@ export interface UsePatientPrescriptions {
 }
 
 export interface UsePrescription {
-  prescription: Prescription | null
+  prescription: Prescription | Prescription[] | null
   isLoading: boolean
   isError: boolean
+  createPrescription: ({
+    name,
+    status,
+    patientId,
+    balance,
+    locationId,
+    lockerBoxId
+  }: {
+    name: string
+    status: Status
+    patientId: number
+    balance: number
+    locationId: number
+    lockerBoxId: number
+  }) => Promise<any>
 }
 
 const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
@@ -79,19 +96,58 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   }
 }
 
-export function usePrescription(prescriptionId: number): UsePrescription {
+export function usePrescriptions(prescriptionId?: number): UsePrescription {
+  const { mutate } = useSWRConfig()
+
   const { data, error } = useSWR<{
     message: string
-    prescription: Prescription
-  }>(`/api/prescriptions/${prescriptionId}`, fetcher, {
+    prescription: Prescription[] | Prescription
+  }>(`/api/prescriptions/${prescriptionId ?? ''}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: false
   })
 
+  async function createPrescription({
+    name = 'Unnamed Prescription',
+    status = Status.AwaitingPickup,
+    patientId,
+    balance = 0,
+    locationId,
+    lockerBoxId
+  }: {
+    name: string
+    status: Status
+    patientId: number
+    balance: number
+    locationId: number
+    lockerBoxId: number
+  }): Promise<{ message: string; prescription: Prescription }> {
+    const response = await fetch('/api/prescriptions/create', {
+      method: 'POST',
+      body: JSON.stringify({
+        data: { name, status, patientId, balance, locationId, lockerBoxId }
+      })
+    })
+    if (response.status === 200) {
+      mutate(`/api/prescriptions/location/${locationId}`)
+      mutate(`/api/prescriptions/patient/${patientId}`)
+      mutate(`/api/lockerboxes/${locationId}`)
+
+      toast.success(`Prescription Created for Patient ${patientId}`, {
+        icon: '✨'
+      })
+    } else {
+      toast.error('Unable to Create Prescription', { icon: '❌' })
+    }
+    const res = await response.json()
+    return res
+  }
+
   return {
     prescription: data?.prescription ?? null,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
+    createPrescription
   }
 }

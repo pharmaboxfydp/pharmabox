@@ -19,7 +19,7 @@ export default async function handler(
         balance: B,
         locationId: L,
         lockerBoxId: LB
-      } = req.body
+      } = req.body.data
 
       const name: string = N
       const status: Status.AwaitingPickup = S

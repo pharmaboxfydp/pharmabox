@@ -1,9 +1,12 @@
 import {
+  CurrencyDollar,
   ErrorFilled,
   Medication,
+  Pen,
   Person,
   QID,
-  User as UserIcon
+  User as UserIcon,
+  Box as BoxIcon
 } from '@carbon/icons-react'
 import { LockerBox, Patient } from '@prisma/client'
 import {
@@ -22,13 +25,16 @@ import {
   TextInput
 } from 'grommet'
 import { capitalize } from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useLockerboxes } from '../hooks/lockerbox'
 import usePatients, { FullPatient } from '../hooks/patients'
-import { useLocationPrescriptions } from '../hooks/prescriptions'
+import {
+  useLocationPrescriptions,
+  usePrescriptions
+} from '../hooks/prescriptions'
 import theme from '../styles/theme'
-import { LockerBoxState, User } from '../types/types'
+import { LockerBoxState, Status, User } from '../types/types'
 import CardNotification from './CardNotification'
 
 function Loading() {
@@ -199,16 +205,68 @@ function mapPatientsToValues(
 }
 
 function PrescriptionCreationBar({
-  activePatients
+  activePatients,
+  lockerboxes,
+  locationId
 }: {
   activePatients: FullPatient[]
+  lockerboxes: LockerBox[] | null
+  locationId: number | null | undefined
 }) {
   const defaultOptions = useMemo(
     () => (activePatients ? mapPatientsToValues(activePatients) : []),
     [activePatients]
   )
+  const defaultLockerOptions = useMemo(
+    () =>
+      lockerboxes
+        ? lockerboxes.filter(
+            (lockerbox) => lockerbox.status === LockerBoxState.empty
+          )
+        : [],
+    [lockerboxes]
+  )
   const [options, setOptions] = useState(defaultOptions)
-  const [targetPatient, setTargetPatient] = useState<Patient>()
+  const [lockerboxOptions, setLockerboxOptions] = useState(defaultLockerOptions)
+  const { createPrescription } = usePrescriptions()
+  const formRef = useRef<HTMLFormElement>(null)
+
+  async function handleSubmit(event: {
+    value: {
+      patient: Patient
+      name: string
+      balance: string
+      lockerbox: number
+    }
+  }) {
+    const {
+      value: {
+        patient: { id },
+        name,
+        balance: B,
+        lockerbox: label
+      }
+    } = event
+    const lockerBoxId = defaultLockerOptions.filter(
+      (lockerbox) => lockerbox.label === label
+    )[0].id
+    const balance = parseFloat(B)
+    if (locationId) {
+      const response = await createPrescription({
+        name,
+        status: Status.AwaitingPickup,
+        patientId: id,
+        balance,
+        lockerBoxId,
+        locationId
+      })
+      if (response.message == 'Success') {
+        if (formRef.current) {
+          formRef.current.reset()
+        }
+      }
+    }
+  }
 
   return (
     <Box
@@ -219,12 +277,18 @@ function PrescriptionCreationBar({
       overflow="auto"
       direction="row"
     >
-      <Form id="new-prescription-form">
-        <Box direction="row" fill="horizontal" justify="between">
+      <Form id="new-prescription-form" onSubmit={handleSubmit} ref={formRef}>
+        <Box
+          direction="row"
+          fill="horizontal"
+          alignContent="between"
+          gap="small"
+          flex="grow"
+        >
           <FormField lable="Patient" htmlFor="patient" name="patient">
             <Select
               icon={<UserIcon size={20} />}
-              size="small"
+              size="xsmall"
               id="patient"
               name="patient"
               placeholder="Choose Patient"
@@ -238,13 +302,7 @@ function PrescriptionCreationBar({
               }}
               onClose={() => setOptions(defaultOptions)}
               onChange={({ target: { value } }) => {
-                const patients = options.filter(
-                  (option) => option.search === value
-                )
-                if (patients.length === 1) {
-                  const [searchPatient] = patients
-                  setTargetPatient(searchPatient.patient)
-                }
+                options.filter((option) => option.search === value)
               }}
             >
               {(option) => {
@@ -256,8 +314,69 @@ function PrescriptionCreationBar({
               }}
             </Select>
           </FormField>
-
-          <Button type="submit" label="Create Prescription" />
+          <FormField lable="Name" htmlFor="name" name="name">
+            <TextInput
+              size="xsmall"
+              placeholder="Prescription Name"
+              id="name"
+              name="name"
+              icon={<Pen size={20} />}
+              reverse
+            />
+          </FormField>
+          <FormField lable="balance" htmlFor="balance" name="balance">
+            <TextInput
+              size="xsmall"
+              placeholder="Balance Due $00.00"
+              id="balance"
+              name="balance"
+              type="number"
+              min={0}
+              icon={<CurrencyDollar size={20} />}
+              reverse
+              step={0.01}
+            />
+          </FormField>
+          <FormField lable="Lockerbox" htmlFor="lockerbox" name="lockerbox">
+            <Select
+              icon={<BoxIcon size={20} />}
+              size="xsmall"
+              id="lockerbox"
+              name="lockerbox"
+              placeholder="Choose Locker"
+              options={lockerboxOptions.map((option) => option.label)}
+              onSearch={(text) => {
+                const escapedText = text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
+                const exp = new RegExp(escapedText, 'i')
+                setLockerboxOptions(
+                  defaultLockerOptions.filter(({ label }) =>
+                    exp.test(label.toString())
+                  )
+                )
+              }}
+              onClose={() => setLockerboxOptions(defaultLockerOptions)}
+              onChange={({ target: { value } }) => {
+                lockerboxOptions.filter((label) => label === value)
+              }}
+            >
+              {(label) => {
+                return (
+                  <Box pad="small">
+                    <Text size="small">{label}</Text>
+                  </Box>
+                )
+              }}
+            </Select>
+          </FormField>
+          <Box>
+            <Button
+              style={{ borderRadius: '18px' }}
+              type="submit"
+              size="xsmall"
+              label="Create Prescription"
+              primary
+            />
+          </Box>
         </Box>
       </Form>
     </Box>
@@ -266,6 +385,8 @@ function PrescriptionCreationBar({
 
 export default function StaffHomePage({ user }: { user: User }) {
   const { activePatients } = usePatients()
+  const { lockerboxes } = useLockerboxes(user)
+
   return (
     <Grid
       fill
@@ -280,7 +401,11 @@ export default function StaffHomePage({ user }: { user: User }) {
     >
       <Box gridArea="fulfill">
         {activePatients && (
-          <PrescriptionCreationBar activePatients={activePatients} />
+          <PrescriptionCreationBar
+            activePatients={activePatients}
+            lockerboxes={lockerboxes}
+            locationId={user?.Staff?.locationId}
+          />
         )}
       </Box>
       <Box gridArea="left-pannel">
