@@ -1,4 +1,10 @@
-import { ErrorFilled, Medication, Person, QID } from '@carbon/icons-react'
+import {
+  ErrorFilled,
+  Medication,
+  Person,
+  QID,
+  User as UserIcon
+} from '@carbon/icons-react'
 import { LockerBox, Patient } from '@prisma/client'
 import {
   Box,
@@ -185,7 +191,8 @@ function mapPatientsToValues(
   patients: FullPatient[]
 ): { search: string; id: number; patient: Patient }[] {
   return patients.map((patient) => ({
-    search: `${patient.User.firstName} ${patient.User.lastName} ${patient.dob}`,
+    search: `${patient.User.firstName} ${patient.User.lastName}, ${(() =>
+      patient.dob ? new Date(patient.dob).toDateString() : '-')()}`,
     id: patient.id,
     patient
   }))
@@ -201,7 +208,7 @@ function PrescriptionCreationBar({
     [activePatients]
   )
   const [options, setOptions] = useState(defaultOptions)
-  const [targetPatient, setTargetPatient] = useState()
+  const [targetPatient, setTargetPatient] = useState<Patient>()
 
   return (
     <Box
@@ -216,9 +223,11 @@ function PrescriptionCreationBar({
         <Box direction="row" fill="horizontal" justify="between">
           <FormField lable="Patient" htmlFor="patient" name="patient">
             <Select
+              icon={<UserIcon size={20} />}
               size="small"
               id="patient"
               name="patient"
+              placeholder="Choose Patient"
               options={options}
               onSearch={(text) => {
                 const escapedText = text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
@@ -228,21 +237,26 @@ function PrescriptionCreationBar({
                 )
               }}
               onClose={() => setOptions(defaultOptions)}
-              onChange={(event) => {
-                debugger
+              onChange={({ target: { value } }) => {
+                const patients = options.filter(
+                  (option) => option.search === value
+                )
+                if (patients.length === 1) {
+                  const [searchPatient] = patients
+                  setTargetPatient(searchPatient.patient)
+                }
               }}
             >
               {(option) => {
                 return (
-                  <Text size="small">
-                    <option data-value={JSON.stringify(option)}>
-                      {option.search}
-                    </option>
-                  </Text>
+                  <Box pad="small">
+                    <Text size="small">{option.search}</Text>
+                  </Box>
                 )
               }}
             </Select>
           </FormField>
+
           <Button type="submit" label="Create Prescription" />
         </Box>
       </Form>
