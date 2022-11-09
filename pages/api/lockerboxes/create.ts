@@ -13,32 +13,16 @@ export default async function handler(
       if (typeof req.body === 'string') {
         req.body = JSON.parse(req.body)
       }
-      const { lockerCount: C, locationId: I } = req.body.data
+      const { lockerCount: C, locationId: I } = req.body
       const lockerCount: number = parseInt(C)
       const locationId: number = parseInt(I)
 
-      const lockerBoxes = Array.from({ length: lockerCount }, (_, index) => {
-        return {
-          label: index + 1,
-          status: LockerBoxState.empty,
-          locationId
-        }
-      })
-      const lockers: LockerBox[] = []
-      lockerBoxes.forEach(async (box) => {
-        const locker = await prisma.lockerBox.create({
-          data: {
-            label: box.label,
-            status: box.status,
-            Location: {
-              connect: { id: box.locationId }
-            }
-          }
-        })
-        lockers.push(locker)
+      const lockerBoxes = Array.from({ length: lockerCount }, (_, i) => {
+        return { locationId: locationId, label: i + 1, status: 'empty' }
       })
 
-      res.status(200).json({ message: ' Success', lockers })
+      const lockers = await prisma.lockerBox.createMany({ data: lockerBoxes })
+      res.status(200).json({ message: 'Success', lockers })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }
