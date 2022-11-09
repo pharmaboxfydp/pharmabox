@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
+import { Status } from '../../../types/types'
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,43 +9,45 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
       const {
-        name,
-        status,
-        pickupTime,
-        patientId,
-        balance,
-        locationId,
-        lockerBoxId
+        name: N,
+        status: S,
+        patientId: P,
+        balance: B,
+        locationId: L,
+        lockerBoxId: LB
       } = req.body
 
-      let random_key = crypto.randomBytes(20).toString('hex')
-      let prescription = await prisma.prescription.create({
+      const name: string = N
+      const status: Status.AwaitingPickup = S
+      const patientId: number = parseInt(P)
+      const balance: number = parseFloat(B)
+      const locationId: number = parseInt(L)
+      const lockerBoxId: number = parseInt(LB)
+      const random_key = crypto.randomBytes(20).toString('hex')
+      const prescription = await prisma.prescription.create({
         data: {
           name: name,
           status: status,
-          pickupTime: pickupTime,
           balance: balance,
           pickupCode: random_key,
-          Patient: {
-            connect: {
-              id: patientId
-            }
-          },
-          LockerBox: {
-            connect: {
-              id: lockerBoxId
-            }
-          },
-          Location: {
-            connect: {
-              id: locationId
-            }
-          }
+          patientId: patientId,
+          lockerBoxId: lockerBoxId,
+          locationId: locationId
         }
       })
 
-      res.status(200).json({ message: 'Success', prescription })
+      const lockerBox = await prisma.lockerBox.update({
+        where: { id: lockerBoxId },
+        data: {
+          status: status
+        }
+      })
+
+      res.status(200).json({ message: 'Success', prescription, lockerBox })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
     }
