@@ -56,12 +56,14 @@ function ActivePatientPrescriptionCards({
   prescriptions,
   isError,
   isLoading,
-  shouldBeDisabled
+  shouldBeDisabled,
+  refresh
 }: {
   prescriptions: PrescriptionAndLocationAndPatient[] | null
   isError: boolean
   isLoading: boolean
   shouldBeDisabled: boolean
+  refresh: any
 }) {
   const [qrCode, setQrCode] = useState<string>('')
   const [lockerBox, setLockerBox] = useState<number | null>(null)
@@ -69,6 +71,7 @@ function ActivePatientPrescriptionCards({
   function onClose() {
     setShowQrCode(false)
     setQrCode('')
+    refresh()
   }
 
   if (isLoading) {
@@ -171,8 +174,13 @@ function PreviousPatientPrescriptionCards({
 export default function PatientHomePage({ user }: { user: User }) {
   const [dismissWarning, setDismissWarning] = useState<boolean>(false)
 
-  const { activePrescriptions, prevPrescriptions, isError, isLoading } =
-    usePatientPrescriptions(user?.Patient?.id)
+  const {
+    activePrescriptions,
+    prevPrescriptions,
+    isError,
+    isLoading,
+    refresh
+  } = usePatientPrescriptions(user?.Patient?.id)
 
   const shouldBeDisabled = !user.Patient?.dob
   return (
@@ -213,6 +221,7 @@ export default function PatientHomePage({ user }: { user: User }) {
             isError={isError}
             isLoading={isLoading}
             shouldBeDisabled={shouldBeDisabled}
+            refresh={refresh}
           />
         </Tab>
         <Tab title="Previous Pickups">

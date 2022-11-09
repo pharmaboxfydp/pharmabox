@@ -1,5 +1,5 @@
 import { Location, Patient, Prescription } from '@prisma/client'
-import useSWR from 'swr'
+import useSWR, { useSWRConfig } from 'swr'
 import { PrescriptionAndLocationAndPatient, Status, User } from '../types/types'
 
 export interface UsePatientPrescriptions {
@@ -8,6 +8,7 @@ export interface UsePatientPrescriptions {
   prevPrescriptions: PrescriptionAndLocationAndPatient[] | null
   isLoading: boolean
   isError: boolean
+  refresh: any
 }
 
 export interface UsePrescription {
@@ -31,6 +32,11 @@ export function usePatientPrescriptions(
     revalidateOnReconnect: false
   })
 
+  const { mutate } = useSWRConfig()
+  function refresh() {
+    mutate(`/api/prescriptions/patient/${patientId}`)
+  }
+
   const activePrescriptions =
     data?.prescriptions.filter(
       (prescription) => prescription.status === Status.AwaitingPickup
@@ -46,7 +52,8 @@ export function usePatientPrescriptions(
     activePrescriptions,
     prevPrescriptions,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
+    refresh
   }
 }
 
@@ -59,7 +66,10 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
     revalidateOnFocus: true,
     revalidateOnReconnect: false
   })
-
+  const { mutate } = useSWRConfig()
+  function refresh() {
+    mutate(`/api/prescriptions/location/${user?.Staff?.locationId}`)
+  }
   const activePrescriptions =
     data?.prescriptions.filter(
       (prescription) => prescription.status === Status.AwaitingPickup
@@ -75,7 +85,8 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
     activePrescriptions,
     prevPrescriptions,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
+    refresh
   }
 }
 
