@@ -16,7 +16,6 @@ export default async function handler(
       const { lockerCount: C, locationId: I } = req.body
       const lockerCount: number = parseInt(C)
       const locationId: number = parseInt(I)
-
       const lockerBoxes = Array.from({ length: lockerCount }, (_, i) => {
         return { locationId: locationId, label: i + 1, status: 'empty' }
       })
