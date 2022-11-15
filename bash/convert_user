@@ -4,17 +4,18 @@ set -o allexport
 source .env.development
 set +o allexport
 
-while getopts r:i:t:e: flag
+while getopts r:i:t:l:e: flag
 do
     case "${flag}" in
         r) role=${OPTARG};;
         i) id=${OPTARG};;
         t) type=${OPTARG};;
+        l) locationId=${OPTARG};;
         e) env=${OPTARG};;
     esac
 done
-echo "converting role: $role for user: $id in environment $env";
+echo "converting role: $role for user: $id at location: $locationId in environment $env";
 
-npx ts-node lib/scripts/convert_user.ts $role $id $type $env
+npx ts-node lib/scripts/convert_user.ts $role $id $type $locationId $env
 
 echo "Done!"
