@@ -97,11 +97,11 @@ sh bash/seed_test_dbs
 
 ### Convert Users
 
-This script `bash/convert_user` can convert a user either locally, (dev) or on prod from a `patient` to a `staff` or vise-versa. It takes four flags `-r --role`,`-i --id`, `-t --type` and `-e --env` to specify the user you want to convert. The user will be converted to the specified role and their previous role record will be removed It can be used as:
+This script `bash/convert_user` can convert a user either locally, (dev) or on prod from a `patient` to a `staff` or vise-versa. It takes five flags `-r --role`,`-i --id`, `-t --type`, `-l --location` and `-e --env` to specify the user you want to convert. The user will be converted to the specified role and their previous role record will be removed It can be used as:
 
 ```bash
 # converts user: user_abc123 to a staff member locally as admin
-bash/convert_user -r staff -i user_abc123 -t admin -e dev
+bash/convert_user -r staff -i user_abc123 -t admin -l 2 -e dev
 
 ```
 

@@ -10,7 +10,8 @@ type Env = 'prod' | 'dev'
 const role: Role = process.argv[2] as Role
 const userId: string = process.argv[3] as string
 const admin: string = process.argv[4]
-const environment: Env = process.argv[5] as Env
+const locationId: string = process.argv[5]
+const environment: Env = process.argv[6] as Env
 
 const BASE_URL =
   environment === 'dev'
@@ -24,7 +25,8 @@ async function updateUser({ id, role }: { id: string; role: Role }) {
       data: {
         id,
         role,
-        isAdmin: admin === 'admin' ? true : false
+        isAdmin: admin === 'admin' ? true : false,
+        locationId
       }
     })
   })

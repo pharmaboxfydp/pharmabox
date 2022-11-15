@@ -16,13 +16,15 @@ export default async function handler(
       if (typeof req.body === 'string') {
         req.body = JSON.parse(req.body)
       }
-      const { role: R, id: I, isAdmin: A } = req.body.data
+      const { role: R, id: I, isAdmin: A, locationId: L } = req.body.data
       /**
        * case these types here
        */
       const role = R as Role
       const id = I as string
       const isAdmin = A as boolean
+      const locationId = L as string
+
       if (role === Role.Patient || role === Role.Staff) {
         let user
         let deletedRole
@@ -57,7 +59,8 @@ export default async function handler(
                     userId: id
                   },
                   create: {
-                    isAdmin
+                    isAdmin,
+                    locationId: parseInt(locationId)
                   }
                 }
               }
