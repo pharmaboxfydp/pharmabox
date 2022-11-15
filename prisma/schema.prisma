@@ -59,7 +59,7 @@ model Prescription {
   Location    Location  @relation(fields: [locationId], references: [id])
   LockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
   locationId  Int
-  lockerBoxId Int       @unique
+  lockerBoxId Int
   pickupCode  String
 
   @@map(name: "prescriptions")
