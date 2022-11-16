@@ -69,9 +69,37 @@ function LockerboxesStatus({ user }: { user: User }) {
       <Error message="Oops! It looks like Pharmabox was not able to load lockerboxes. Try refreshing your page. If the issue persists, contact support." />
     )
   }
+  const numBoxes = lockerboxes?.length ?? 1
+  const numAvailable = lockerboxes?.filter(
+    (box) => box.status === LockerBoxState.empty
+  ).length
+  const numFull =
+    lockerboxes?.filter((box) => box.status === LockerBoxState.full).length ?? 0
   return (
     <Box gap="small" round="small" border pad="medium" overflow="auto" fill>
-      <Text weight="bold">Locker Status</Text>
+      <Box direction="row" gap="small">
+        <Box width="medium">
+          <Text weight="bold">
+            Locker Status: {numAvailable}/{numBoxes} Free
+          </Text>
+        </Box>
+        <Box
+          width="100%"
+          background={theme.global.colors['status-ok']}
+          round
+          style={{ marginTop: '4px' }}
+        >
+          <Box
+            background={theme.global.colors['status-warning']}
+            width={`${(numFull / numBoxes) * 100}%`}
+            fill="vertical"
+            round
+            border
+          >
+            <Text></Text>
+          </Box>
+        </Box>
+      </Box>
       <Box overflow={{ vertical: 'scroll' }} pad="small">
         {lockerboxes?.map(
           ({
@@ -84,7 +112,7 @@ function LockerboxesStatus({ user }: { user: User }) {
             status: string
           }) => (
             <Box key={label} height={{ min: '96px' }}>
-              <Card width="small" pad="small" gap="small">
+              <Card pad="small" gap="small">
                 <CardHeader>
                   <Text size="small" weight="bold">
                     Locker Number:{' '}

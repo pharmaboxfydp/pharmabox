@@ -1,7 +1,7 @@
 import React from 'react'
-import { PatientRootPages, Role, StaffRootPages } from '../types/types'
+import { Role } from '../types/types'
 import { allowedUrls } from './Sidebar'
-import { Anchor, Button, Header, Menu, Nav, ResponsiveContext } from 'grommet'
+import { Header, Nav } from 'grommet'
 import MobileBarButton from './MobileBarButton'
 import theme from '../styles/theme'
 

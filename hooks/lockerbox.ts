@@ -30,7 +30,7 @@ export function useLockerboxes(user: User): UseLockerboxes {
   )
 
   return {
-    lockerboxes: data?.lockerboxes.sort((a, b) => a.label - b.label) ?? null,
+    lockerboxes: data?.lockerboxes?.sort((a, b) => a.label - b.label) ?? null,
     isLoading: !error && !data,
     isError: error
   }

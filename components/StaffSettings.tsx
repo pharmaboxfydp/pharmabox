@@ -5,7 +5,6 @@ import {
   QID,
   WarningAlt
 } from '@carbon/icons-react'
-import { Location } from '@prisma/client'
 import { Text, Box, Card } from 'grommet'
 import Skeleton from 'react-loading-skeleton'
 import useLocation from '../hooks/location'
