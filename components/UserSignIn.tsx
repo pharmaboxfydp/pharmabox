@@ -31,14 +31,9 @@ export default function UserSignIn() {
           alt="Pharmabox Logo"
           style={{ userSelect: 'none', pointerEvents: 'none' }}
         />
-        {loaded && (
-          <Clock
-            type="digital"
-            a11yTitle="Time"
-            style={{ color: theme.global.colors.white }}
-          />
-        )}
-        <SignedOutCards />
+        <Box pad="medium">
+          <SignedOutCards />
+        </Box>
       </Box>
       <Footer pad="small" justify="center">
         <Text color={theme.global.colors.white}>
@@ -75,6 +70,8 @@ const SignedOutCards = () => {
           onClick={() => openSignIn()}
           label="Sign In"
           style={{ borderRadius: '24px' }}
+          // when user press enter trigger the login overlay
+          autoFocus
         />
         <Text size="xsmall">Or</Text>
         <Button
