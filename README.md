@@ -2,7 +2,7 @@
 
 - [Organization](https://github.com/pharma-box)
 - [Organization Documents](https://github.com/pharma-box/docs)
-- [Live Url: pharmabox.vercel.com](https://pharmabox.vercel.com)
+- [Live Url: pharmabox.vercel.app](https://pharmabox.vercel.app)
 
 Status
 
