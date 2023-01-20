@@ -10,6 +10,10 @@ Status
 
 This is a [Next.js](https://nextjs.org/) project
 
+## API Documentation
+
+Refer to [api-documentation.md](./api-documentation.md) for API documentation. The documentation includes a list of available endpoints, best practices and code strategies.
+
 ## Environment Setup for Local Development
 
 1. Install Postgress Locally: [postgressapp.com](https://postgresapp.com/downloads.html)
