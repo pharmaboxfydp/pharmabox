@@ -1,6 +1,11 @@
 import { Sidebar as GSidebar, Nav } from 'grommet'
 import theme from '../styles/theme'
-import { PatientRootPages, Role, StaffRootPages } from '../types/types'
+import {
+  PatientRootPages,
+  PharmacistRootPages,
+  Role,
+  StaffRootPages
+} from '../types/types'
 import SidebarButton from './SidebarButton'
 import { useClerk } from '@clerk/clerk-react'
 import {
@@ -19,7 +24,7 @@ import {
 export const allowedUrls: Record<
   Role,
   Array<{
-    link: StaffRootPages | PatientRootPages
+    link: StaffRootPages | PatientRootPages | PharmacistRootPages
     name: string
     Icon: JSX.Element
   }>
@@ -74,6 +79,38 @@ export const allowedUrls: Record<
     },
     {
       link: PatientRootPages.Settings,
+      name: 'Settings',
+      Icon: <Settings size={24} />
+    }
+  ],
+  pharmacist: [
+    {
+      link: PharmacistRootPages.Home,
+      name: 'Dashboard',
+      Icon: <Dashboard size={24} />
+    },
+    {
+      link: PharmacistRootPages.Patients,
+      name: 'Patients',
+      Icon: <WatsonHealthNominate size={24} />
+    },
+    {
+      link: PharmacistRootPages.Workflows,
+      name: 'Workflows',
+      Icon: <Schematics size={24} />
+    },
+    {
+      link: PharmacistRootPages.Team,
+      name: 'Team',
+      Icon: <Collaborate size={24} />
+    },
+    {
+      link: PharmacistRootPages.Logbook,
+      name: 'Logbook',
+      Icon: <Catalog size={24} />
+    },
+    {
+      link: PharmacistRootPages.Settings,
       name: 'Settings',
       Icon: <Settings size={24} />
     }

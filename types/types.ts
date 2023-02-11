@@ -59,6 +59,16 @@ export enum PatientRootPages {
   Profile = '/settings/profile/[[...index]]'
 }
 
+export enum PharmacistRootPages {
+  Home = '/home',
+  Workflows = '/workflows',
+  Patients = '/patients',
+  Team = '/team',
+  Logbook = '/logbook',
+  Settings = '/settings/[[...index]]',
+  Profile = '/settings/profile/[[...index]]'
+}
+
 export type User = {
   id: string
   firstName: string | undefined
