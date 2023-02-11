@@ -93,6 +93,7 @@ function LockerboxesStatus({ user }: { user: User }) {
             background={theme.global.colors['status-warning']}
             width={`${(numFull / numBoxes) * 100}%`}
             fill="vertical"
+            style={{ display: numFull > 0 ? 'flex' : 'none' }}
             round
             border
           >

@@ -9,15 +9,21 @@ import {
   Tip
 } from 'grommet'
 import useTeam from '../hooks/team'
-import { Permissions, User } from '../types/types'
+import { Permissions, Role, User } from '../types/types'
 import Skeleton from 'react-loading-skeleton'
-import { Close, ErrorFilled } from '@carbon/icons-react'
+import {
+  CircleDash,
+  CircleSolid,
+  Close,
+  ErrorFilled
+} from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
-import { Staff } from '@prisma/client'
-import useRole from '../hooks/role'
+import { Pharmacist, Staff } from '@prisma/client'
+import usePermissions from '../hooks/permissions'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { capitalize } from 'lodash'
 
 export default function TeamMembersTable({ user }: { user: User }) {
   const [showRemoveUser, setShowRemoveUser] = useState<boolean>(false)
@@ -46,7 +52,8 @@ export default function TeamMembersTable({ user }: { user: User }) {
     }
   }
 
-  const { updateRole } = useRole()
+  const { updatePermissions } = usePermissions()
+
   if (isLoading && !isError) {
     return (
       <Box gap="medium">
@@ -68,7 +75,6 @@ export default function TeamMembersTable({ user }: { user: User }) {
       </CardNotification>
     )
   }
-
   return (
     <>
       <Box>
@@ -78,15 +84,55 @@ export default function TeamMembersTable({ user }: { user: User }) {
               property: 'Name',
               header: <Text size="small">Name</Text>,
               render: ({ firstName, lastName }) => (
-                <Text size="small">
+                <Text size="xsmall">
                   {firstName} {lastName}
                 </Text>
               )
             },
             {
               property: 'email',
-              header: <Text size="small">Email</Text>,
+              header: <Text size="xsmall">Email</Text>,
               render: ({ email }) => <Text size="small">{email}</Text>
+            },
+            {
+              property: 'isAuthorized',
+              header: <Text size="small">Authorization</Text>,
+              render: ({ Staff, Pharmacist }) => {
+                let isAuthoized = Pharmacist
+                  ? true
+                  : Staff?.isAuthorized || false
+                return (
+                  <Box align="center">
+                    {isAuthoized ? (
+                      <Box
+                        direction="row"
+                        gap="small"
+                        animation="fadeIn"
+                        align="center"
+                      >
+                        <Text size="small">Active</Text>
+                        <CircleSolid
+                          size={16}
+                          color={theme.global.colors['status-ok']}
+                        />
+                      </Box>
+                    ) : (
+                      <Box
+                        direction="row"
+                        gap="small"
+                        animation="fadeIn"
+                        align="center"
+                      >
+                        <Text size="small">Inactive</Text>
+                        <CircleDash
+                          size={16}
+                          color={theme.global.colors['status-warning']}
+                        />
+                      </Box>
+                    )}
+                  </Box>
+                )
+              }
             },
             {
               property: 'lastLoggedIn',
@@ -95,40 +141,80 @@ export default function TeamMembersTable({ user }: { user: User }) {
                 const date = lastLoggedIn
                   ? (() => new Date(lastLoggedIn))().toDateString()
                   : '-'
-                return <Text size="small">{date}</Text>
+                return <Text size="xsmall">{date}</Text>
               }
             },
             {
               property: 'role',
-              header: <Text size="small">Permissions</Text>,
-              render: ({ Staff }) => {
-                const isAdmin = Staff?.isAdmin
-                const role = isAdmin ? Permissions.Admin : Permissions.Standard
-                /**
-                 * allow edit roles if the current user is an administrator
-                 * and if there are more than one user on the team.
-                 */
-                const canEdit = user.Staff?.isAdmin && team && team?.length > 1
+              header: <Text size="small">Role</Text>,
+              render: ({ Staff, Pharmacist, role }) => {
+                const canEdit =
+                  (user.Staff?.isAdmin || user.Pharmacist?.isAdmin) &&
+                  team &&
+                  team?.length > 1
                 if (canEdit) {
                   return (
-                    <Text size="small">
+                    <Text size="xsmall">
                       <Select
-                        options={[Permissions.Admin, Permissions.Standard]}
-                        defaultValue={role}
-                        onChange={({ value }) => {
-                          updateRole({ value, member: Staff as Staff })
-                        }}
+                        options={['Staff', 'Pharmacist']}
+                        style={{ padding: '6px 0px 6px 10px' }}
+                        defaultValue={capitalize(role)}
                       >
                         {(option) => (
                           <Box pad="xsmall">
-                            <Text size="small">{option}</Text>
+                            <Text size="xsmall">{option}</Text>
                           </Box>
                         )}
                       </Select>
                     </Text>
                   )
                 }
-                return <Text size="small">{role}</Text>
+                return <Text size="xsmall">{capitalize(role)}</Text>
+              }
+            },
+            {
+              property: 'permissions',
+              header: <Text size="small">Permissions</Text>,
+              render: ({ Staff, Pharmacist, role }) => {
+                const isAdmin = Staff?.isAdmin || Pharmacist?.isAdmin
+                const permissions = isAdmin
+                  ? Permissions.Admin
+                  : Permissions.Standard
+                /**
+                 * allow edit roles if the current user is an administrator
+                 * and if there are more than one user on the team.
+                 */
+                const canEdit =
+                  (user.Staff?.isAdmin || user.Pharmacist?.isAdmin) &&
+                  team &&
+                  team?.length > 1
+
+                const member = (Pharmacist || Staff) as Staff | Pharmacist
+                if (canEdit) {
+                  return (
+                    <Text size="xsmall">
+                      <Select
+                        options={[Permissions.Admin, Permissions.Standard]}
+                        defaultValue={permissions}
+                        onChange={({ value }) => {
+                          updatePermissions({
+                            value,
+                            member,
+                            role: role as Role
+                          })
+                        }}
+                        style={{ padding: '6px 0px 6px 10px' }}
+                      >
+                        {(option) => (
+                          <Box pad="xsmall">
+                            <Text size="xsmall">{option}</Text>
+                          </Box>
+                        )}
+                      </Select>
+                    </Text>
+                  )
+                }
+                return <Text size="xsmall">{permissions}</Text>
               }
             },
             {
