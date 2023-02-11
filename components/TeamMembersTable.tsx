@@ -30,6 +30,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
   const [removeUserTarget, setRemoveUserTarget] = useState<null | User>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const { team, isLoading, isError, removeTeamMember } = useTeam(user)
+  const { updatePermissions } = usePermissions()
 
   function stopUserRemove() {
     setShowRemoveUser(false)
@@ -51,8 +52,6 @@ export default function TeamMembersTable({ user }: { user: User }) {
       return false
     }
   }
-
-  const { updatePermissions } = usePermissions()
 
   if (isLoading && !isError) {
     return (
