@@ -100,10 +100,10 @@ export default function TeamMembersTable({ user }: { user: User }) {
             },
             {
               property: 'role',
-              header: <Text size="small">Role</Text>,
+              header: <Text size="small">Permissions</Text>,
               render: ({ Staff }) => {
                 const isAdmin = Staff?.isAdmin
-                const role = isAdmin ? Permissions.Admin : Permissions.Member
+                const role = isAdmin ? Permissions.Admin : Permissions.Standard
                 /**
                  * allow edit roles if the current user is an administrator
                  * and if there are more than one user on the team.
@@ -113,7 +113,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
                   return (
                     <Text size="small">
                       <Select
-                        options={[Permissions.Admin, Permissions.Member]}
+                        options={[Permissions.Admin, Permissions.Standard]}
                         defaultValue={role}
                         onChange={({ value }) => {
                           updateRole({ value, member: Staff as Staff })
@@ -138,7 +138,13 @@ export default function TeamMembersTable({ user }: { user: User }) {
                   <>
                     <Tip
                       content={
-                        <Text size="xsmall">Remove {user.email} from team</Text>
+                        <Text size="xsmall">
+                          Remove{' '}
+                          <b>
+                            {user.firstName} {user.lastName}
+                          </b>{' '}
+                          from team?
+                        </Text>
                       }
                     >
                       <Button

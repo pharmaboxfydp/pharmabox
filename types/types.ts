@@ -26,7 +26,7 @@ export type PharmacyLocation = Location & {
 }
 
 export enum Permissions {
-  Member = 'Member',
+  Standard = 'Standard',
   Admin = 'Admin'
 }
 export enum Status {
