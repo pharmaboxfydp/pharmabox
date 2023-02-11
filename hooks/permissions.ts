@@ -32,7 +32,7 @@ export default function usePermissions() {
       toast.success(`Updated to ${value}`, { icon: '👍' })
       mutate('/api/team')
     } else {
-      toast.error('Unable to update role', { icon: '😥' })
+      toast.error('Unable to update permissions', { icon: '😥' })
     }
   }
   return {

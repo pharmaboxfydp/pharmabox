@@ -24,6 +24,7 @@ import usePermissions from '../hooks/permissions'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash'
+import useRole from '../hooks/role'
 
 export default function TeamMembersTable({ user }: { user: User }) {
   const [showRemoveUser, setShowRemoveUser] = useState<boolean>(false)
@@ -31,6 +32,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const { team, isLoading, isError, removeTeamMember } = useTeam(user)
   const { updatePermissions } = usePermissions()
+  const { updateRole } = useRole()
 
   function stopUserRemove() {
     setShowRemoveUser(false)
@@ -97,9 +99,8 @@ export default function TeamMembersTable({ user }: { user: User }) {
               property: 'isAuthorized',
               header: <Text size="small">Authorization</Text>,
               render: ({ Staff, Pharmacist }) => {
-                let isAuthoized = Pharmacist
-                  ? true
-                  : Staff?.isAuthorized || false
+                let isAuthoized =
+                  (Pharmacist?.isOnDuty || Staff?.isAuthorized) ?? false
                 return (
                   <Box align="center">
                     {isAuthoized ? (
@@ -151,6 +152,8 @@ export default function TeamMembersTable({ user }: { user: User }) {
                   (user.Staff?.isAdmin || user.Pharmacist?.isAdmin) &&
                   team &&
                   team?.length > 1
+                const member = (Pharmacist || Staff) as Staff | Pharmacist
+
                 if (canEdit) {
                   return (
                     <Text size="xsmall">
@@ -158,6 +161,12 @@ export default function TeamMembersTable({ user }: { user: User }) {
                         options={['Staff', 'Pharmacist']}
                         style={{ padding: '6px 0px 6px 10px' }}
                         defaultValue={capitalize(role)}
+                        onChange={({ value }: { value: string }) => {
+                          updateRole({
+                            role: value.toLowerCase() as Role,
+                            member
+                          })
+                        }}
                       >
                         {(option) => (
                           <Box pad="xsmall">

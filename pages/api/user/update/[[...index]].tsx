@@ -48,6 +48,7 @@ export default async function handler(
       }
       const user = await prisma.user.update({
         where: { id: id },
+        // @ts-expect-error known type mismatch
         data: payload
       })
 
