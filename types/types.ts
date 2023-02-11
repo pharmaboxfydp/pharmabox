@@ -4,12 +4,14 @@ import {
   Staff,
   Prescription,
   Location,
-  LockerBox
+  LockerBox,
+  Pharmacist
 } from '@prisma/client'
 
 export enum Role {
   Staff = 'staff',
-  Patient = 'patient'
+  Patient = 'patient',
+  Pharmacist = 'pharmacist'
 }
 export type PrescriptionAndLocationAndPatient = Prescription & {
   Location: Location
@@ -70,6 +72,7 @@ export type User = {
   lastLoggedIn?: string
   Patient?: Patient
   Staff?: Staff
+  Pharmacist?: Pharmacist
 }
 
 export interface ServerPageProps {
