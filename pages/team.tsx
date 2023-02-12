@@ -49,6 +49,10 @@ export default Team
 
 export const getServerSideProps = withServerSideAuth(
   async ({ req, res }) =>
-    SSRUser({ req, res, query: { include: { Staff: true } } }),
+    SSRUser({
+      req,
+      res,
+      query: { include: { Staff: true, Pharmacist: true } }
+    }),
   { loadUser: true }
 )

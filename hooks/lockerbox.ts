@@ -19,8 +19,10 @@ const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
   fetch(...arg).then((res) => res.json())
 
 export function useLockerboxes(user: User): UseLockerboxes {
+  const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
+
   const { data, error } = useSWR<{ message: string; lockerboxes: LockerBox[] }>(
-    `/api/lockerboxes/${user.Staff?.locationId}`,
+    `/api/lockerboxes/${locationId}`,
     fetcher,
     {
       revalidateIfStale: true,
@@ -37,8 +39,9 @@ export function useLockerboxes(user: User): UseLockerboxes {
 }
 
 export function useLockerbox(user: User, label: number): UseLockerbox {
+  const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
   const { data, error } = useSWR<{ message: string; lockerbox: LockerBox }>(
-    `/api/lockerboxes/${user.Staff?.locationId}/${label}`,
+    `/api/lockerboxes/${locationId}/${label}`,
     fetcher,
     {
       revalidateIfStale: true,
