@@ -40,7 +40,7 @@ export default async function handler(
               userId: targetUserId
             },
             data: {
-              isOnDuty: true
+              isOnDuty: false
             }
           })
         }
@@ -54,7 +54,7 @@ export default async function handler(
                   userId: targetUserId
                 },
                 data: {
-                  isOnDuty: true
+                  isOnDuty: false
                 }
               })
             }
@@ -65,7 +65,7 @@ export default async function handler(
                   userId: targetUserId
                 },
                 data: {
-                  isAuthorized: true
+                  isAuthorized: false
                 }
               })
             }
