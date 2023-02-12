@@ -1,7 +1,7 @@
 import { Pharmacist, Staff } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import prisma from '../../../../../lib/prisma'
-import { Role } from '../../../../../types/types'
+import prisma from '../../../../../../lib/prisma'
+import { Role } from '../../../../../../types/types'
 
 export default async function handler(
   req: NextApiRequest,
