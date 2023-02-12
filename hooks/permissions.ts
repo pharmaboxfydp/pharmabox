@@ -30,9 +30,10 @@ export default function usePermissions() {
     if (response.status === 200) {
       await response.json()
       toast.success(`Updated to ${value}`, { icon: '👍' })
-      mutate('/api/team')
+      mutate(`/api/team/${member.locationId}`)
     } else {
       toast.error('Unable to update permissions', { icon: '😥' })
+      mutate(`/api/team/${member.locationId}`)
     }
   }
   return {
