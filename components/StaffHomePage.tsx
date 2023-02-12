@@ -27,6 +27,7 @@ import {
 import { capitalize } from 'lodash'
 import { useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
+import useAuthorization from '../hooks/authorization'
 import { useLockerboxes } from '../hooks/lockerbox'
 import usePatients, { FullPatient } from '../hooks/patients'
 import {
@@ -417,6 +418,7 @@ function PrescriptionCreationBar({
 export default function StaffHomePage({ user }: { user: User }) {
   const { activePatients } = usePatients()
   const { lockerboxes } = useLockerboxes(user)
+  const { isAuthorized } = useAuthorization(user)
 
   return (
     <Grid

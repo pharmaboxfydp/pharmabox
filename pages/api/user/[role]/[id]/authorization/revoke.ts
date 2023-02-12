@@ -65,7 +65,10 @@ export default async function handler(
                   userId: targetUserId
                 },
                 data: {
-                  isAuthorized: false
+                  isAuthorized: false,
+                  authorizer: {
+                    disconnect: true
+                  }
                 }
               })
             }
