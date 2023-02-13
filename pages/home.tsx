@@ -7,7 +7,7 @@ import { Box } from 'grommet'
 
 import PatientHomePage from '../components/PatientHomePage'
 import Breadcrumbs from '../components/Breadcrumbs'
-import StaffHomePage from '../components/StaffHomePage'
+import StaffAndPharmacistHomePage from '../components/StaffAndPharmacistHomePage'
 
 const Home = ({ user }: ServerPageProps) => {
   return (
@@ -29,7 +29,9 @@ const Home = ({ user }: ServerPageProps) => {
              */}
             {user.role === Role.Patient && <PatientHomePage user={user} />}
             {user.role === Role.Staff ||
-              (user.role === Role.Pharmacist && <StaffHomePage user={user} />)}
+              (user.role === Role.Pharmacist && (
+                <StaffAndPharmacistHomePage user={user} />
+              ))}
           </Box>
         </Box>
       </Page>

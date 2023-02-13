@@ -423,7 +423,7 @@ function PrescriptionCreationBar({
   )
 }
 
-export default function StaffHomePage({ user }: { user: User }) {
+export default function StaffAndPharmacistHomePage({ user }: { user: User }) {
   const { activePatients } = usePatients()
   const { lockerboxes } = useLockerboxes(user)
   const { isAuthorized } = useAuthorization(user)
