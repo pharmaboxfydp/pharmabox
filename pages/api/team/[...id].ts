@@ -29,7 +29,15 @@ export default async function handler(
           ]
         },
         include: {
-          Staff: true,
+          Staff: {
+            include: {
+              authorizer: {
+                include: {
+                  User: true
+                }
+              }
+            }
+          },
           Pharmacist: true
         }
       })

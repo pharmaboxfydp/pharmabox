@@ -10,6 +10,8 @@ export interface AddTeamMember {
 
 export interface UseTeam {
   team: User[] | null
+  authorizedTeamStaff: User[] | null
+  onDutyTeamPharmacists: User[] | null
   isLoading: boolean
   isError: Error
   addTeamMember: ({ email, locationId, isAdmin }: AddTeamMember) => Promise<{
@@ -86,9 +88,16 @@ export default function useTeam(user: User): UseTeam {
     const res = await response.json()
     return res
   }
-
+  const authorizedTeamStaff = data?.teamMembers.filter(
+    (teamMember) => teamMember.Staff?.isAuthorized
+  )
+  const onDutyTeamPharmacists = data?.teamMembers.filter(
+    (teamMember) => teamMember.Pharmacist?.isOnDuty
+  )
   return {
     team: data?.teamMembers ?? null,
+    authorizedTeamStaff: authorizedTeamStaff ?? null,
+    onDutyTeamPharmacists: onDutyTeamPharmacists ?? null,
     isLoading: !error && !data,
     isError: error,
     addTeamMember,
