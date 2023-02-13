@@ -13,7 +13,7 @@ const Home = ({ user }: ServerPageProps) => {
   return (
     <>
       <Head>
-        <title>PharmaBox | Home</title>
+        <title>PharmaBox | Dashboard</title>
         <meta
           name="description"
           content="Pharmabox Notifications. Login to continue"
