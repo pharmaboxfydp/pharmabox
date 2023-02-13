@@ -26,7 +26,13 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash'
 import useRole from '../hooks/role'
-import useAuthorization from '../hooks/authorization'
+import useAuthorization, {
+  GrantOrRevokeAuthorization
+} from '../hooks/authorization'
+
+export interface HandleAuthorizationChange extends GrantOrRevokeAuthorization {
+  isAuthorized: boolean
+}
 
 const ActiveTag = () => (
   <Box direction="row" gap="small" animation="fadeIn" align="center">
@@ -49,7 +55,11 @@ export default function TeamMembersTable({ user }: { user: User }) {
   const { team, isLoading, isError, removeTeamMember } = useTeam(user)
   const { updatePermissions } = usePermissions()
   const { updateRole } = useRole()
-  const { isAuthorized: isCurrentUserAuthorized } = useAuthorization(user)
+  const {
+    isAuthorized: isCurrentUserAuthorized,
+    grantAuthorization,
+    revokeAuthorization
+  } = useAuthorization(user)
 
   function stopUserRemove() {
     setShowRemoveUser(false)
@@ -69,6 +79,24 @@ export default function TeamMembersTable({ user }: { user: User }) {
       setIsFetching(false)
       stopUserRemove()
       return false
+    }
+  }
+
+  function handleAuthorizationChange({
+    targetUserId,
+    targetUserRole,
+    isAuthorized
+  }: HandleAuthorizationChange) {
+    /**
+     * if the current user is authorized then we can revoke their authorization
+     */
+    if (isAuthorized) {
+      revokeAuthorization({ targetUserId, targetUserRole })
+    } else {
+      /**
+       * if the current user is not authorized then we can grant them authorization
+       */
+      grantAuthorization({ targetUserId, targetUserRole })
     }
   }
 
@@ -115,15 +143,27 @@ export default function TeamMembersTable({ user }: { user: User }) {
             {
               property: 'isAuthorized',
               header: <Text size="small">Authorization</Text>,
-              render: ({ Staff, Pharmacist }) => {
+              render: ({ Staff, Pharmacist, id: targetUserId, role }) => {
                 const isAuthorized =
                   (Pharmacist?.isOnDuty || Staff?.isAuthorized) ?? false
                 const isAuthorizedPharmacist =
                   user?.Pharmacist && isCurrentUserAuthorized
+                const targetUserRole = role ?? Role.Staff
                 return (
                   <Box align="center">
                     {isAuthorizedPharmacist ? (
-                      <CheckBox toggle label="Active" checked={isAuthorized} />
+                      <CheckBox
+                        toggle
+                        label="Active"
+                        checked={isAuthorized}
+                        onChange={() =>
+                          handleAuthorizationChange({
+                            targetUserId,
+                            targetUserRole,
+                            isAuthorized
+                          })
+                        }
+                      />
                     ) : (
                       <>{isAuthorized ? <ActiveTag /> : <InactiveTag />}</>
                     )}
