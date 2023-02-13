@@ -173,7 +173,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
             },
             {
               property: 'lastLoggedIn',
-              header: <Text size="small">Last Login</Text>,
+              header: <Text size="small">Last Authenticated</Text>,
               render: ({ lastLoggedIn }) => {
                 const date = lastLoggedIn
                   ? (() => new Date(lastLoggedIn))().toDateString()
