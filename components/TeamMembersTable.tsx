@@ -6,7 +6,8 @@ import {
   Button,
   Layer,
   Spinner,
-  Tip
+  Tip,
+  CheckBox
 } from 'grommet'
 import useTeam from '../hooks/team'
 import { Permissions, Role, User } from '../types/types'
@@ -25,6 +26,21 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash'
 import useRole from '../hooks/role'
+import useAuthorization from '../hooks/authorization'
+
+const ActiveTag = () => (
+  <Box direction="row" gap="small" animation="fadeIn" align="center">
+    <Text size="small">Active</Text>
+    <CircleSolid size={16} color={theme.global.colors['status-ok']} />
+  </Box>
+)
+
+const InactiveTag = () => (
+  <Box direction="row" gap="small" animation="fadeIn" align="center">
+    <Text size="small">Inactive</Text>
+    <CircleDash size={16} color={theme.global.colors['status-warning']} />
+  </Box>
+)
 
 export default function TeamMembersTable({ user }: { user: User }) {
   const [showRemoveUser, setShowRemoveUser] = useState<boolean>(false)
@@ -33,6 +49,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
   const { team, isLoading, isError, removeTeamMember } = useTeam(user)
   const { updatePermissions } = usePermissions()
   const { updateRole } = useRole()
+  const { isAuthorized: isCurrentUserAuthorized } = useAuthorization(user)
 
   function stopUserRemove() {
     setShowRemoveUser(false)
@@ -99,36 +116,16 @@ export default function TeamMembersTable({ user }: { user: User }) {
               property: 'isAuthorized',
               header: <Text size="small">Authorization</Text>,
               render: ({ Staff, Pharmacist }) => {
-                let isAuthoized =
+                const isAuthorized =
                   (Pharmacist?.isOnDuty || Staff?.isAuthorized) ?? false
+                const isAuthorizedPharmacist =
+                  user?.Pharmacist && isCurrentUserAuthorized
                 return (
                   <Box align="center">
-                    {isAuthoized ? (
-                      <Box
-                        direction="row"
-                        gap="small"
-                        animation="fadeIn"
-                        align="center"
-                      >
-                        <Text size="small">Active</Text>
-                        <CircleSolid
-                          size={16}
-                          color={theme.global.colors['status-ok']}
-                        />
-                      </Box>
+                    {isAuthorizedPharmacist ? (
+                      <CheckBox toggle label="Active" checked={isAuthorized} />
                     ) : (
-                      <Box
-                        direction="row"
-                        gap="small"
-                        animation="fadeIn"
-                        align="center"
-                      >
-                        <Text size="small">Inactive</Text>
-                        <CircleDash
-                          size={16}
-                          color={theme.global.colors['status-warning']}
-                        />
-                      </Box>
+                      <>{isAuthorized ? <ActiveTag /> : <InactiveTag />}</>
                     )}
                   </Box>
                 )
