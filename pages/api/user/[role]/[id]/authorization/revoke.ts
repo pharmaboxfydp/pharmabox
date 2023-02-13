@@ -1,3 +1,4 @@
+import { Staff } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../../../../lib/prisma'
 import { Role } from '../../../../../../types/types'
@@ -30,7 +31,9 @@ export default async function handler(
 
       let user
       if (authorizerUser) {
-        /** if a pharmacist is trying to authorize themselves we should allow them */
+        /**
+         * if a pharmacist is trying to revoke themselves we should allow them.
+         */
         if (
           authorizerUser.userId === targetUserId &&
           targetRole === Role.Pharmacist
@@ -43,11 +46,37 @@ export default async function handler(
               isOnDuty: false
             }
           })
+          /**
+           * We need to revoke all of the staff who are authorized under the current pharmacist
+           * We have to do this iteratively according to this open issue:
+           * https://github.com/prisma/prisma/issues/3143
+           */
+          const connectedStaff = await prisma.staff.findMany({
+            where: {
+              authorizer: user
+            }
+          })
+          connectedStaff.forEach((staff: Staff) => {
+            prisma.staff.update({
+              where: {
+                id: staff.id
+              },
+              data: {
+                isAuthorized: false,
+                authorizer: {
+                  disconnect: true
+                }
+              }
+            })
+          })
         }
-        /** when a pharmacist is attempting to authorize someone else */
+        /**
+         * when a pharmacist is attempting to revoke someone else
+         *
+         */
         if (authorizerUser.userId !== targetUserId) {
           if (authorizerUser.isOnDuty) {
-            /** if the target role to authorize is another pharmacist */
+            /** if the target role to revoke is another pharmacist */
             if (targetRole === Role.Pharmacist) {
               user = await prisma.pharmacist.update({
                 where: {
