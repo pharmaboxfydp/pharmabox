@@ -75,10 +75,11 @@ export function usePatientPrescriptions(
 }
 
 export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
+  const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
   const { data, error } = useSWR<{
     message: string
     prescriptions: PrescriptionAndLocationAndPatient[]
-  }>(`/api/prescriptions/location/${user?.Staff?.locationId}`, fetcher, {
+  }>(`/api/prescriptions/location/${locationId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
     revalidateOnReconnect: false

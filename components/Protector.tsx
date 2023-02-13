@@ -1,6 +1,11 @@
 import { Box, Card, Text } from 'grommet'
 import { PropsWithChildren } from 'react'
-import { PatientRootPages, Role, StaffRootPages } from '../types/types'
+import {
+  PatientRootPages,
+  PharmacistRootPages,
+  Role,
+  StaffRootPages
+} from '../types/types'
 import { useRouter } from 'next/router'
 import { WarningAlt } from '@carbon/icons-react'
 import theme from '../styles/theme'
@@ -12,6 +17,7 @@ export default function Protector({
   const router = useRouter()
   const patientPages = Object.values(PatientRootPages)
   const staffPages = Object.values(StaffRootPages)
+  const pharmacistPages = Object.values(PharmacistRootPages)
 
   const isValidPatient =
     role === Role.Patient &&
@@ -19,8 +25,11 @@ export default function Protector({
   const isValidStaff =
     role === Role.Staff &&
     staffPages.includes(router.pathname as StaffRootPages)
+  const isValidPharmacist =
+    role == Role.Pharmacist &&
+    pharmacistPages.includes(router.pathname as PharmacistRootPages)
 
-  if (isValidStaff || isValidPatient) {
+  if (isValidStaff || isValidPatient || isValidPharmacist) {
     return <>{children}</>
   } else {
     return (

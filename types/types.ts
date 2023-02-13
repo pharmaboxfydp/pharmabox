@@ -4,12 +4,14 @@ import {
   Staff,
   Prescription,
   Location,
-  LockerBox
+  LockerBox,
+  Pharmacist
 } from '@prisma/client'
 
 export enum Role {
   Staff = 'staff',
-  Patient = 'patient'
+  Patient = 'patient',
+  Pharmacist = 'pharmacist'
 }
 export type PrescriptionAndLocationAndPatient = Prescription & {
   Location: Location
@@ -26,7 +28,7 @@ export type PharmacyLocation = Location & {
 }
 
 export enum Permissions {
-  Member = 'Member',
+  Standard = 'Standard',
   Admin = 'Admin'
 }
 export enum Status {
@@ -57,6 +59,16 @@ export enum PatientRootPages {
   Profile = '/settings/profile/[[...index]]'
 }
 
+export enum PharmacistRootPages {
+  Home = '/home',
+  Workflows = '/workflows',
+  Patients = '/patients',
+  Team = '/team',
+  Logbook = '/logbook',
+  Settings = '/settings/[[...index]]',
+  Profile = '/settings/profile/[[...index]]'
+}
+
 export type User = {
   id: string
   firstName: string | undefined
@@ -70,6 +82,7 @@ export type User = {
   lastLoggedIn?: string
   Patient?: Patient
   Staff?: Staff
+  Pharmacist?: Pharmacist
 }
 
 export interface ServerPageProps {

@@ -14,15 +14,13 @@ const fetcher = (
   fetch(...arg).then((res) => res.json())
 
 export default function useLocation(user: User) {
-  const { data, error } = useSWR(
-    `/api/locations/${user.Staff?.locationId}`,
-    fetcher,
-    {
-      revalidateIfStale: true,
-      revalidateOnFocus: true,
-      revalidateOnReconnect: false
-    }
-  )
+  const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
+
+  const { data, error } = useSWR(`/api/locations/${locationId}`, fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: false
+  })
 
   return {
     location: data?.location ?? null,

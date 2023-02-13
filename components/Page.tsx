@@ -13,7 +13,7 @@ export default function Page({
 }: PropsWithChildren<{ user: User }>) {
   return (
     <Box direction="column" fill>
-      <Navbar />
+      <Navbar user={user} />
 
       <ResponsiveContext.Consumer>
         {(responsive) =>

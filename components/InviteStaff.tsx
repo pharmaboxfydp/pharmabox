@@ -19,7 +19,7 @@ import { Permissions, User } from '../types/types'
 export default function InviteStaff({ user }: { user: User }) {
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false)
   const [permissions, setPermissions] = useState<Permissions>(
-    Permissions.Member
+    Permissions.Standard
   )
   const [isFetching, setIsFetching] = useState<boolean>(false)
 
@@ -96,19 +96,20 @@ export default function InviteStaff({ user }: { user: User }) {
                         reverse
                         id="userEmail"
                         name="userEmail"
+                        placeholder="name@yourpharmacy.com"
                       />
                     </FormField>
                     <FormField
-                      lable="Permissions"
+                      label="Permissions"
                       htmlFor="userPermissions"
                       name="permissons"
                     >
                       <Select
                         options={[
                           `${Permissions.Admin}`,
-                          `${Permissions.Member}`
+                          `${Permissions.Standard}`
                         ]}
-                        defaultValue={`${Permissions.Member}`}
+                        defaultValue={`${Permissions.Standard}`}
                         onChange={({ value }) => {
                           setPermissions(value)
                         }}

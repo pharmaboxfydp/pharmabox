@@ -32,16 +32,24 @@ const fetcher = (
   fetch(...arg).then((res) => res.json())
 
 export default function useTeam(user: User): UseTeam {
+  let locationId: number | null = null
+
+  if (user?.Staff) {
+    locationId = user.Staff?.locationId
+  }
+  if (user?.Pharmacist) {
+    locationId = user.Pharmacist?.locationId
+  }
+
   const { mutate } = useSWRConfig()
-  const { data, error } = useSWR(
-    `/api/team/${user.Staff?.locationId}`,
-    fetcher,
-    {
-      revalidateIfStale: true,
-      revalidateOnFocus: true,
-      revalidateOnReconnect: false
-    }
-  )
+  /**
+   * we will automatically handle an error here from useSWR if locationId is null
+   */
+  const { data, error } = useSWR(`/api/team/${locationId}`, fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: false
+  })
 
   async function addTeamMember({ email, locationId, isAdmin }: AddTeamMember) {
     const response = await fetch('/api/team/members/invite', {

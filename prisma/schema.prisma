@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  firstName    String   @default("Josh")
-  lastName     String   @default("Wilkinson")
-  email        String   @unique
+  id           String      @id @default(uuid())
+  firstName    String      @default("Josh")
+  lastName     String      @default("Wilkinson")
+  email        String      @unique
   phoneNumber  String?
-  role         String   @default("patient")
+  role         String      @default("patient")
   Patient      Patient?
   Staff        Staff?
-  lastLoggedIn DateTime @default(now()) @map(name: "last_logged_in")
-  createdAt    DateTime @default(now()) @map(name: "created_at")
-  updatedAt    DateTime @default(now()) @map(name: "updated_at")
+  Pharmacist   Pharmacist?
+  lastLoggedIn DateTime    @default(now()) @map(name: "last_logged_in")
+  createdAt    DateTime    @default(now()) @map(name: "created_at")
+  updatedAt    DateTime    @default(now()) @map(name: "updated_at")
 
   @@map(name: "users")
 }
@@ -37,30 +35,52 @@ model Patient {
   @@map(name: "patients")
 }
 
+model Pharmacist {
+  id           Int            @id @unique @default(autoincrement())
+  userId       String         @unique
+  User         User           @relation(fields: [userId], references: [id])
+  isAdmin      Boolean        @default(false) @map(name: "is_admin")
+  isOnDuty     Boolean        @default(false) @map(name: "is_on_duty")
+  Location     Location?      @relation(fields: [locationId], references: [id])
+  locationId   Int?
+  Staff        Staff[]
+  Prescription Prescription[]
+
+  @@map(name: "pharmacist")
+}
+
 model Staff {
-  id         Int       @id @unique @default(autoincrement())
-  userId     String    @unique
-  User       User      @relation(fields: [userId], references: [id])
-  isAdmin    Boolean   @default(false) @map(name: "is_admin")
-  Location   Location? @relation(fields: [locationId], references: [id])
-  locationId Int?
+  id           Int            @id @unique @default(autoincrement())
+  userId       String         @unique
+  User         User           @relation(fields: [userId], references: [id])
+  isAdmin      Boolean        @default(false) @map(name: "is_admin")
+  isAuthorized Boolean        @default(false) @map(name: "is_authoized")
+  Location     Location?      @relation(fields: [locationId], references: [id])
+  locationId   Int?
+  authorizer   Pharmacist?    @relation(fields: [pharmacistId], references: [id])
+  pharmacistId Int?
+  Prescription Prescription[]
 
   @@map(name: "staff")
 }
 
 model Prescription {
-  id          Int       @id @unique @default(autoincrement())
-  name        String
-  status      String    @default("Unfilled")
-  pickupTime  DateTime?
-  Patient     Patient?  @relation(fields: [patientId], references: [id])
-  patientId   Int
-  balance     Float
-  Location    Location  @relation(fields: [locationId], references: [id])
-  LockerBox   LockerBox @relation(fields: [lockerBoxId], references: [id])
-  locationId  Int
-  lockerBoxId Int
-  pickupCode  String
+  id           Int         @id @unique @default(autoincrement())
+  name         String
+  status       String      @default("Unfilled")
+  pickupTime   DateTime?
+  Patient      Patient?    @relation(fields: [patientId], references: [id])
+  patientId    Int
+  balance      Float
+  Location     Location    @relation(fields: [locationId], references: [id])
+  LockerBox    LockerBox   @relation(fields: [lockerBoxId], references: [id])
+  locationId   Int
+  lockerBoxId  Int
+  pickupCode   String
+  Pharmacist   Pharmacist? @relation(fields: [pharmacistId], references: [id])
+  pharmacistId Int?
+  Staff        Staff?      @relation(fields: [staffId], references: [id])
+  staffId      Int?
 
   @@map(name: "prescriptions")
 }
@@ -76,6 +96,7 @@ model Location {
   Prescriptions     Prescription[]
   LockerBoxes       LockerBox[]
   Staff             Staff[]
+  Pharmacist        Pharmacist[]
 
   @@map(name: "locations")
 }

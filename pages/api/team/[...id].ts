@@ -15,12 +15,22 @@ export default async function handler(
 
       const teamMembers = await prisma.user.findMany({
         where: {
-          Staff: {
-            locationId: locationId
-          }
+          OR: [
+            {
+              Staff: {
+                locationId: locationId
+              }
+            },
+            {
+              Pharmacist: {
+                locationId: locationId
+              }
+            }
+          ]
         },
         include: {
-          Staff: true
+          Staff: true,
+          Pharmacist: true
         }
       })
       res.status(200).json({ message: 'Succcess', teamMembers })
