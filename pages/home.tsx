@@ -28,10 +28,9 @@ const Home = ({ user }: ServerPageProps) => {
              * do an exact match so that we never conditinally render the wrong page
              */}
             {user.role === Role.Patient && <PatientHomePage user={user} />}
-            {user.role === Role.Staff ||
-              (user.role === Role.Pharmacist && (
-                <StaffAndPharmacistHomePage user={user} />
-              ))}
+            {(user.role === Role.Staff || user.role === Role.Pharmacist) && (
+              <StaffAndPharmacistHomePage user={user} />
+            )}
           </Box>
         </Box>
       </Page>

@@ -426,7 +426,6 @@ function PrescriptionCreationBar({
 export default function StaffAndPharmacistHomePage({ user }: { user: User }) {
   const { activePatients } = usePatients()
   const { lockerboxes } = useLockerboxes(user)
-  const { isAuthorized } = useAuthorization(user)
 
   return (
     <Grid
