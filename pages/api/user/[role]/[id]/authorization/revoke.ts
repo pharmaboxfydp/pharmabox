@@ -56,8 +56,8 @@ export default async function handler(
               authorizer: user
             }
           })
-          connectedStaff.forEach((staff: Staff) => {
-            prisma.staff.update({
+          connectedStaff.forEach(async (staff: Staff) => {
+            await prisma.staff.update({
               where: {
                 id: staff.id
               },
