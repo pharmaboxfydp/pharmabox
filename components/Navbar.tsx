@@ -4,6 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import theme from '../styles/theme'
 import Logo from '../public/pharmabox_logo.svg'
+import { Role, User } from '../types/types'
+import AuthorizationToggle from './AuthorizationToggle'
 
 function NavUserIcon() {
   const { isLoaded, isSignedIn, user } = useUser()
@@ -53,7 +55,7 @@ function NavUserIcon() {
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ user }: { user: User }) {
   return (
     <Header
       background={theme.global.colors['neutral-2']}
@@ -76,6 +78,7 @@ export default function Navbar() {
         </Box>
       </Box>
       <Nav direction="row">
+        {user.role === Role.Pharmacist && <AuthorizationToggle user={user} />}
         <NavUserIcon />
       </Nav>
     </Header>

@@ -239,11 +239,13 @@ function mapPatientsToValues(
 function PrescriptionCreationBar({
   activePatients,
   lockerboxes,
-  locationId
+  locationId,
+  user
 }: {
   activePatients: FullPatient[]
   lockerboxes: LockerBox[] | null
   locationId: number | null | undefined
+  user: User
 }) {
   const defaultOptions = useMemo(
     () => (activePatients ? mapPatientsToValues(activePatients) : []),
@@ -261,6 +263,7 @@ function PrescriptionCreationBar({
   const [options, setOptions] = useState(defaultOptions)
   const [lockerboxOptions, setLockerboxOptions] = useState(defaultLockerOptions)
   const { createPrescription } = usePrescriptions()
+  const { isAuthorized } = useAuthorization(user)
   const formRef = useRef<HTMLFormElement>(null)
 
   async function handleSubmit(event: {
@@ -319,6 +322,7 @@ function PrescriptionCreationBar({
         >
           <FormField lable="Patient" htmlFor="patient" name="patient">
             <Select
+              disabled={!isAuthorized}
               icon={<UserIcon size={20} />}
               size="xsmall"
               id="patient"
@@ -348,6 +352,7 @@ function PrescriptionCreationBar({
           </FormField>
           <FormField lable="Name" htmlFor="name" name="name">
             <TextInput
+              disabled={!isAuthorized}
               size="xsmall"
               placeholder="Prescription Name"
               id="name"
@@ -358,6 +363,7 @@ function PrescriptionCreationBar({
           </FormField>
           <FormField lable="balance" htmlFor="balance" name="balance">
             <TextInput
+              disabled={!isAuthorized}
               size="xsmall"
               placeholder="Balance Due $00.00"
               id="balance"
@@ -371,6 +377,7 @@ function PrescriptionCreationBar({
           </FormField>
           <FormField lable="Lockerbox" htmlFor="lockerbox" name="lockerbox">
             <Select
+              disabled={!isAuthorized}
               icon={<BoxIcon size={20} />}
               size="xsmall"
               id="lockerbox"
@@ -407,6 +414,7 @@ function PrescriptionCreationBar({
               size="xsmall"
               label="Create Prescription"
               primary
+              disabled={!isAuthorized}
             />
           </Box>
         </Box>
@@ -438,6 +446,7 @@ export default function StaffHomePage({ user }: { user: User }) {
             activePatients={activePatients}
             lockerboxes={lockerboxes}
             locationId={user?.Staff?.locationId}
+            user={user}
           />
         )}
       </Box>

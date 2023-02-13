@@ -51,7 +51,7 @@ export default function useAuthorization(user: User): UseAuthorization {
     targetUserRole
   }: GrantOrRevokeAuthorization) {
     const response = await fetch(
-      `/api/user/${targetUserRole}/${targetUserId}/grant`,
+      `/api/user/${targetUserRole}/${targetUserId}/authorization/grant`,
       {
         method: 'POST',
         body: JSON.stringify({
@@ -63,11 +63,12 @@ export default function useAuthorization(user: User): UseAuthorization {
     )
     if (response.status === 200) {
       await response.json()
-      toast.success(`User activated`, { icon: '👍' })
       mutate(`/api/team/${member?.locationId}`)
+      mutate(`/api/user/${user.role}/${user.id}/authorization/status`)
     } else {
-      toast.error('Unable to update activation', { icon: '😥' })
+      toast.error('Unable to activate', { icon: '😥' })
       mutate(`/api/team/${member?.locationId}`)
+      mutate(`/api/user/${user.role}/${user.id}/authorization/status`)
     }
   }
 
@@ -76,7 +77,7 @@ export default function useAuthorization(user: User): UseAuthorization {
     targetUserRole
   }: GrantOrRevokeAuthorization) {
     const response = await fetch(
-      `/api/user/${targetUserRole}/${targetUserId}/revoke`,
+      `/api/user/${targetUserRole}/${targetUserId}/authorization/revoke`,
       {
         method: 'POST',
         body: JSON.stringify({
@@ -88,11 +89,12 @@ export default function useAuthorization(user: User): UseAuthorization {
     )
     if (response.status === 200) {
       await response.json()
-      toast.success(`User inactived`, { icon: '👍' })
       mutate(`/api/team/${member?.locationId}`)
+      mutate(`/api/user/${user.role}/${user.id}/authorization/status`)
     } else {
       toast.error('Unable to update activation status', { icon: '😥' })
       mutate(`/api/team/${member?.locationId}`)
+      mutate(`/api/user/${user.role}/${user.id}/authorization/status`)
     }
   }
 
