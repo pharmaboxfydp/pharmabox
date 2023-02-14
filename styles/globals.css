@@ -163,10 +163,9 @@ label span {
   font-size: 14px;
 }
 
-
 ::selection {
-  background: #6FFFB0; /* WebKit/Blink Browsers */
+  background: #6fffb0; /* WebKit/Blink Browsers */
 }
 ::-moz-selection {
-  background: #6FFFB0; /* Gecko Browsers */
+  background: #6fffb0; /* Gecko Browsers */
 }
