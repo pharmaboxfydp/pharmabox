@@ -1,6 +1,8 @@
+import { Close } from '@carbon/icons-react'
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -11,14 +13,28 @@ import {
 } from 'grommet'
 import { capitalize } from 'lodash'
 import { useContext } from 'react'
+import useAuthorization from '../hooks/authorization'
 import useTeam from '../hooks/team'
 import useClerkUser from '../hooks/users'
 import theme from '../styles/theme'
 import { Role, User } from '../types/types'
 
-function AuthorizedUserCard({ user }: { user: User }) {
+function AuthorizedUserCard({
+  user,
+  currentUser
+}: {
+  user: User
+  currentUser: User
+}) {
   const { user: clerkUser } = useClerkUser(user.id)
+  const { revokeAuthorization } = useAuthorization(currentUser)
   const profileImageUrl = clerkUser?.profile_image_url
+
+  function handleRevokeAuthorization() {
+    if (user && user.role && user.id) {
+      revokeAuthorization({ targetUserId: user.id, targetUserRole: user.role })
+    }
+  }
   return (
     <Card
       background="light-1"
@@ -34,6 +50,21 @@ function AuthorizedUserCard({ user }: { user: User }) {
             {user.firstName} {user.lastName}
           </Text>
         </Box>
+        {currentUser?.Pharmacist?.isOnDuty && (
+          <Button
+            style={{ padding: '4px' }}
+            icon={<Close size={16} />}
+            focusIndicator
+            onClick={handleRevokeAuthorization}
+            tip={{
+              content: (
+                <Text size="xsmall" color={theme.global.colors['status-error']}>
+                  Revoke Authorization
+                </Text>
+              )
+            }}
+          />
+        )}
       </CardHeader>
       <CardBody>
         <Box
@@ -63,14 +94,23 @@ export default function AuthorizedUsers({ user }: { user: User }) {
       </Box>
     )
   }
+  const currentUser = user
   return (
     <Box border round="small" flex="grow" pad="small" gap="small">
       <Grid columns={size !== 'small' ? 'small' : '100%'} gap="small">
         {onDutyTeamPharmacists?.map((staff) => (
-          <AuthorizedUserCard user={staff} key={staff.id} />
+          <AuthorizedUserCard
+            user={staff}
+            key={staff.id}
+            currentUser={currentUser}
+          />
         ))}
         {authorizedTeamStaff?.map((staff) => (
-          <AuthorizedUserCard user={staff} key={staff.id} />
+          <AuthorizedUserCard
+            user={staff}
+            key={staff.id}
+            currentUser={currentUser}
+          />
         ))}
       </Grid>
     </Box>
