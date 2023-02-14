@@ -30,8 +30,10 @@ export interface UseTeam {
 
 const fetcher = (
   ...arg: [string, Record<string, any>]
-): Promise<{ message: string; teamMembers: UserWithPrescriptions[] }> =>
-  fetch(...arg).then((res) => res.json())
+): Promise<{
+  message: string
+  teamMembers: UserWithPrescriptions[]
+}> => fetch(...arg).then((res) => res.json())
 
 export default function useTeam(user: User): UseTeam {
   let locationId: number | null = null

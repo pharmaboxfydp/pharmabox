@@ -36,7 +36,7 @@ const Team = ({ user }: ServerPageProps) => {
               <Header>
                 <Text>Active Team</Text>
               </Header>
-              <AuthorizedUsers user={user as UserWithPrescriptions} />
+              <AuthorizedUsers user={user} />
               <Header>
                 <Text>Team Members</Text>
                 <Box> {isCurrentUserAdmin && <InviteStaff user={user} />}</Box>

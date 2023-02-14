@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Grid,
   ResponsiveContext,
@@ -38,11 +39,14 @@ function AuthorizedUserCard({
     }
   }
   let activePrescriptions: Prescription[] = []
+  let authorizer: string = 'Self Authorized'
   if (role === Role.Pharmacist) {
     activePrescriptions = user.Pharmacist.Prescription
   }
   if (role === Role.Staff) {
     activePrescriptions = user.Staff.Prescription
+    const { firstName, lastName } = user?.Staff?.authorizer.User
+    authorizer = `${firstName} ${lastName}`
   }
   return (
     <Card
@@ -94,6 +98,14 @@ function AuthorizedUserCard({
           </Text>
         </Box>
       </CardBody>
+      <CardFooter>
+        <Box direction="row" gap="small">
+          <Text size="xsmall">Supervisor:</Text>
+          <Text size="xsmall">
+            <b>{authorizer}</b>
+          </Text>
+        </Box>
+      </CardFooter>
     </Card>
   )
 }
@@ -116,7 +128,11 @@ export default function AuthorizedUsers({
   const currentUser = user
   return (
     <Box border round="small" flex="grow" pad="small" gap="small">
-      <Grid columns={size !== 'small' ? 'small' : '100%'} gap="small">
+      <Grid
+        columns={size !== 'small' ? 'small' : '100%'}
+        gap="medium"
+        pad="small"
+      >
         {onDutyTeamPharmacists?.map((staff) => (
           <AuthorizedUserCard
             user={staff}

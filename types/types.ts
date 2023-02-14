@@ -86,7 +86,7 @@ export type User = {
 }
 
 export interface ServerPageProps {
-  user: User
+  user: UserWithPrescriptions
   __clerk_ssr_state: UserJSON
 }
 
@@ -94,11 +94,12 @@ export interface PharmacistWithPrescriptions extends Pharmacist {
   Prescription: Prescription[]
 }
 
-export interface StafftWithPrescriptions extends Staff {
+export interface StaffWithPrescriptions extends Staff {
   Prescription: Prescription[]
+  authorizer: { User: User }
 }
 
 export interface UserWithPrescriptions extends User {
   Pharmacist: PharmacistWithPrescriptions
-  Staff: StafftWithPrescriptions
+  Staff: StaffWithPrescriptions
 }
