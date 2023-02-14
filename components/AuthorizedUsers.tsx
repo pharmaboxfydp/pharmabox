@@ -34,7 +34,6 @@ function AuthorizedUserCard({
       revokeAuthorization({ targetUserId: user.id, targetUserRole: user.role })
     }
   }
-  console.log(user)
   return (
     <Card
       background="light-1"
