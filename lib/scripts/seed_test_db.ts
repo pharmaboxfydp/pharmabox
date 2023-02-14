@@ -86,7 +86,7 @@ async function seedUsers(
       const midpoint = Math.max(numUses / 2)
 
       await prisma.user.create({
-        // @ts-expect-error
+        // @ts-ignore
         data: {
           ...staffUser,
           Staff: {
@@ -110,7 +110,7 @@ async function seedUsers(
     const userNumber = index + 1
     const midpoint = Math.max(numUses / 2)
     await prisma.user.create({
-      // @ts-expect-error
+      // @ts-ignore
       data: {
         ...patientUser,
         Patient: {
