@@ -4,4 +4,5 @@ set -o allexport
 source .env.development
 set +o allexport
 
+dotenv -e .env.development -- npx prisma migrate reset
 npx ts-node lib/scripts/seed_test_db.ts

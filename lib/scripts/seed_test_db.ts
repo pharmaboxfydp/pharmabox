@@ -43,31 +43,6 @@ async function getDevUsers(): Promise<UserJSON[]> {
 async function seedUsers(
   users: UserJSON[]
 ): Promise<{ count: number; patientUsers: User[]; staffUsers: User[] }> {
-  /**
-   * remove patients from patients table
-   */
-  try {
-  } catch (error) {
-    console.error(error)
-  }
-  /**
-   * remove staff from staff table
-   */
-  try {
-    const deleteStaff = prisma.staff.deleteMany()
-    const deletePharmacist = prisma.pharmacist.deleteMany()
-    const deletePatient = prisma.patient.deleteMany()
-    const deleteUser = prisma.user.deleteMany()
-
-    await prisma.$transaction([
-      deleteUser,
-      deletePatient,
-      deletePharmacist,
-      deleteStaff
-    ])
-  } catch (error) {
-    console.error(error)
-  }
   const staffUsers: User[] = []
   const patientUsers: User[] = []
 
@@ -111,6 +86,7 @@ async function seedUsers(
       const midpoint = Math.max(numUses / 2)
 
       await prisma.user.create({
+        // @ts-expect-error
         data: {
           ...staffUser,
           Staff: {
@@ -134,6 +110,7 @@ async function seedUsers(
     const userNumber = index + 1
     const midpoint = Math.max(numUses / 2)
     await prisma.user.create({
+      // @ts-expect-error
       data: {
         ...patientUser,
         Patient: {
