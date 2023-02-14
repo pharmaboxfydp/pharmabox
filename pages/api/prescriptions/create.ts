@@ -24,7 +24,6 @@ export default async function handler(
         pharmacistId: PI,
         role: R
       } = req.body.data
-
       const name: string = N
       const status: Status.AwaitingPickup = S
       const patientId: number = parseInt(P)
@@ -32,15 +31,8 @@ export default async function handler(
       const locationId: number = parseInt(L)
       const lockerBoxId: number = parseInt(LB)
       const pharmacistId = parseInt(PI)
-      const staffId = parseInt(SI)
-      const role: Role = R
+      const staffId = SI ? parseInt(SI) : null
       const random_key = crypto.randomBytes(20).toString('hex')
-
-      const pharmacist = await prisma.pharmacist.findFirstOrThrow({
-        where: {
-          id: pharmacistId
-        }
-      })
 
       const prescription = await prisma.prescription.create({
         data: {

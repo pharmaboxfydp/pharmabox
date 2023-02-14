@@ -29,11 +29,14 @@ function AuthorizedUserCard({
   const { user: clerkUser } = useClerkUser(user.id)
   const { revokeAuthorization, isAuthorized } = useAuthorization(currentUser)
   const profileImageUrl = clerkUser?.profile_image_url
+
   function handleRevokeAuthorization() {
     if (user && user.role && user.id) {
       revokeAuthorization({ targetUserId: user.id, targetUserRole: user.role })
     }
   }
+
+  console.log(user)
   return (
     <Card
       background="light-1"
