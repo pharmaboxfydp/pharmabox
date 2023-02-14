@@ -47,23 +47,24 @@ async function seedUsers(
    * remove patients from patients table
    */
   try {
-    await prisma.patient.deleteMany({})
   } catch (error) {
     console.error(error)
   }
   /**
-   * remove staff from staff tablet
+   * remove staff from staff table
    */
   try {
-    await prisma.staff.deleteMany({})
-  } catch (error) {
-    console.error(error)
-  }
-  /**
-   * remove users from the users table
-   */
-  try {
-    await prisma.user.deleteMany({})
+    const deleteStaff = prisma.staff.deleteMany()
+    const deletePharmacist = prisma.pharmacist.deleteMany()
+    const deletePatient = prisma.patient.deleteMany()
+    const deleteUser = prisma.user.deleteMany()
+
+    await prisma.$transaction([
+      deleteUser,
+      deletePatient,
+      deletePharmacist,
+      deleteStaff
+    ])
   } catch (error) {
     console.error(error)
   }
@@ -103,29 +104,31 @@ async function seedUsers(
   })
 
   const count = staffUsers.length + patientUsers.length
+  try {
+    staffUsers.forEach(async (staffUser: User, index) => {
+      const numUses = staffUsers.length
+      const userNumber = index + 1
+      const midpoint = Math.max(numUses / 2)
 
-  staffUsers.forEach(async (staffUser: User, index) => {
-    const numUses = staffUsers.length
-    const userNumber = index + 1
-    const midpoint = Math.max(numUses / 2)
-    await prisma.user.create({
-      data: {
-        ...staffUser,
-
-        Staff: {
-          connectOrCreate: {
-            where: {
-              userId: staffUser.id
-            },
-            create: {
-              isAdmin: userNumber < midpoint ?? false
+      await prisma.user.create({
+        data: {
+          ...staffUser,
+          Staff: {
+            connectOrCreate: {
+              where: {
+                userId: staffUser.id
+              },
+              create: {
+                isAdmin: userNumber < midpoint ?? false
+              }
             }
           }
         }
-      }
+      })
     })
-  })
-
+  } catch (error) {
+    console.error(error)
+  }
   patientUsers.forEach(async (patientUser, index) => {
     const numUses = patientUsers.length
     const userNumber = index + 1

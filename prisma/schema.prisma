@@ -27,7 +27,7 @@ model User {
 model Patient {
   id            Int            @id @unique @default(autoincrement())
   userId        String         @unique
-  User          User           @relation(fields: [userId], references: [id])
+  User          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   pickupEnabled Boolean        @default(false) @map(name: "pickup_enabled")
   dob           String?        @map(name: "date_of_birth")
   Prescriptions Prescription[]
@@ -38,7 +38,7 @@ model Patient {
 model Pharmacist {
   id           Int            @id @unique @default(autoincrement())
   userId       String         @unique
-  User         User           @relation(fields: [userId], references: [id])
+  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   isAdmin      Boolean        @default(false) @map(name: "is_admin")
   isOnDuty     Boolean        @default(false) @map(name: "is_on_duty")
   Location     Location?      @relation(fields: [locationId], references: [id])
@@ -52,7 +52,7 @@ model Pharmacist {
 model Staff {
   id           Int            @id @unique @default(autoincrement())
   userId       String         @unique
-  User         User           @relation(fields: [userId], references: [id])
+  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   isAdmin      Boolean        @default(false) @map(name: "is_admin")
   isAuthorized Boolean        @default(false) @map(name: "is_authoized")
   Location     Location?      @relation(fields: [locationId], references: [id])
