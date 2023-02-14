@@ -1,4 +1,5 @@
 import { Close } from '@carbon/icons-react'
+import { Prescription } from '@prisma/client'
 import {
   Avatar,
   Box,
@@ -17,26 +18,32 @@ import useAuthorization from '../hooks/authorization'
 import useTeam from '../hooks/team'
 import useClerkUser from '../hooks/users'
 import theme from '../styles/theme'
-import { Role, User } from '../types/types'
+import { Role, User, UserWithPrescriptions } from '../types/types'
 
 function AuthorizedUserCard({
   user,
   currentUser
 }: {
-  user: User
+  user: UserWithPrescriptions
   currentUser: User
 }) {
-  const { user: clerkUser } = useClerkUser(user.id)
+  const { id, role } = user
+  const { user: clerkUser } = useClerkUser(id)
   const { revokeAuthorization, isAuthorized } = useAuthorization(currentUser)
   const profileImageUrl = clerkUser?.profile_image_url
 
   function handleRevokeAuthorization() {
-    if (user && user.role && user.id) {
-      revokeAuthorization({ targetUserId: user.id, targetUserRole: user.role })
+    if (user && role && id) {
+      revokeAuthorization({ targetUserId: id, targetUserRole: role })
     }
   }
-
-  console.log(user)
+  let activePrescriptions: Prescription[] = []
+  if (role === Role.Pharmacist) {
+    activePrescriptions = user.Pharmacist.Prescription
+  }
+  if (role === Role.Staff) {
+    activePrescriptions = user.Staff.Prescription
+  }
   return (
     <Card
       background="light-1"
@@ -68,7 +75,7 @@ function AuthorizedUserCard({
           />
         )}
       </CardHeader>
-      <CardBody>
+      <CardBody gap="small">
         <Box
           round
           background={
@@ -80,12 +87,22 @@ function AuthorizedUserCard({
         >
           <Tag name="Role" value={capitalize(user.role)} size="xsmall" />
         </Box>
+        <Box direction="row" gap="small">
+          <Text size="xsmall">Active Prescriptions:</Text>
+          <Text size="xsmall">
+            <b>{activePrescriptions?.length}</b>
+          </Text>
+        </Box>
       </CardBody>
     </Card>
   )
 }
 
-export default function AuthorizedUsers({ user }: { user: User }) {
+export default function AuthorizedUsers({
+  user
+}: {
+  user: UserWithPrescriptions
+}) {
   const { authorizedTeamStaff, onDutyTeamPharmacists } = useTeam(user)
   const size = useContext(ResponsiveContext)
   12

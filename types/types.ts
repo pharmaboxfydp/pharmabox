@@ -89,3 +89,16 @@ export interface ServerPageProps {
   user: User
   __clerk_ssr_state: UserJSON
 }
+
+export interface PharmacistWithPrescriptions extends Pharmacist {
+  Prescription: Prescription[]
+}
+
+export interface StafftWithPrescriptions extends Staff {
+  Prescription: Prescription[]
+}
+
+export interface UserWithPrescriptions extends User {
+  Pharmacist: PharmacistWithPrescriptions
+  Staff: StafftWithPrescriptions
+}

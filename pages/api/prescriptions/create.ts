@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
 import { Status, LockerBoxState, Role } from '../../../types/types'
-import { Pharmacist, Staff } from '@prisma/client'
 
 export default async function handler(
   req: NextApiRequest,

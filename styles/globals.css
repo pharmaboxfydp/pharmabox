@@ -162,3 +162,11 @@ h1[data-localization-key='userProfile.start.headerTitle__account'] {
 label span {
   font-size: 14px;
 }
+
+
+::selection {
+  background: #6FFFB0; /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+  background: #6FFFB0; /* Gecko Browsers */
+}
