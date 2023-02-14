@@ -27,14 +27,14 @@ function AuthorizedUserCard({
   currentUser: User
 }) {
   const { user: clerkUser } = useClerkUser(user.id)
-  const { revokeAuthorization } = useAuthorization(currentUser)
+  const { revokeAuthorization, isAuthorized } = useAuthorization(currentUser)
   const profileImageUrl = clerkUser?.profile_image_url
-
   function handleRevokeAuthorization() {
     if (user && user.role && user.id) {
       revokeAuthorization({ targetUserId: user.id, targetUserRole: user.role })
     }
   }
+  console.log(user)
   return (
     <Card
       background="light-1"
@@ -50,7 +50,7 @@ function AuthorizedUserCard({
             {user.firstName} {user.lastName}
           </Text>
         </Box>
-        {currentUser?.Pharmacist?.isOnDuty && (
+        {isAuthorized && (
           <Button
             style={{ padding: '4px' }}
             icon={<Close size={16} />}
@@ -76,7 +76,7 @@ function AuthorizedUserCard({
           }
           style={{ color: theme.global.colors.white, width: 'fit-content' }}
         >
-          <Tag name="Role" value={capitalize(user.role)} size="small" />
+          <Tag name="Role" value={capitalize(user.role)} size="xsmall" />
         </Box>
       </CardBody>
     </Card>

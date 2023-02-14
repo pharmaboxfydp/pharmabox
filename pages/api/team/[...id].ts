@@ -35,10 +35,15 @@ export default async function handler(
                 include: {
                   User: true
                 }
-              }
+              },
+              Prescription: true
             }
           },
-          Pharmacist: true
+          Pharmacist: {
+            include: {
+              Prescription: true
+            }
+          }
         }
       })
       res.status(200).json({ message: 'Succcess', teamMembers })
