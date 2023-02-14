@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../helpers/user-details'
 import Page from '../components/Page'
-import { ServerPageProps } from '../types/types'
+import { ServerPageProps, UserWithPrescriptions } from '../types/types'
 import { Box, Header, Text } from 'grommet'
 import Breadcrumbs from '../components/Breadcrumbs'
 import TeamMembersTable from '../components/TeamMembersTable'
@@ -36,7 +36,7 @@ const Team = ({ user }: ServerPageProps) => {
               <Header>
                 <Text>Active Team</Text>
               </Header>
-              <AuthorizedUsers user={user} />
+              <AuthorizedUsers user={user as UserWithPrescriptions} />
               <Header>
                 <Text>Team Members</Text>
                 <Box> {isCurrentUserAdmin && <InviteStaff user={user} />}</Box>
