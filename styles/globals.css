@@ -164,7 +164,7 @@ label span {
 }
 
 ::selection {
-  background: #ffb7b7; 
+  background: #ffb7b7;
 }
 ::-moz-selection {
   background: #ffb7b7;
