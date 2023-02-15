@@ -19,13 +19,13 @@ import useAuthorization from '../hooks/authorization'
 import useTeam from '../hooks/team'
 import useClerkUser from '../hooks/users'
 import theme from '../styles/theme'
-import { Role, User, UserWithPrescriptions } from '../types/types'
+import { Role, User, UserWithPrescriptionsAndAuthorizer } from '../types/types'
 
 function AuthorizedUserCard({
   user,
   currentUser
 }: {
-  user: UserWithPrescriptions
+  user: UserWithPrescriptionsAndAuthorizer
   currentUser: User
 }) {
   const { id, role } = user
@@ -41,10 +41,10 @@ function AuthorizedUserCard({
   let activePrescriptions: Prescription[] = []
   let authorizer: string = 'Self Authorized'
   if (role === Role.Pharmacist) {
-    activePrescriptions = user.Pharmacist.Prescription
+    activePrescriptions = user?.Pharmacist?.Prescription
   }
   if (role === Role.Staff) {
-    activePrescriptions = user.Staff.Prescription
+    activePrescriptions = user?.Staff?.Prescription
     const { firstName, lastName } = user?.Staff?.authorizer.User
     authorizer = `${firstName} ${lastName}`
   }
@@ -113,7 +113,7 @@ function AuthorizedUserCard({
 export default function AuthorizedUsers({
   user
 }: {
-  user: UserWithPrescriptions
+  user: UserWithPrescriptionsAndAuthorizer
 }) {
   const { authorizedTeamStaff, onDutyTeamPharmacists } = useTeam(user)
   const size = useContext(ResponsiveContext)

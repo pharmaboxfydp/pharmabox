@@ -1,4 +1,4 @@
-import { User, UserWithPrescriptions } from '../types/types'
+import { User, UserWithPrescriptionsAndAuthorizer } from '../types/types'
 import useSWR, { useSWRConfig } from 'swr'
 import { toast } from 'react-toastify'
 
@@ -9,9 +9,9 @@ export interface AddTeamMember {
 }
 
 export interface UseTeam {
-  team: UserWithPrescriptions[] | null
-  authorizedTeamStaff: UserWithPrescriptions[] | null
-  onDutyTeamPharmacists: UserWithPrescriptions[] | null
+  team: UserWithPrescriptionsAndAuthorizer[] | null
+  authorizedTeamStaff: UserWithPrescriptionsAndAuthorizer[] | null
+  onDutyTeamPharmacists: UserWithPrescriptionsAndAuthorizer[] | null
   isLoading: boolean
   isError: Error
   addTeamMember: ({ email, locationId, isAdmin }: AddTeamMember) => Promise<{
@@ -32,7 +32,7 @@ const fetcher = (
   ...arg: [string, Record<string, any>]
 ): Promise<{
   message: string
-  teamMembers: UserWithPrescriptions[]
+  teamMembers: UserWithPrescriptionsAndAuthorizer[]
 }> => fetch(...arg).then((res) => res.json())
 
 export default function useTeam(user: User): UseTeam {

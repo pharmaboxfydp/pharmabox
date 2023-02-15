@@ -1,4 +1,4 @@
-import { Role, User } from '../types/types'
+import { Role, StaffWithPrescriptionsAndAuthorizer, User } from '../types/types'
 import useSWR, { useSWRConfig } from 'swr'
 import { toast } from 'react-toastify'
 
@@ -10,7 +10,7 @@ export interface GrantOrRevokeAuthorization {
 export interface UseAuthorization {
   isAuthorized: boolean
   role: Role | null
-  user: User | null
+  user: StaffWithPrescriptionsAndAuthorizer | null
   isLoading: boolean
   isError: Error
   grantAuthorization: ({
@@ -29,7 +29,7 @@ const fetcher = (
   message: string
   isAuthorized: boolean
   role: Role
-  user: User
+  user: StaffWithPrescriptionsAndAuthorizer
 }> => fetch(...arg).then((res) => res.json())
 
 export default function useAuthorization(user: User): UseAuthorization {
@@ -97,7 +97,6 @@ export default function useAuthorization(user: User): UseAuthorization {
       mutate(`/api/user/${user.role}/${user.id}/authorization/status`)
     }
   }
-
   return {
     isAuthorized: data?.isAuthorized ?? false,
     role: data?.role ?? null,

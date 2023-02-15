@@ -33,7 +33,14 @@ export default async function handler(
 
       if (role == Role.Staff) {
         const staff = await prisma.staff.findUniqueOrThrow({
-          where: { userId: id }
+          where: { userId: id },
+          include: {
+            authorizer: {
+              include: {
+                User: true
+              }
+            }
+          }
         })
         isAuthorized = staff?.isAuthorized
         user = staff
