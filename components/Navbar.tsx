@@ -65,7 +65,6 @@ export default function Navbar({ user }: { user: User }) {
     const lastName = userWithSupervisor?.authorizer.User.lastName
     authorizerName = `${firstName} ${lastName}`
   }
-  console.log(authorizerName)
   return (
     <Header
       background={theme.global.colors['neutral-2']}
