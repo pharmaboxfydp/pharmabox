@@ -164,8 +164,8 @@ label span {
 }
 
 ::selection {
-  background: #6fffb0; /* WebKit/Blink Browsers */
+  background: #ffb7b7; 
 }
 ::-moz-selection {
-  background: #6fffb0; /* Gecko Browsers */
+  background: #ffb7b7;
 }

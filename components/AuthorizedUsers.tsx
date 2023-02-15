@@ -63,7 +63,7 @@ function AuthorizedUserCard({
             {user.firstName} {user.lastName}
           </Text>
         </Box>
-        {isAuthorized && (
+        {isAuthorized && currentUser.role === Role.Pharmacist && (
           <Button
             style={{ padding: '4px' }}
             icon={<Close size={16} />}

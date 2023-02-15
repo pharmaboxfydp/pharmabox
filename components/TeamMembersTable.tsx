@@ -147,7 +147,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
                 const isAuthorized =
                   (Pharmacist?.isOnDuty || Staff?.isAuthorized) ?? false
                 const isAuthorizedPharmacist =
-                  user?.Pharmacist && isCurrentUserAuthorized
+                  user?.role === Role.Pharmacist && isCurrentUserAuthorized
                 const targetUserRole = role ?? Role.Staff
                 return (
                   <Box align="center">

@@ -68,7 +68,7 @@ function LocationBlock({ user }: { user: User }) {
   )
 }
 
-export default function StaffSettings({ user }: { user: User }) {
+export default function StaffAndPharmacistSettings({ user }: { user: User }) {
   return (
     <>
       <Box gap="medium" pad="small">
