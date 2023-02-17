@@ -8,6 +8,7 @@ import { Box, Header, Text } from 'grommet'
 import Breadcrumbs from '../components/Breadcrumbs'
 import TeamMembersTable from '../components/TeamMembersTable'
 import InviteStaff from '../components/InviteStaff'
+import AuthorizedUsers from '../components/AuthorizedUsers'
 
 const Team = ({ user }: ServerPageProps) => {
   const isCurrentUserAdmin = user.Staff?.isAdmin || user.Pharmacist?.isAdmin
@@ -32,6 +33,10 @@ const Team = ({ user }: ServerPageProps) => {
           <Breadcrumbs pages={['Team']} />
           <Box direction="row" border="top" fill>
             <Box pad="medium" basis="auto" fill="horizontal" gap="medium">
+              <Header>
+                <Text>Active Team</Text>
+              </Header>
+              <AuthorizedUsers user={user} />
               <Header>
                 <Text>Team Members</Text>
                 <Box> {isCurrentUserAdmin && <InviteStaff user={user} />}</Box>

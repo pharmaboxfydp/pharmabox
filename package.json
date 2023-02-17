@@ -40,6 +40,7 @@
     "ts-debounce": "^4.0.0"
   },
   "devDependencies": {
+    "@clerk/types": "^3.27.0",
     "@faker-js/faker": "^7.6.0",
     "@types/carbon__icons-react": "^11.10.0",
     "@types/lodash": "^4.14.188",

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
-import { Status, LockerBoxState } from '../../../types/types'
+import { Status, LockerBoxState, Role } from '../../../types/types'
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,16 +18,21 @@ export default async function handler(
         patientId: P,
         balance: B,
         locationId: L,
-        lockerBoxId: LB
+        lockerBoxId: LB,
+        staffId: SI,
+        pharmacistId: PI,
+        role: R
       } = req.body.data
-
       const name: string = N
       const status: Status.AwaitingPickup = S
       const patientId: number = parseInt(P)
       const balance: number = parseFloat(B)
       const locationId: number = parseInt(L)
       const lockerBoxId: number = parseInt(LB)
+      const pharmacistId = parseInt(PI)
+      const staffId = SI ? parseInt(SI) : null
       const random_key = crypto.randomBytes(20).toString('hex')
+
       const prescription = await prisma.prescription.create({
         data: {
           name: name,
@@ -36,7 +41,9 @@ export default async function handler(
           pickupCode: random_key,
           patientId: patientId,
           lockerBoxId: lockerBoxId,
-          locationId: locationId
+          locationId: locationId,
+          pharmacistId,
+          staffId
         }
       })
 

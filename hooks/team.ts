@@ -1,4 +1,4 @@
-import { User } from '../types/types'
+import { User, UserWithPrescriptionsAndAuthorizer } from '../types/types'
 import useSWR, { useSWRConfig } from 'swr'
 import { toast } from 'react-toastify'
 
@@ -9,7 +9,9 @@ export interface AddTeamMember {
 }
 
 export interface UseTeam {
-  team: User[] | null
+  team: UserWithPrescriptionsAndAuthorizer[] | null
+  authorizedTeamStaff: UserWithPrescriptionsAndAuthorizer[] | null
+  onDutyTeamPharmacists: UserWithPrescriptionsAndAuthorizer[] | null
   isLoading: boolean
   isError: Error
   addTeamMember: ({ email, locationId, isAdmin }: AddTeamMember) => Promise<{
@@ -28,8 +30,10 @@ export interface UseTeam {
 
 const fetcher = (
   ...arg: [string, Record<string, any>]
-): Promise<{ message: string; teamMembers: User[] }> =>
-  fetch(...arg).then((res) => res.json())
+): Promise<{
+  message: string
+  teamMembers: UserWithPrescriptionsAndAuthorizer[]
+}> => fetch(...arg).then((res) => res.json())
 
 export default function useTeam(user: User): UseTeam {
   let locationId: number | null = null
@@ -86,9 +90,16 @@ export default function useTeam(user: User): UseTeam {
     const res = await response.json()
     return res
   }
-
+  const authorizedTeamStaff = data?.teamMembers.filter(
+    (teamMember) => teamMember.Staff?.isAuthorized
+  )
+  const onDutyTeamPharmacists = data?.teamMembers.filter(
+    (teamMember) => teamMember.Pharmacist?.isOnDuty
+  )
   return {
     team: data?.teamMembers ?? null,
+    authorizedTeamStaff: authorizedTeamStaff ?? null,
+    onDutyTeamPharmacists: onDutyTeamPharmacists ?? null,
     isLoading: !error && !data,
     isError: error,
     addTeamMember,

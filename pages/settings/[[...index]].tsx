@@ -8,7 +8,7 @@ import Breadcrumbs from '../../components/Breadcrumbs'
 import Link from 'next/link'
 import { Information, UserProfile } from '@carbon/icons-react'
 import PatientSettings from '../../components/PatientSettings'
-import StaffSettings from '../../components/StaffSettings'
+import StaffAndPharmacistSettings from '../../components/StaffAndPharmacistSettings'
 import { Logout } from '@carbon/icons-react'
 import SidebarButton from '../../components/SidebarButton'
 import { useClerk } from '@clerk/clerk-react'
@@ -50,7 +50,9 @@ const Settings = ({ user }: ServerPageProps) => {
             </Box>
             <Box pad="small" basis="auto" fill="horizontal" gap="small">
               {user.role === Role.Patient && <PatientSettings user={user} />}
-              {user.role === Role.Staff && <StaffSettings user={user} />}
+              {(user.role === Role.Staff || user.role === Role.Pharmacist) && (
+                <StaffAndPharmacistSettings user={user} />
+              )}
 
               <div>
                 <ResponsiveContext.Consumer>

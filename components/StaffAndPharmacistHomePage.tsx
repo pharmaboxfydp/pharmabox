@@ -35,7 +35,7 @@ import {
   usePrescriptions
 } from '../hooks/prescriptions'
 import theme from '../styles/theme'
-import { LockerBoxState, Status, User } from '../types/types'
+import { LockerBoxState, Role, Status, User } from '../types/types'
 import CardNotification from './CardNotification'
 
 function Loading() {
@@ -282,10 +282,21 @@ function PrescriptionCreationBar({
         lockerbox: label
       }
     } = event
+
     const lockerBoxId = defaultLockerOptions.filter(
       (lockerbox) => lockerbox.label === label
     )[0].id
     const balance = parseFloat(B)
+
+    let staffId = null
+    let pharmacistId = null
+
+    if (user.role === Role.Pharmacist) {
+      pharmacistId = user.Pharmacist?.id
+    } else {
+      pharmacistId = user.Staff?.pharmacistId
+      staffId = user?.Staff?.id
+    }
     if (locationId) {
       const response = await createPrescription({
         name,
@@ -293,7 +304,10 @@ function PrescriptionCreationBar({
         patientId: id,
         balance,
         lockerBoxId,
-        locationId
+        locationId,
+        staffId,
+        pharmacistId,
+        role: user.role
       })
       if (response.message == 'Success') {
         if (formRef.current) {
@@ -444,7 +458,7 @@ export default function StaffAndPharmacistHomePage({ user }: { user: User }) {
           <PrescriptionCreationBar
             activePatients={activePatients}
             lockerboxes={lockerboxes}
-            locationId={user?.Staff?.locationId}
+            locationId={user?.Staff?.locationId || user?.Pharmacist?.locationId}
             user={user}
           />
         )}

@@ -1,11 +1,12 @@
 import { useUser } from '@clerk/nextjs'
-import { Avatar, Box, Button, Header, Nav, Spinner } from 'grommet'
+import { Avatar, Box, Button, Header, Nav, Spinner, Text } from 'grommet'
 import Image from 'next/image'
 import Link from 'next/link'
 import theme from '../styles/theme'
 import Logo from '../public/pharmabox_logo.svg'
 import { Role, User } from '../types/types'
 import AuthorizationToggle from './AuthorizationToggle'
+import useAuthorization from '../hooks/authorization'
 
 function NavUserIcon() {
   const { isLoaded, isSignedIn, user } = useUser()
@@ -56,6 +57,14 @@ function NavUserIcon() {
 }
 
 export default function Navbar({ user }: { user: User }) {
+  const { isAuthorized, user: userWithSupervisor } = useAuthorization(user)
+  let authorizerName: string = ''
+  const showAuthoriser: boolean = user.role === Role.Staff && isAuthorized
+  if (showAuthoriser) {
+    const firstName = userWithSupervisor?.authorizer.User.firstName
+    const lastName = userWithSupervisor?.authorizer.User.lastName
+    authorizerName = `${firstName} ${lastName}`
+  }
   return (
     <Header
       background={theme.global.colors['neutral-2']}
@@ -78,6 +87,14 @@ export default function Navbar({ user }: { user: User }) {
         </Box>
       </Box>
       <Nav direction="row">
+        {user.role === Role.Staff && showAuthoriser && (
+          <Box direction="row" align="center" gap="xsmall">
+            <Text size="small">Supervising Pharmacist:</Text>
+            <Text size="small">
+              <b>{authorizerName}</b>
+            </Text>
+          </Box>
+        )}
         {user.role === Role.Pharmacist && <AuthorizationToggle user={user} />}
         <NavUserIcon />
       </Nav>

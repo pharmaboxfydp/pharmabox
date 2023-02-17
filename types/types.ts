@@ -14,17 +14,17 @@ export enum Role {
   Pharmacist = 'pharmacist'
 }
 export type PrescriptionAndLocationAndPatient = Prescription & {
-  Location: Location
+  readonly Location: Location
 } & {
-  LockerBox: LockerBox
+  readonly LockerBox: LockerBox
 } & {
-  Patient: Patient
+  readonly Patient: Patient
 }
 
 export type PharmacyLocation = Location & {
-  Prescriptions: Prescription[]
+  readonly Prescriptions: Prescription[]
 } & {
-  LockerBoxes: LockerBox[]
+  readonly LockerBoxes: LockerBox[]
 }
 
 export enum Permissions {
@@ -70,22 +70,36 @@ export enum PharmacistRootPages {
 }
 
 export type User = {
-  id: string
-  firstName: string | undefined
-  lastName: string | undefined
-  email: string
-  phoneNumber?: string
-  pickup_enabled?: boolean
-  role?: Role
-  createdAt: string
-  updatedAt: string
-  lastLoggedIn?: string
+  readonly id: string
+  readonly firstName: string | undefined
+  readonly lastName: string | undefined
+  readonly email: string
+  readonly phoneNumber?: string
+  readonly pickup_enabled?: boolean
+  readonly role?: Role
+  readonly createdAt: string
+  readonly updatedAt: string
+  readonly lastLoggedIn?: string
   Patient?: Patient
   Staff?: Staff
   Pharmacist?: Pharmacist
 }
 
 export interface ServerPageProps {
-  user: User
+  readonly user: UserWithPrescriptionsAndAuthorizer
   __clerk_ssr_state: UserJSON
+}
+
+export interface PharmacistWithPrescriptions extends Pharmacist {
+  Prescription: Prescription[]
+}
+
+export interface StaffWithPrescriptionsAndAuthorizer extends Staff {
+  Prescription: Prescription[]
+  authorizer: { User: User }
+}
+
+export interface UserWithPrescriptionsAndAuthorizer extends User {
+  Pharmacist: PharmacistWithPrescriptions
+  Staff: StaffWithPrescriptionsAndAuthorizer
 }

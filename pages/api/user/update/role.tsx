@@ -41,6 +41,34 @@ async function deletePharamcist(
 ): Promise<Prisma.Prisma__PharmacistClient<Pharmacist, never> | null> {
   let deletedRole = null
   try {
+    const pharmacist = await prisma.pharmacist.findUnique({
+      where: {
+        id: parseInt(id)
+      }
+    })
+    /**
+     * We need to revoke all of the staff who are authorized under the current pharmacist
+     * We have to do this iteratively according to this open issue:
+     * https://github.com/prisma/prisma/issues/3143
+     */
+    const connectedStaff = await prisma.staff.findMany({
+      where: {
+        authorizer: pharmacist
+      }
+    })
+    connectedStaff.forEach(async (staff: Staff) => {
+      await prisma.staff.update({
+        where: {
+          id: staff.id
+        },
+        data: {
+          isAuthorized: false,
+          authorizer: {
+            disconnect: true
+          }
+        }
+      })
+    })
     deletedRole = await prisma.pharmacist.delete({
       where: {
         userId: id

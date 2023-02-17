@@ -43,30 +43,6 @@ async function getDevUsers(): Promise<UserJSON[]> {
 async function seedUsers(
   users: UserJSON[]
 ): Promise<{ count: number; patientUsers: User[]; staffUsers: User[] }> {
-  /**
-   * remove patients from patients table
-   */
-  try {
-    await prisma.patient.deleteMany({})
-  } catch (error) {
-    console.error(error)
-  }
-  /**
-   * remove staff from staff tablet
-   */
-  try {
-    await prisma.staff.deleteMany({})
-  } catch (error) {
-    console.error(error)
-  }
-  /**
-   * remove users from the users table
-   */
-  try {
-    await prisma.user.deleteMany({})
-  } catch (error) {
-    console.error(error)
-  }
   const staffUsers: User[] = []
   const patientUsers: User[] = []
 
@@ -103,34 +79,38 @@ async function seedUsers(
   })
 
   const count = staffUsers.length + patientUsers.length
+  try {
+    staffUsers.forEach(async (staffUser: User, index) => {
+      const numUses = staffUsers.length
+      const userNumber = index + 1
+      const midpoint = Math.max(numUses / 2)
 
-  staffUsers.forEach(async (staffUser: User, index) => {
-    const numUses = staffUsers.length
-    const userNumber = index + 1
-    const midpoint = Math.max(numUses / 2)
-    await prisma.user.create({
-      data: {
-        ...staffUser,
-
-        Staff: {
-          connectOrCreate: {
-            where: {
-              userId: staffUser.id
-            },
-            create: {
-              isAdmin: userNumber < midpoint ?? false
+      await prisma.user.create({
+        // @ts-ignore
+        data: {
+          ...staffUser,
+          Staff: {
+            connectOrCreate: {
+              where: {
+                userId: staffUser.id
+              },
+              create: {
+                isAdmin: userNumber < midpoint ?? false
+              }
             }
           }
         }
-      }
+      })
     })
-  })
-
+  } catch (error) {
+    console.error(error)
+  }
   patientUsers.forEach(async (patientUser, index) => {
     const numUses = patientUsers.length
     const userNumber = index + 1
     const midpoint = Math.max(numUses / 2)
     await prisma.user.create({
+      // @ts-ignore
       data: {
         ...patientUser,
         Patient: {

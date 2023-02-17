@@ -45,7 +45,17 @@ export const getServerSideProps = withServerSideAuth(
     SSRUser({
       req,
       res,
-      query: { include: { Staff: true, Patient: true, Pharmacist: true } }
+      query: {
+        include: {
+          Staff: {
+            include: {
+              authorizer: true
+            }
+          },
+          Patient: true,
+          Pharmacist: true
+        }
+      }
     }),
   { loadUser: true }
 )

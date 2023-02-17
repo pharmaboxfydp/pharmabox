@@ -2,7 +2,12 @@ import { Location, Patient, Prescription } from '@prisma/client'
 import { toast } from 'react-toastify'
 import useSWR, { useSWRConfig } from 'swr'
 
-import { PrescriptionAndLocationAndPatient, Status, User } from '../types/types'
+import {
+  PrescriptionAndLocationAndPatient,
+  Role,
+  Status,
+  User
+} from '../types/types'
 
 export interface UsePatientPrescriptions {
   prescriptions: PrescriptionAndLocationAndPatient[] | null
@@ -31,6 +36,9 @@ export interface UsePrescription {
     balance: number
     locationId: number
     lockerBoxId: number
+    pharmacistId: number | null | undefined
+    staffId: number | null | undefined
+    role: Role | undefined
   }) => Promise<any>
 }
 
@@ -126,7 +134,10 @@ export function usePrescriptions(prescriptionId?: number): UsePrescription {
     patientId,
     balance = 0,
     locationId,
-    lockerBoxId
+    lockerBoxId,
+    pharmacistId,
+    staffId,
+    role
   }: {
     name: string
     status: Status
@@ -134,11 +145,24 @@ export function usePrescriptions(prescriptionId?: number): UsePrescription {
     balance: number
     locationId: number
     lockerBoxId: number
+    pharmacistId: number | null | undefined
+    staffId: number | null | undefined
+    role: Role | undefined
   }): Promise<{ message: string; prescription: Prescription }> {
     const response = await fetch('/api/prescriptions/create', {
       method: 'POST',
       body: JSON.stringify({
-        data: { name, status, patientId, balance, locationId, lockerBoxId }
+        data: {
+          name,
+          status,
+          patientId,
+          balance,
+          locationId,
+          lockerBoxId,
+          pharmacistId,
+          staffId,
+          role
+        }
       })
     })
     if (response.status === 200) {
