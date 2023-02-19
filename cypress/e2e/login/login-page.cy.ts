@@ -2,7 +2,7 @@
 
 describe('Login Page', () => {
   beforeEach(() => {
-    cy.visit(Cypress.env('BASE_URL'))
+    cy.visit('/')
   })
   it('Sould load the login page', () => {
     cy.get('button').contains('Sign In').should('exist')
