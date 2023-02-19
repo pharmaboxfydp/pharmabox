@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:typescript": "tsc --build",
     "start": "next start",
     "lint:next": "next lint",
     "lint:all": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
