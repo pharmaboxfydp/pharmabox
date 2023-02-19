@@ -22,15 +22,16 @@ jobs:
           echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
       - name: Cypress run ⛰️
         uses: cypress-io/github-action@v5
-        continue-on-error: true
         with:
           project: ./
           browser: chrome
           build: npm run build
           start: npm run start
           wait-on: 'http://localhost:3000'
-      - name: Upload Arifacts
+      - name: Upload Video Arifacts Available on Summary Page
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: videos
           path: cypress/videos/
+          retention-days: 5
