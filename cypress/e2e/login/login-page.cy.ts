@@ -21,5 +21,6 @@ describe('Login Page', () => {
     cy.location().should((loc) => {
       expect(loc.pathname).to.equal('/home')
     })
+    cy.screenshot('Login with Staff')
   })
 })
