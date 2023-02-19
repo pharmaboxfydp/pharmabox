@@ -15,7 +15,7 @@ jobs:
           browser: chrome
           build: npm run build
           start: npm run start
-          wait-on: ${{ vars.BASE_URL }}
+          wait-on: 'http://localhost:3000'
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
