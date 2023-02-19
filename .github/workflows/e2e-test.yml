@@ -6,13 +6,12 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout 🏁
         uses: actions/checkout@v2
-      - name: Export Cypress variables
+      - name: Create a CI cypress.env.json file ✍️
         run: |
-          export CYPRESS_test_staff_username_1=$CYPRESS_test_staff_username_1
-          export CYPRESS_test_staff_username_1=$CYPRESS_test_staff_password_1
-      - name: Cypress run
+          echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
+      - name: Cypress run ⛰️
         uses: cypress-io/github-action@v3
         with:
           project: ./
@@ -25,5 +24,3 @@ jobs:
           CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
           CLERK_API_KEY: ${{ secrets.CLERK_API_KEY }}
           NEXT_PUBLIC_CLERK_FRONTEND_API: ${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
-          CYPRESS_test_staff_username_1: ${{ secrets.CYPRESS_test_staff_username_1 }}
-          CYPRESS_test_staff_password_1: ${{ secrets.CYPRESS_test_staff_password_1 }}
