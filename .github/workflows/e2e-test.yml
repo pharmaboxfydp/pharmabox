@@ -15,6 +15,7 @@ jobs:
       - name: Create a CI cypress.env.json file ✍️
         run: |
           echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
+          echo 'CLERK_API_KEY=${{ secret.CLERK_API_KEY }}' > .env
       - name: Cypress run ⛰️
         uses: cypress-io/github-action@v5
         with:
