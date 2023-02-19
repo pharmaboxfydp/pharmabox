@@ -22,5 +22,5 @@
     "pages/sign-up/[[...index]].[jsx/tsx]",
     "lib/scripts/seed_test_db.ts"
   ],
-  "exclude": ["node_modules", "**/*.cy.ts"]
+  "exclude": ["node_modules", "cypress/**/*.cy.ts"]
 }
