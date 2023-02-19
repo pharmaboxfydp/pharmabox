@@ -21,8 +21,9 @@ jobs:
           wait-on: 'http://localhost:3000'
       - name: Upload Arifacts
         uses: actions/upload-artifact@v3
-        with: videos
-        path: cypress/videos/
+        with:
+          name: videos
+          path: cypress/videos/
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
