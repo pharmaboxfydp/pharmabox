@@ -2,7 +2,7 @@ name: E2E on Chrome
 
 on: [push]
 
-jobs: Cypress Test
+jobs:
   install:
     runs-on: ubuntu-latest
     steps:
