@@ -19,7 +19,7 @@ jobs:
           build: npm run build
           start: npm run start
           wait-on: 'http://localhost:3000'
-      - name: 'Upload Arifacts
+      - name: Upload Arifacts
         uses: actions/upload-artifacts@v3
         with: videos
         path: cypress/videos/
