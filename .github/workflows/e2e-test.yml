@@ -12,13 +12,17 @@ jobs:
         run: |
           echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
       - name: Cypress run ⛰️
-        uses: cypress-io/github-action@v3
+          uses: cypress-io/github-action@v3
         with:
           project: ./
           browser: chrome
           build: npm run build
           start: npm run start
           wait-on: 'http://localhost:3000'
+      - name: 'Upload Arifacts
+        uses: actions/upload-artifacts@v3
+        with: videos
+        path: cypress/videos/
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
