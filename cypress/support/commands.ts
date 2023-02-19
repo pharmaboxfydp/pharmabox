@@ -11,7 +11,20 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+
+Cypress.Commands.add('login', (username: string, password: string) => {
+  const signInButton = cy.get('button').contains('Sign In')
+  signInButton.click()
+  cy.get('.cl-card').should('exist').should('have.class', 'cl-signIn-start')
+  const userNameField = cy.get('#identifier-field')
+  userNameField.type(username)
+  userNameField.should('have.value', username)
+  cy.get('.cl-formButtonPrimary').click()
+  cy.get('.cl-headerTitle').should('have.text', 'Enter your password')
+  const passwordField = cy.get('#password-field')
+  passwordField.type(password)
+  cy.get('.cl-formButtonPrimary').click()
+})
 //
 //
 // -- This is a child command --
@@ -25,13 +38,3 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }

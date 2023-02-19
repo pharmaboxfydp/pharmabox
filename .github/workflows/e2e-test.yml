@@ -8,6 +8,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Export Cypress variables
+        run: |
+          export CYPRESS_test_staff_username_1=$CYPRESS_test_staff_username_1
+          export CYPRESS_test_staff_username_1=$CYPRESS_test_staff_password_1
       - name: Cypress run
         uses: cypress-io/github-action@v3
         with:
@@ -21,3 +25,5 @@ jobs:
           CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
           CLERK_API_KEY: ${{ secrets.CLERK_API_KEY }}
           NEXT_PUBLIC_CLERK_FRONTEND_API: ${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
+          CYPRESS_test_staff_username_1: ${{ secrets.CYPRESS_test_staff_username_1 }}
+          CYPRESS_test_staff_password_1: ${{ secrets.CYPRESS_test_staff_password_1 }}

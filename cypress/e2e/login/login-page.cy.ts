@@ -9,8 +9,17 @@ describe('Login Page', () => {
     cy.get('button').contains('Sign Up').should('exist')
   })
   it('Should allow a staff member to sign in', () => {
-    const signInButton = cy.get('button').contains('Sign In')
-    signInButton.click()
-    cy.get('.cl-card').should('exist').should('have.class', 'cl-signIn-start')
+    cy.login(
+      Cypress.env('test_staff_username_1'),
+      Cypress.env('test_staff_password_1')
+    )
+    // check that we are on the /home page by default
+    cy.get('span').contains('text', 'Home').should('exist')
+    cy.get('span')
+      .contains('text', 'Prescriptions Awaiting Pickup')
+      .should('exist')
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.equal('/home')
+    })
   })
 })
