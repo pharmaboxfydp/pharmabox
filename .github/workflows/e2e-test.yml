@@ -1,0 +1,37 @@
+name: E2E on Chrome
+
+on: [push]
+
+jobs:
+  end-to-end:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
+      CLERK_API_KEY: ${{ secrets.CLERK_API_KEY }}
+      NEXT_PUBLIC_CLERK_FRONTEND_API: ${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
+    steps:
+      - name: Checkout 🏁
+        uses: actions/checkout@v3
+      - name: Set-up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.14.0
+      - name: Create a CI cypress.env.json file ✍️
+        run: |
+          echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
+      - name: Cypress run ⛰️
+        uses: cypress-io/github-action@v5
+        with:
+          project: ./
+          browser: chrome
+          build: npm run build
+          start: npm run start
+          wait-on: 'http://localhost:3000'
+      - name: Upload Video Arifacts Available on Summary Page
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: videos
+          path: cypress/videos/
+          retention-days: 5

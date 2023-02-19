@@ -20,7 +20,8 @@
     "**/*.ts",
     "**/*.tsx",
     "pages/sign-up/[[...index]].[jsx/tsx]",
-    "lib/scripts/seed_test_db.ts"
+    "lib/scripts/seed_test_db.ts",
+    "img.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "cypress/**/*.ts", "public"]
 }
