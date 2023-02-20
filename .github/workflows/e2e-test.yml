@@ -31,7 +31,7 @@ jobs:
           npm run build
       - name: Write Database URL
         run: |
-          echo '${{ secrets.DATABASE_URL }}' > .env.development
+          echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' > .env
       - name: Generate Prisma Database
         run: |
           npx prisma migrate deploy
