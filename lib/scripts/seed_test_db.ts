@@ -9,15 +9,16 @@ import { LockerBoxState, Role, User } from '../../types/types'
 import { UserJSON } from '@clerk/backend-core'
 import data from './test_data'
 import { LockerBox } from '@prisma/client'
+import { faker } from '@faker-js/faker'
 
 dotenv.config()
 
 const BASE_URL = `https://api.clerk.dev/v1`
 
-function randInt(min: number, max: number) {
-  // min and max included
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
+/**
+ * Seed faker.js for repeatable outputs
+ */
+faker.seed(42)
 
 /**
  * Get users from our dev database
@@ -35,19 +36,10 @@ async function getDevUsers(): Promise<UserJSON[]> {
   return users
 }
 
-/**
- * Seeds users in local database
- * @param users
- * @returns Promise<Prisma.BatchPayload>
- */
-async function seedUsers(
-  users: UserJSON[]
-): Promise<{ count: number; pharmacistUsers: User[]; staffUsers: User[] }> {
+async function seedPharmacistsAndStaffUsersFromClerk(users: UserJSON[]) {
   const staffUsers: User[] = []
   const pharmacistUsers: User[] = []
-
   users.sort()
-
   users.forEach(async (user, index) => {
     const numUses = users.length
     const userNumber = index + 1
@@ -82,59 +74,149 @@ async function seedUsers(
 
   const count = staffUsers.length + pharmacistUsers.length
   try {
-    staffUsers.forEach(async (staffUser: User, index) => {
-      const numUses = staffUsers.length
-      const userNumber = index + 1
-      const midpoint = Math.max(numUses / 2)
-      await prisma.user.create({
-        /**
-         * Ignore error here since we are going to get an expected mismatch
-         */
-        // @ts-ignore
-        data: {
-          ...staffUser,
-          Staff: {
-            connectOrCreate: {
-              where: {
-                userId: staffUser.id
-              },
-              create: {
-                isAdmin: userNumber < midpoint ?? false
+    Promise.all(
+      staffUsers.map(async (staffUser: User, index) => {
+        const numUses = staffUsers.length
+        const userNumber = index + 1
+        const midpoint = Math.max(numUses / 2)
+        await prisma.user.create({
+          /**
+           * Ignore error here since we are going to get an expected mismatch
+           */
+          // @ts-ignore
+          data: {
+            ...staffUser,
+            Staff: {
+              connectOrCreate: {
+                where: {
+                  userId: staffUser.id
+                },
+                create: {
+                  isAdmin: userNumber < midpoint ?? false
+                }
               }
             }
           }
-        }
+        })
       })
-    })
+    )
   } catch (error: unknown) {
     throw new Error(error as string)
   }
-  pharmacistUsers.forEach(async (PharmacistUser, index) => {
-    const numUses = pharmacistUsers.length
-    const userNumber = index + 1
-    const midpoint = Math.max(numUses / 2)
-    await prisma.user.create({
-      /**
-       * Ignore error here since we are going to get an expected mismatch
-       */
-      // @ts-ignore
-      data: {
-        ...PharmacistUser,
-        Pharmacist: {
-          connectOrCreate: {
-            where: {
-              userId: PharmacistUser.id
-            },
-            create: {
-              isAdmin: userNumber < midpoint ?? false
+  try {
+    Promise.all(
+      pharmacistUsers.map(async (PharmacistUser, index) => {
+        const numUses = pharmacistUsers.length
+        const userNumber = index + 1
+        const midpoint = Math.max(numUses / 2)
+        await prisma.user.create({
+          /**
+           * Ignore error here since we are going to get an expected mismatch
+           */
+          // @ts-ignore
+          data: {
+            ...PharmacistUser,
+            Pharmacist: {
+              connectOrCreate: {
+                where: {
+                  userId: PharmacistUser.id
+                },
+                create: {
+                  isAdmin: userNumber < midpoint ?? false
+                }
+              }
             }
           }
-        }
-      }
-    })
-  })
+        })
+      })
+    )
+  } catch (error: unknown) {
+    throw new Error(error as string)
+  }
 
   return { count, pharmacistUsers, staffUsers }
+}
+
+async function seedPatients() {
+  const numPatientsToCreate = 200
+  const patients: User[] = []
+  console.info(
+    '\x1b[36m%s\x1b[0m',
+    `CREATING ${numPatientsToCreate} RANDOM PATIENTS....`
+  )
+
+  const numCharacters = 24
+
+  /**
+   * Create random users (not connected to clerk so that cannot sign in
+   */
+  var idx = 0
+  while (idx < numPatientsToCreate) {
+    const id = `patient_user_${faker.datatype.uuid()}`
+    const newUser: User = {
+      id,
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      email: faker.internet.email(),
+      createdAt: faker.date.past().toISOString(),
+      updatedAt: faker.date.past().toISOString(),
+      phoneNumber: faker.phone.number(),
+      role: Role.Patient,
+      lastLoggedIn: faker.date.past().toISOString()
+    }
+    patients.push(newUser)
+    idx++
+  }
+  try {
+    Promise.all(
+      patients.map(async (patientUser: User) => {
+        await prisma.user.create({
+          /**
+           * Ignore error here since we are going to get an expected mismatch
+           */
+          // @ts-ignore
+          data: {
+            ...patientUser,
+            Patient: {
+              connectOrCreate: {
+                where: {
+                  userId: patientUser.id
+                },
+                create: {
+                  pickupEnabled: faker.helpers.arrayElement([true, false]),
+                  dob: faker.date.birthdate().toISOString()
+                }
+              }
+            }
+          }
+        })
+      })
+    )
+  } catch (error: unknown) {
+    throw new Error(error as string)
+  }
+  return { count: numPatientsToCreate, patientUsers: patients }
+}
+
+/**
+ * Seeds users in local database
+ * @param users
+ * @returns Promise<Prisma.BatchPayload>
+ */
+async function seedUsers(users: UserJSON[]): Promise<{
+  count: number
+  pharmacistUsers: User[]
+  staffUsers: User[]
+  patientUsers: User[]
+}> {
+  const {
+    count: staffAndPharmacistCount,
+    pharmacistUsers,
+    staffUsers
+  } = await seedPharmacistsAndStaffUsersFromClerk(users)
+  const { count: patientCount, patientUsers } = await seedPatients()
+  const count = patientCount + staffAndPharmacistCount
+  return { count, pharmacistUsers, staffUsers, patientUsers }
 }
 
 async function seedLocations(staff: User[], pharmacist: User[]) {
@@ -222,7 +304,7 @@ getDevUsers()
   .then((users) => {
     seedUsers(users)
       .then(async (payload) => {
-        const { count, staffUsers, pharmacistUsers } = payload
+        const { count, staffUsers, pharmacistUsers, patientUsers } = payload
         /**
          * Log Information about the users created
          */
@@ -231,6 +313,8 @@ getDevUsers()
         console.table(staffUsers, ['id', 'firstName', 'email', 'role'])
         console.info('\x1b[36m%s\x1b[0m', 'PHARMACISTS ✅ -----')
         console.table(pharmacistUsers, ['id', 'firstName', 'email', 'role'])
+        console.info('\x1b[36m%s\x1b[0m', 'PATIENTS (NOT IN CLERK) ✅ -----')
+        console.table(patientUsers, ['id', 'firstName', 'email', 'role'])
         /**
          * Create Locations and create teams of users
          */
