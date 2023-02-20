@@ -5,6 +5,17 @@ on: [push]
 jobs:
   end-to-end:
     runs-on: ubuntu-latest
+    services:
+      image: postgres
+      env:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password
+      options: >-
+        --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+
+      ports:
+        - 5432:5432
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
@@ -17,6 +28,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.14.0
+      - name: Install dependencies and Build
+        run: |
+          npm ci
+          npm run build
+      - name: Write Database URL
+        run: |
+          echo '${{ secrets.DATABASE_URL }}' > .env.development
+      - name: Generate Prisma Database
+        run: |
+          dotenv -e .env.development -- npx prisma migrate deploy
       - name: Create a CI cypress.env.json file ✍️
         run: |
           echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
