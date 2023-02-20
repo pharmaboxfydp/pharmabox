@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running Pre-commit Hooks... 👀\n"
+echo "Linting.... 💨"
+npm run lint:next
+npm run lint:all
+echo "Building Typescript... 🧩"
+npm run build:typescript
+echo "Pretty-ing things up... 💐"
+npm run prettier:fix
+echo "Done! ✅"
+
