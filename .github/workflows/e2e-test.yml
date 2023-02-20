@@ -29,9 +29,12 @@ jobs:
         run: |
           npm ci
           npm run build
-      - name: Write Database URL
+      - name: Write Database URLs and Env Variables
         run: |
           echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' > .env
+          echo 'CLERK_JWT_KEY=${{ secrets.CLERK_JWT_KEY }}' >> .env
+          echo 'CLERK_API_KEY=${{ secrets.CLERK_API_KEY }}' >> .env
+          echo 'NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}' >> .env
       - name: Generate Prisma Database
         run: |
           npx prisma validate
