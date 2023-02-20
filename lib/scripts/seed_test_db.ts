@@ -186,7 +186,7 @@ async function seedLockerBoxes() {
   prisma.location.findMany({}).then((locations) => {
     const locationIds = locations.map((location) => location.id)
     locationIds.forEach(async (locationId: number) => {
-      const lockerCount = 4
+      const lockerCount = 8
       const lockerBoxes = Array.from(
         { length: lockerCount },
         (_, index: number): Partial<LockerBox> => {
