@@ -59,19 +59,28 @@ This repository uses [prettier](https://prettier.io/) to format code and [ESLint
 
 ```bash
 # check formatting
-npx prettier . --check
+npm run prettier:check
 ```
 
 ```bash
 # fix formatting
-npx prettier . --write
+npm run prettier:fix
 ```
 
 You can also lint files using
 
 ```bash
 # lint files
-npx eslint . --ext .js,.jsx,.ts,.tsx --fix
+npm run lint:all
+# lint for next config
+npm run lint:next
+```
+
+You can build Typescript
+
+```bash
+# build TS
+npm run build:typescript
 ```
 
 ## Prisma Studio
@@ -85,11 +94,13 @@ You can use Prisma Studio to help with development! You might run into issues wi
 
 ### Database Migration
 
-Running the script `bash/migrate_dbs` will perform migrations on **both production and local databases** to make sure they are in-sync. Be careful when running this script to avoid deleting data by accident. It is recommended that a backup (snapshot) of the database be made in AWS prior to running a heavy migration
+Running the script `bash/migrate_dbs` will perform migrations on **local databases** to make sure they are in-sync. Be careful when running this script to avoid deleting data by accident. It is recommended that a backup (snapshot) of the database be made in AWS prior to running a heavy migration
 
 ```bash
 sh bash/migrate_dbs
 ```
+
+\*\*For detailed information about migrations refer to the [Prisma Migration Documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate).
 
 ### Seed Test Database
 
