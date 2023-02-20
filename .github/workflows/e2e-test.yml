@@ -32,9 +32,9 @@ jobs:
       - name: Write Database URL
         run: |
           echo '${{ secrets.DATABASE_URL }}' > .env.development
-      - name: Generate Prisma Database
-        run: |
-          dotenv -e .env.development -- npx prisma migrate deploy
+      # - name: Generate Prisma Database
+      #  run: |
+      #     dotenv .env.development -- npx prisma migrate deploy
       - name: Create a CI cypress.env.json file ✍️
         run: |
           echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
