@@ -5,6 +5,14 @@ on: [push]
 jobs:
   end-to-end:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports: ['5432:5432']
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
@@ -17,6 +25,25 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.14.0
+      - name: Install dependencies and Build
+        run: |
+          npm ci
+          npm run build
+      - name: Write Database URLs and Env Variables
+        run: |
+          echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' > .env
+          echo 'CLERK_JWT_KEY=${{ secrets.CLERK_JWT_KEY }}' >> .env
+          echo 'CLERK_API_KEY=${{ secrets.CLERK_API_KEY }}' >> .env
+          echo 'NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}' >> .env
+      - name: Generate Prisma Database
+        run: |
+          npx prisma validate
+          npx prisma migrate deploy
+          npx prisma db pull
+          npx prisma generate
+      - name: Generate Data
+        run: |
+          npx ts-node lib/scripts/seed_test_db.ts
       - name: Create a CI cypress.env.json file ✍️
         run: |
           echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
