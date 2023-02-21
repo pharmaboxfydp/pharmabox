@@ -107,8 +107,8 @@ export default function PatientsTable() {
     numPatients: totalPatientsCount
   } = usePatients(router.query)
 
-  const step: number = parseInt(router?.query?.step as string)
-  const page: number = parseInt(router?.query?.page as string)
+  const step: number = parseInt(router?.query?.step as string) ?? 5
+  const page: number = parseInt(router?.query?.page as string) ?? 1
   const shouldPinColums = size === 'small'
 
   if (isLoading && !isError) {
