@@ -139,6 +139,7 @@ export default function PatientsTable() {
         <DataTable
           sortable
           pin
+          className="patients-table"
           columns={[
             {
               property: 'First Name',
@@ -215,19 +216,13 @@ export default function PatientsTable() {
                   background={
                     pickupEnabled && dob
                       ? theme.global.colors['status-ok']
-                      : theme.global.colors['dark-3']
+                      : theme.global.colors['dark-6']
                   }
                   pad="xxsmall"
                   align="center"
+                  border
                 >
-                  <Text
-                    size="xsmall"
-                    color={
-                      pickupEnabled
-                        ? theme.global.colors.white
-                        : theme.global.colors.black
-                    }
-                  >
+                  <Text size="xsmall" color={theme.global.colors.white}>
                     {pickupEnabled ? 'Enabled' : 'Disabled'}
                   </Text>
                 </Box>
