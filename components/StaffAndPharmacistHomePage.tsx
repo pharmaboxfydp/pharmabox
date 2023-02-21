@@ -113,7 +113,11 @@ function LockerboxesStatus({ user }: { user: User }) {
             id: number
             status: string
           }) => (
-            <Box key={label} height={{ min: '96px' }}>
+            <Box
+              key={label}
+              height={{ min: '96px' }}
+              data-cy="locker-box-status"
+            >
               <Card pad="small" gap="small">
                 <CardHeader>
                   <Text size="small" weight="bold">
@@ -429,6 +433,7 @@ function PrescriptionCreationBar({
               label="Create Prescription"
               primary
               disabled={!isAuthorized}
+              data-cy="create-prescription-button"
             />
           </Box>
         </Box>

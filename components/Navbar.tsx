@@ -89,7 +89,9 @@ export default function Navbar({ user }: { user: User }) {
       <Nav direction="row">
         {user.role === Role.Staff && showAuthoriser && (
           <Box direction="row" align="center" gap="xsmall">
-            <Text size="small">Supervising Pharmacist:</Text>
+            <Text size="small" data-cy="supervising-pharmacist">
+              Supervising Pharmacist:
+            </Text>
             <Text size="small">
               <b>{authorizerName}</b>
             </Text>
