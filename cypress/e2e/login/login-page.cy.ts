@@ -62,4 +62,8 @@ describe('Login Page', () => {
     const link = cy.get('a').contains('these people')
     link.should('have.attr', 'href', 'https://github.com/pharma-box')
   })
+  it('Should render the moving gradient on the login page', () => {
+    const movingGradient = cy.get('div.moving-gradient')
+    movingGradient.should('exist')
+  })
 })
