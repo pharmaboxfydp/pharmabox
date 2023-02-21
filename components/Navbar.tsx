@@ -39,6 +39,7 @@ function NavUserIcon() {
   return (
     <Link href="/settings/profile" passHref>
       <Button
+        data-cy="nav-user-icon"
         size="small"
         style={{ borderRadius: '4px' }}
         color={theme.global.colors['neutral-2']}
