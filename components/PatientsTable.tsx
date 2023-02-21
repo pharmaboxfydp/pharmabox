@@ -158,7 +158,9 @@ export default function PatientsTable() {
               render: ({ dob }) => (
                 <>
                   {dob ? (
-                    <Text size="small">{dob}</Text>
+                    <Text size="small">
+                      {`${new Date(dob).toDateString()}`}
+                    </Text>
                   ) : (
                     <Text
                       size="small"
