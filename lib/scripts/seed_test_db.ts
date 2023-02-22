@@ -92,7 +92,7 @@ async function seedPharmacistsAndStaffUsersFromClerk(users: UserJSON[]) {
                   userId: staffUser.id
                 },
                 create: {
-                  isAdmin: userNumber < midpoint ?? false
+                  isAdmin: faker.helpers.arrayElement([true, false])
                 }
               }
             }
@@ -122,7 +122,7 @@ async function seedPharmacistsAndStaffUsersFromClerk(users: UserJSON[]) {
                   userId: PharmacistUser.id
                 },
                 create: {
-                  isAdmin: userNumber < midpoint ?? false
+                  isAdmin: faker.helpers.arrayElement([true, false])
                 }
               }
             }
