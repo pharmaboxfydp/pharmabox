@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
 import { Status, LockerBoxState, Role } from '../../../types/types'
+import { sendSMS } from '../../../twilio/twilio'
+
 
 export default async function handler(
   req: NextApiRequest,
@@ -46,6 +48,8 @@ export default async function handler(
           staffId
         }
       })
+
+      await sendSMS('+14379803078', `Your pickup code is ${random_key}`)
 
       const lockerBox = await prisma.lockerBox.update({
         where: { id: lockerBoxId },

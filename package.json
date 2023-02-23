@@ -42,7 +42,8 @@
     "react-toastify": "^9.0.8",
     "styled-components": "^5.3.6",
     "swr": "^1.3.0",
-    "ts-debounce": "^4.0.0"
+    "ts-debounce": "^4.0.0",
+    "twilio": "^4.7.2"
   },
   "devDependencies": {
     "@clerk/types": "^3.27.0",
