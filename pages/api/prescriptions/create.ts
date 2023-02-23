@@ -4,7 +4,6 @@ import * as crypto from 'crypto'
 import { Status, LockerBoxState, Role } from '../../../types/types'
 import { sendSMS } from '../../../twilio/twilio'
 
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -62,15 +61,18 @@ export default async function handler(
       })
 
       if (!user?.phoneNumber) {
-        res.status(400).json({ message: 'User does not have a phone number. Please add a phone number to this users\'s account', })
+        res.status(400).json({
+          message:
+            "User does not have a phone number. Please add a phone number to this users's account"
+        })
       }
 
       let phone_number = user?.phoneNumber
 
       if (phone_number?.charAt(0) === '1') {
-        phone_number = "+" + phone_number
+        phone_number = '+' + phone_number
       } else {
-        phone_number = "+1" + phone_number
+        phone_number = '+1' + phone_number
       }
 
       const formatted_message = `There has been an order placed for your prescription: ${prescription.name}. Please go to the pharmacy to pick up your prescription.
