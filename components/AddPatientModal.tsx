@@ -111,7 +111,7 @@ export default function AddPatientModal() {
                       size="small"
                       reverse
                       id="userLastName"
-                      name="LastName"
+                      name="lastName"
                       placeholder="Doe"
                       a11yTitle="Last Name Input"
                     />
