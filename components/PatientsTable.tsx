@@ -29,19 +29,18 @@ export interface UpdateQueryParams {
   endIndex: number
 }
 
+const DEBOUNCE_MS: number = 500
+const FALLBACK_PATIENTS_PER_PAGE: number = 20
+const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 /**
  * imparatively define an atom
  * so that we do not loose our pagination when navigating
  * to a different page
  */
 const patientsPaginationState = atom<PatientsPageState>({
-  step: '20',
+  step: `${FALLBACK_PATIENTS_PER_PAGE}`,
   page: '1'
 })
-
-const DEBOUNCE_MS: number = 500
-const FALLBACK_PATIENTS_PER_PAGE: number = 10
-const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
 export default function PatientsTable() {
   const size = useContext(ResponsiveContext)
@@ -107,7 +106,8 @@ export default function PatientsTable() {
     numPatients: totalPatientsCount
   } = usePatients(router.query)
 
-  const step: number = parseInt(router?.query?.step as string) ?? 20
+  const step: number =
+    parseInt(router?.query?.step as string) ?? FALLBACK_PATIENTS_PER_PAGE
   const page: number = parseInt(router?.query?.page as string) ?? 1
   const shouldPinColums = size === 'small'
 
@@ -239,7 +239,7 @@ export default function PatientsTable() {
                 type="number"
                 size="xsmall"
                 textAlign="center"
-                defaultValue={step}
+                defaultValue={step ?? FALLBACK_PATIENTS_PER_PAGE}
                 style={{ height: '40px' }}
                 onChange={({ target: { value } }) =>
                   debounceStepSizeChange(value)

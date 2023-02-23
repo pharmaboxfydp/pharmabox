@@ -56,6 +56,7 @@ export default function AddPatientModal() {
       onClickOutside={() => setShowAddPatientModal(false)}
       position="center"
       full
+      style={{ display: 'block', overflow: 'scroll' }}
     >
       <Box pad="large" overflow="scroll">
         {!isFetching ? (
