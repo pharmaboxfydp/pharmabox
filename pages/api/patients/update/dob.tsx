@@ -10,16 +10,14 @@ export default async function handler(
     let patient: Patient | null = null
     try {
       const request = JSON.parse(req.body) as { data: Patient }
-      const { dob: D, userId: I } = request.data
+      const { userId: I } = request.data
       const userId: string = I
-      const dob: string | null = D
+
       patient = await prisma.patient.update({
         where: {
           userId
         },
-        data: {
-          dob: dob
-        }
+        data: {}
       })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })

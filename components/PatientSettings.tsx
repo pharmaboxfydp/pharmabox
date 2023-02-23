@@ -17,9 +17,8 @@ export default function PatientSettings({ user }: { user: User }) {
   let pickup: boolean = false
   let birthdate: null | string = null
   if (user.Patient) {
-    const { pickupEnabled, dob } = user.Patient
+    const { pickupEnabled } = user.Patient
     pickup = pickupEnabled
-    birthdate = dob
   }
   const [pickupState, setPickupState] = useState<boolean>(pickup ?? false)
   const [fetchingPickup, setFetchingPickup] = useState<boolean>(false)

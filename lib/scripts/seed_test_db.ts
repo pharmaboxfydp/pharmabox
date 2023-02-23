@@ -145,8 +145,6 @@ async function seedPatients() {
     `CREATING ${numPatientsToCreate} RANDOM PATIENTS....`
   )
 
-  const numCharacters = 24
-
   /**
    * Create random users (not connected to clerk so that cannot sign in
    */
@@ -183,8 +181,7 @@ async function seedPatients() {
                   userId: patientUser.id
                 },
                 create: {
-                  pickupEnabled: faker.helpers.arrayElement([true, false]),
-                  dob: faker.date.birthdate().toISOString()
+                  pickupEnabled: faker.helpers.arrayElement([true, false])
                 }
               }
             }

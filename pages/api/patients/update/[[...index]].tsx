@@ -16,8 +16,7 @@ export default async function handler(
             userId: user_id
           },
           data: {
-            pickupEnabled: pickup_enabled,
-            dob: dob
+            pickupEnabled: pickup_enabled
           }
         })
       } else {
@@ -27,7 +26,6 @@ export default async function handler(
           },
           data: {
             pickupEnabled: pickup_enabled,
-            dob: dob,
 
             Prescriptions: prescriptions
           }

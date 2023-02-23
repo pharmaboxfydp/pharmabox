@@ -160,27 +160,6 @@ export default function PatientsTable() {
               render: ({ User }) => <Text size="small">{User.lastName}</Text>
             },
             {
-              pin: shouldPinColums,
-              property: 'Date of Birth',
-              header: <Text size="small">Date of Birth</Text>,
-              render: ({ dob }) => (
-                <>
-                  {dob ? (
-                    <Text size="small">
-                      {`${new Date(dob).toDateString()}`}
-                    </Text>
-                  ) : (
-                    <Text
-                      size="small"
-                      color={theme.global.colors['status-warning']}
-                    >
-                      -
-                    </Text>
-                  )}
-                </>
-              )
-            },
-            {
               property: 'Contact',
               header: <Text size="small">Contact</Text>,
               pin: shouldPinColums,
@@ -220,11 +199,11 @@ export default function PatientsTable() {
               property: 'Pickup',
               header: <Text size="small">Pickup</Text>,
               pin: shouldPinColums,
-              render: ({ pickupEnabled, dob }) => (
+              render: ({ pickupEnabled }) => (
                 <Box
                   round
                   background={
-                    pickupEnabled && dob
+                    pickupEnabled
                       ? theme.global.colors['status-ok']
                       : theme.global.colors['dark-6']
                   }

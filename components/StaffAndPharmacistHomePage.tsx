@@ -179,7 +179,7 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
             id,
             name,
             LockerBox: { label },
-            Patient: { dob, id: patientId }
+            Patient: { id: patientId }
           }: {
             id: number
             name: string
@@ -202,10 +202,7 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
                     Patient Information
                   </Text>
                   <Box direction="row" gap="medium">
-                    <Text size="small">
-                      Date of Birth:{'  '}
-                      {(() => (dob ? new Date(dob).toDateString() : '-'))()}
-                    </Text>
+                    <Text size="small">Date of Birth:{'  '}</Text>
                     <Box direction="row" gap="small">
                       <Person size={20} />
                       <Text size="small">{patientId}</Text>
@@ -234,7 +231,7 @@ function mapPatientsToValues(
 ): { search: string; id: number; patient: Patient }[] {
   return patients.map((patient) => ({
     search: `${patient.User.firstName} ${patient.User.lastName}, ${(() =>
-      patient.dob ? new Date(patient.dob).toDateString() : '-')()}`,
+      '-')()}`,
     id: patient.id,
     patient
   }))

@@ -184,8 +184,7 @@ export default async function handler(
                     userId: id
                   },
                   create: {
-                    pickupEnabled: true,
-                    dob: null
+                    pickupEnabled: true
                   }
                 }
               }

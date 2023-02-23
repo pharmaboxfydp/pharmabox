@@ -7,7 +7,6 @@ import { Anchor, Box, Text, ResponsiveContext, Button } from 'grommet'
 import Breadcrumbs from '../../components/Breadcrumbs'
 import Link from 'next/link'
 import { Information, UserProfile } from '@carbon/icons-react'
-import PatientSettings from '../../components/PatientSettings'
 import StaffAndPharmacistSettings from '../../components/StaffAndPharmacistSettings'
 import { Logout } from '@carbon/icons-react'
 import SidebarButton from '../../components/SidebarButton'
@@ -49,7 +48,6 @@ const Settings = ({ user }: ServerPageProps) => {
               </Link>
             </Box>
             <Box pad="small" basis="auto" fill="horizontal" gap="small">
-              {user.role === Role.Patient && <PatientSettings user={user} />}
               {(user.role === Role.Staff || user.role === Role.Pharmacist) && (
                 <StaffAndPharmacistSettings user={user} />
               )}

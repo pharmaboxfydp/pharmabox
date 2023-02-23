@@ -17,7 +17,7 @@ model User {
   Patient      Patient?
   Staff        Staff?
   Pharmacist   Pharmacist?
-  lastLoggedIn DateTime    @default(now()) @map(name: "last_logged_in")
+  lastLoggedIn DateTime?   @default(now()) @map(name: "last_logged_in")
   createdAt    DateTime    @default(now()) @map(name: "created_at")
   updatedAt    DateTime    @default(now()) @map(name: "updated_at")
 
@@ -29,7 +29,6 @@ model Patient {
   userId        String         @unique
   User          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   pickupEnabled Boolean        @default(false) @map(name: "pickup_enabled")
-  dob           String?        @map(name: "date_of_birth")
   Prescriptions Prescription[]
 
   @@map(name: "patients")

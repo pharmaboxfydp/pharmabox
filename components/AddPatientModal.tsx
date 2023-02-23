@@ -18,11 +18,13 @@ import {
   Form,
   Spinner,
   Anchor,
-  MaskedInput
+  MaskedInput,
+  FormExtendedEvent
 } from 'grommet'
 import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
 import { emailValidator, phoneNumberValidator } from '../helpers/validators'
+import usePatients, { NewPatient } from '../hooks/patients'
 
 /**
  * imparatively define an atom
@@ -36,13 +38,14 @@ export default function AddPatientModal() {
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [phoneValue, setPhoneValue] = useState<string>('')
   const [emailValue, setEmailValue] = useState<string>('')
+  const { addPatient } = usePatients()
 
-  async function handleSubmit(data: any): Promise<boolean> {
+  async function handleSubmit(
+    event: FormExtendedEvent<NewPatient>
+  ): Promise<boolean> {
     setIsFetching(true)
-
-    const response = { message: '' }
-    if (response.message === 'Success') {
-    }
+    const { value } = event
+    const res = await addPatient(value)
     setIsFetching(false)
     return true
   }
@@ -54,14 +57,13 @@ export default function AddPatientModal() {
       position="center"
       full
     >
-      <Box pad="large">
+      <Box pad="large" overflow="scroll">
         {!isFetching ? (
-          <>
+          <Box direction="column" overflow="scroll" gap="small">
             <Box flex={false} direction="row" justify="between">
               <Heading level={4} margin="none">
                 Add Patient
               </Heading>
-
               <Button
                 icon={<Close size={16} />}
                 onClick={() => setShowAddPatientModal(false)}
@@ -81,7 +83,12 @@ export default function AddPatientModal() {
                 />
               </Text>
             </Box>
-            <Box border round="small" margin={{ vertical: 'medium' }}>
+            <Box
+              border
+              round="small"
+              margin={{ vertical: 'medium' }}
+              overflow="scroll"
+            >
               <Form onSubmit={handleSubmit}>
                 <Box flex="grow" overflow="auto" pad={{ vertical: 'medium' }}>
                   <FormField
@@ -118,7 +125,7 @@ export default function AddPatientModal() {
                   </FormField>
                   <FormField
                     label="Phone"
-                    htmlFor="userPhone"
+                    htmlFor="phone"
                     name="phone"
                     required
                   >
@@ -126,7 +133,7 @@ export default function AddPatientModal() {
                       size="small"
                       reverse
                       icon={<Phone size={16} />}
-                      id="userPhone"
+                      id="phone"
                       name="phone"
                       a11yTitle="Phone Number Input"
                       mask={phoneNumberValidator}
@@ -134,14 +141,14 @@ export default function AddPatientModal() {
                       onChange={(event) => setPhoneValue(event.target.value)}
                     />
                   </FormField>
-                  <FormField label="Email" htmlFor="userEmail" name="email">
+                  <FormField label="Email" htmlFor="email" name="email">
                     <MaskedInput
                       size="small"
                       icon={<Email size={16} type="email" />}
                       mask={emailValidator}
                       reverse
-                      id="userEmail"
-                      name="userEmail"
+                      id="email"
+                      name="email"
                       a11yTitle="Email Input"
                       type="email"
                       value={emailValue}
@@ -172,7 +179,7 @@ export default function AddPatientModal() {
               Tip: You can open the patient creation window from anywhere using
               the <kbd>F1</kbd> Key, and close it using the <kbd>Esc</kbd> key.
             </Text>
-          </>
+          </Box>
         ) : (
           <Box pad="xlarge" align="center" gap="medium" animation="fadeIn">
             <Text>Adding Patient...</Text>

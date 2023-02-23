@@ -56,13 +56,11 @@ function ActivePatientPrescriptionCards({
   prescriptions,
   isError,
   isLoading,
-  shouldBeDisabled,
   refresh
 }: {
   prescriptions: PrescriptionAndLocationAndPatient[] | null
   isError: boolean
   isLoading: boolean
-  shouldBeDisabled: boolean
   refresh: any
 }) {
   const [qrCode, setQrCode] = useState<string>('')
@@ -111,7 +109,6 @@ function ActivePatientPrescriptionCards({
                         setLockerBox(LockerBox.label)
                       }}
                       primary
-                      disabled={shouldBeDisabled}
                     />
                   </Box>
                 </Box>
@@ -182,10 +179,9 @@ export default function PatientHomePage({ user }: { user: User }) {
     refresh
   } = usePatientPrescriptions(user?.Patient?.id)
 
-  const shouldBeDisabled = !user.Patient?.dob
   return (
     <>
-      {shouldBeDisabled && !dismissWarning && (
+      {!dismissWarning && (
         <Box animation="fadeIn" pad="small">
           <Notification
             status="critical"
@@ -220,7 +216,6 @@ export default function PatientHomePage({ user }: { user: User }) {
             prescriptions={activePrescriptions}
             isError={isError}
             isLoading={isLoading}
-            shouldBeDisabled={shouldBeDisabled}
             refresh={refresh}
           />
         </Tab>
