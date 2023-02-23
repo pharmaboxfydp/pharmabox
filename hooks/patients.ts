@@ -43,9 +43,7 @@ export default function usePatients(pagination?: UserPagination): UsePatients {
     data?.patients.filter((patient) => patient.pickupEnabled && patient.dob) ??
     null
 
-  async function addPatient(){
-    
-  }
+  async function addPatient() {}
 
   return {
     patients: data?.patients ?? null,
