@@ -1,0 +1,46 @@
+name: Apply Migrations to Production Database Ⓜ️
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  apply-migrations:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_PROD_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PROD_PASSWORD }}
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports: ['5432:5432']
+    env:
+      DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+      CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
+      CLERK_API_KEY: ${{ secrets.CLERK_API_KEY }}
+      NEXT_PUBLIC_CLERK_FRONTEND_API: ${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
+    steps:
+      - name: Checkout 🏁
+        uses: actions/checkout@v3
+      - name: Set-up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.14.0
+      - name: Install dependencies and Build ⬇️
+        run: |
+          npm ci
+          npm run build
+      - name: Write Database URLs and Env Variables 📝
+        run: |
+          echo 'DATABASE_URL=${{ secrets.PROD_DATABASE_URL }}' > .env
+          echo 'CLERK_JWT_KEY=${{ secrets.CLERK_JWT_KEY }}' >> .env
+          echo 'CLERK_API_KEY=${{ secrets.CLERK_API_KEY }}' >> .env
+          echo 'NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}' >> .env
+          echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PROD_PASSWORD }}' >> .env
+          echo 'POSTGRES_USER=${{ secrets.POSTGRES_PROD_USER }}' >> .env
+      - name: Apply Migrations to Production 🌸
+        run: |
+          npx prisma validate
+          npx prisma generate
+          npx prisma migrate deploy

@@ -169,3 +169,7 @@ label span {
 ::-moz-selection {
   background: #ffb7b7;
 }
+
+.patients-table th {
+  background-color: #ffffff;
+}

@@ -107,8 +107,8 @@ export default function PatientsTable() {
     numPatients: totalPatientsCount
   } = usePatients(router.query)
 
-  const step: number = parseInt(router?.query?.step as string)
-  const page: number = parseInt(router?.query?.page as string)
+  const step: number = parseInt(router?.query?.step as string) ?? 5
+  const page: number = parseInt(router?.query?.page as string) ?? 1
   const shouldPinColums = size === 'small'
 
   if (isLoading && !isError) {
@@ -139,6 +139,7 @@ export default function PatientsTable() {
         <DataTable
           sortable
           pin
+          className="patients-table"
           columns={[
             {
               property: 'First Name',
@@ -157,7 +158,9 @@ export default function PatientsTable() {
               render: ({ dob }) => (
                 <>
                   {dob ? (
-                    <Text size="small">{dob}</Text>
+                    <Text size="small">
+                      {`${new Date(dob).toDateString()}`}
+                    </Text>
                   ) : (
                     <Text
                       size="small"
@@ -215,19 +218,13 @@ export default function PatientsTable() {
                   background={
                     pickupEnabled && dob
                       ? theme.global.colors['status-ok']
-                      : theme.global.colors['dark-3']
+                      : theme.global.colors['dark-6']
                   }
                   pad="xxsmall"
                   align="center"
+                  border
                 >
-                  <Text
-                    size="xsmall"
-                    color={
-                      pickupEnabled
-                        ? theme.global.colors.white
-                        : theme.global.colors.black
-                    }
-                  >
+                  <Text size="xsmall" color={theme.global.colors.white}>
                     {pickupEnabled ? 'Enabled' : 'Disabled'}
                   </Text>
                 </Box>

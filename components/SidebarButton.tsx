@@ -30,6 +30,7 @@ export default function SidebarButton({
           color={theme.global.colors['neutral-2']}
           size="small"
           style={{ borderRadius: '4px' }}
+          data-cy={label}
         />
       </Link>
     </Box>
