@@ -33,7 +33,7 @@ export default async function handler(
       const lockerBoxId: number = parseInt(LB)
       const pharmacistId = parseInt(PI)
       const staffId = SI ? parseInt(SI) : null
-      const random_key = crypto.randomBytes(20).toString('hex')
+      const random_key = crypto.randomInt(100000, 999999).toString()
 
       const prescription = await prisma.prescription.create({
         data: {
@@ -49,7 +49,36 @@ export default async function handler(
         }
       })
 
-      await sendSMS('+14379803078', `Your pickup code is ${random_key}`)
+      const patient = await prisma.patient.findUnique({
+        where: { id: patientId }
+      })
+
+      const user = await prisma.user.findUnique({
+        where: { id: patient?.userId }
+      })
+
+      const location = await prisma.location.findUnique({
+        where: { id: locationId }
+      })
+
+      if (!user?.phoneNumber) {
+        res.status(400).json({ message: 'User does not have a phone number. Please add a phone number to this users\'s account', })
+      }
+
+      let phone_number = user?.phoneNumber
+
+      if (phone_number?.charAt(0) === '1') {
+        phone_number = "+" + phone_number
+      } else {
+        phone_number = "+1" + phone_number
+      }
+
+      const formatted_message = `There has been an order placed for your prescription: ${prescription.name}. Please go to the pharmacy to pick up your prescription.
+      The prescription is located in locker box ${lockerBoxId} at ${location?.streetAddress}, ${location?.city}, ${location?.province}, ${location?.country}.
+
+      Your pickup code is ${random_key}`
+
+      await sendSMS(phone_number, formatted_message)
 
       const lockerBox = await prisma.lockerBox.update({
         where: { id: lockerBoxId },
