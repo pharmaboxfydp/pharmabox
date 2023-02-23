@@ -6,11 +6,9 @@ import Page from '../../components/Page'
 import { ServerPageProps } from '../../types/types'
 import Breadcrumbs from '../../components/Breadcrumbs'
 import PatientsTable from '../../components/PatientsTable'
-import AddPatient from '../../components/AddPatient'
+import AddPatientButton from '../../components/AddPatientButton'
 
 const Patients = ({ user }: ServerPageProps) => {
-  const isCurrentUserAdmin = user.Staff?.isAdmin || user.Pharmacist?.isAdmin
-
   return (
     <>
       <Head>
@@ -35,7 +33,7 @@ const Patients = ({ user }: ServerPageProps) => {
                 <Breadcrumbs pages={['Patients']} />
               </Box>
               <Box pad={{ right: 'small' }}>
-                {isCurrentUserAdmin && <AddPatient user={user} />}
+                <AddPatientButton user={user} />
               </Box>
             </Header>
             <Box direction="row" border="top" fill>

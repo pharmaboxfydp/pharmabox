@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { Grommet, ThemeType } from 'grommet'
+import { Grommet, Keyboard, ThemeType } from 'grommet'
 import theme from '../styles/theme'
 import { ClerkProvider, SignedIn, SignedOut, ClerkLoaded } from '@clerk/nextjs'
 import NProgress from 'nprogress'
@@ -11,6 +11,10 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 import styled from 'styled-components'
 import Router from 'next/router'
+import AddPatientModal, {
+  addPatientModalState
+} from '../components/AddPatientModal'
+import { useAtom } from 'jotai'
 
 NProgress.configure({
   minimum: 0.3,
@@ -50,6 +54,14 @@ Router.events.on('routeChangeError', () => NProgress.done())
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
+  const [, setShowAddPatientModal] = useAtom(addPatientModalState)
+
+  function handleShortCutKeys(event: React.KeyboardEvent<HTMLElement>) {
+    const { key } = event
+    if (key === 'F1') {
+      setShowAddPatientModal(true)
+    }
+  }
   return (
     <Grommet theme={theme as unknown as ThemeType} full>
       <ClerkProvider {...pageProps}>
@@ -59,7 +71,10 @@ function App({ Component, pageProps }: AppProps) {
           ) : (
             <>
               <SignedIn>
-                <Component {...pageProps} />
+                <Keyboard target="document" onKeyDown={handleShortCutKeys}>
+                  <Component {...pageProps} />
+                  <AddPatientModal />
+                </Keyboard>
               </SignedIn>
               <SignedOut>
                 <UserSignIn />
