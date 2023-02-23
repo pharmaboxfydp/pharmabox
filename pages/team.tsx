@@ -43,7 +43,9 @@ const Team = ({ user }: ServerPageProps) => {
                 <Box pad={{ left: 'medium' }}>
                   <Text>Team Members</Text>
                 </Box>
-                <Box> {isCurrentUserAdmin && <InviteStaff user={user} />}</Box>
+                <Box pad={{ right: 'small' }}>
+                  {isCurrentUserAdmin && <InviteStaff user={user} />}
+                </Box>
               </Header>
               <TeamMembersTable user={user} />
             </Box>
