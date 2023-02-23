@@ -12,7 +12,7 @@ This is a [Next.js](https://nextjs.org/) project
 
 ## API Documentation
 
-Refer to [api-documentation.md](./api-documentation.md) for API documentation. The documentation includes a list of available endpoints, best practices and code strategies.
+Refer to [API Documentation](./api-documentation.md) for documentation about the Pharmabox API. The documentation includes a list of available endpoints, best practices and code strategies.
 
 ## Environment Setup for Local Development
 
@@ -45,6 +45,8 @@ Refer to [api-documentation.md](./api-documentation.md) for API documentation. T
 12. Startup Server and Frontend with `npm run dev`
 13. View Frontend on `http://localhost:3000`
 
+> Tip: If you're computer does not run the above scripts, make sure you have changed the permissions on the file to make them executable e.g. `chmod u+x bash/migrate.dbs`
+
 You should also be able to view the populated data in the user's table in Postico2 or pgAdmin 4
 
 ## Development Practices
@@ -55,7 +57,7 @@ Development should happen in a feature branch. When a feature is ready, a pull r
 
 ### Code Cleanup
 
-This repository uses [prettier](https://prettier.io/) to format code and [ESLint](https://eslint.org/) to enforce code style. It is recommended to configure your preferred editor to `format on save` with prettier. You can also run `prettier` on all files using
+This repository uses [prettier](https://prettier.io/) to format code and [ESLint](https://eslint.org/) to enforce code style. It is recommended to configure your preferred editor to [`format on save`](https://stackoverflow.com/questions/39494277/how-do-you-format-code-on-save-in-vs-code) with prettier. You can also run `prettier` on all files using
 
 ```bash
 # check formatting
@@ -83,14 +85,84 @@ You can build Typescript
 npm run build:typescript
 ```
 
-## Prisma Studio
+### Pre-Commit Hooks
+
+Whenever you commit code via git eg. `git add . && git commit -m "your comment"` A `pre-commit` hook will run against files that were changed to ensure that all of your code is formatted correctly and does not contain any Typescript errors, lint errors or formatting errors. Pre-commit hooks are managed by [Husky](https://typicode.github.io/husky/#/) and are located in the `.husky` directory. If you want to bypass type checking and the pre-commit hook you may pass the `--no-verify` flag at the end of your commit message as follows:
+
+```bash
+git commit -m "yolo!" --no-verify
+```
+
+This is not recommended and may result in failing tests on the `CI` pipeline but can be used when necessary.
+
+### Prisma Studio
 
 You can use Prisma Studio to help with development! You might run into issues with `next.js` since it stores environment variables in `.env.*`. So we can use `dotenv-cli` to store environment variables. To use Prisma Studio:
 
 1. Install `dotenv cli`. `npm install -g dotenv-cli`
 2. `dotenv -e .env.development -- npx prisma studio`
 
-## Scripts
+## End to End Testing
+
+### Cypress
+
+This project uses [Cypress](https://www.cypress.io/app/) for End-to-End testing! Cypress is a modern JavaScript Testing System that can run locally as well as on the pipeline for continuous integration and quick testing. The Cypress documentation is quite comprehensive and well-structure. It can be found [here: Cypress API Documentation](https://docs.cypress.io/api/). All Cypress End-to-End tests are located in the `/cypress/e2e/`. Cypress expects a file containing tests to be named as `<file-name>.cy.ts`. If you want to add a custom function you can do so in `cypress/support/commands.ts`. Refer to the documentation on how to write custom Cypress Commands.
+
+### Writing Tests
+
+**_⚠️ Important: You must write End to End Tests for new code that you are adding to the code base. If you are conducting code review, do not approve a pull request that does not have associated end to end tests with it! ⚠️_**
+
+If you are working on an existing feature, best-practice is to write tests if they do not already exists to prevent feature regressions.
+
+The basic format of a test is as follows:
+
+```ts
+// my-test.cy.ts
+
+/// <reference types="cypress" />
+
+describe('Your Test', () => {
+  // This is a test!
+  it('Should do the expected thing', () => {
+    cy.get('button').contains('Sign In').should('exist')
+  })
+})
+```
+
+### Getting Started With Cypress Testing Locally
+
+1. Cypress is listed as a project dependency so as long as you have ran `npm install` it should already be on your computer! To run a test create a file called `cypress.env.json` in the root directory. You will need to add a file that looks like the following
+
+```json
+{
+  "test_staff_username_1": "",
+  "test_staff_password_1": "",
+  "test_pharmacist_username_1": "",
+  "test_pharmacist_password_1": ""
+}
+```
+
+**This file is not checked in intentionally** as it contains test user credentials linked to Clerk. Ask Sammy for the file if you do not have it. If you update this file for additional tests, inform team members and give them the updated file. Be sure to also update the repository secrets on GitHub so that the tests can run on the pipeline. The variable is called: `CYPRESS_ENV_CI` and is accessible in workflow files as `{{ secrets.CYPRESS_ENV_CI }}`.
+
+2. To open the Cypress Debug mode and UI run:
+
+```bash
+npm run cypress:open
+```
+
+This will open the UI! Click _End to End Testing_ and you will see a browser open up with your test files! Click a file to get started! When you save your test files, Cypress will automatically re-run the tests.
+
+3. If you want to run cypress via a virtual browser to replicate how it would run on the pipeline you can use:
+
+```bash
+npm run cypress:run
+```
+
+Refer to the [Cypress CLI Documentation for more information](https://docs.cypress.io/guides/guides/command-line)
+
+**Remember! Never hard-code sensitive information into cypress tests or run automated tests when connected to the production database! Happy Testing!**
+
+## Scripts and Tooling
 
 ### Database Migration
 
@@ -100,7 +172,7 @@ Running the script `bash/migrate_dbs` will perform migrations on **local databas
 sh bash/migrate_dbs
 ```
 
-\*\*For detailed information about migrations refer to the [Prisma Migration Documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate).
+**For detailed information about migrations refer to the [Prisma Migration Documentation](https://www.prisma.io/docs/concepts/components/prisma-migrate).**
 
 ### Seed Test Database
 

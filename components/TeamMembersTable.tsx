@@ -265,28 +265,38 @@ export default function TeamMembersTable({ user }: { user: User }) {
             {
               property: 'action',
               render: (user) => {
+                /**
+                 * allow edit roles if the current user is an administrator
+                 * and if there are more than one user on the team.
+                 */
+                const canEdit =
+                  (user.Staff?.isAdmin || user.Pharmacist?.isAdmin) &&
+                  team &&
+                  team?.length > 1
                 return (
                   <>
-                    <Tip
-                      content={
-                        <Text size="xsmall">
-                          Remove{' '}
-                          <b>
-                            {user.firstName} {user.lastName}
-                          </b>{' '}
-                          from team?
-                        </Text>
-                      }
-                    >
-                      <Button
-                        icon={<Close size={16} />}
-                        a11yTitle="Remove user from team"
-                        onClick={() => {
-                          setShowRemoveUser(true)
-                          setRemoveUserTarget(user)
-                        }}
-                      />
-                    </Tip>
+                    {canEdit && (
+                      <Tip
+                        content={
+                          <Text size="xsmall">
+                            Remove{' '}
+                            <b>
+                              {user.firstName} {user.lastName}
+                            </b>{' '}
+                            from team?
+                          </Text>
+                        }
+                      >
+                        <Button
+                          icon={<Close size={16} />}
+                          a11yTitle="Remove user from team"
+                          onClick={() => {
+                            setShowRemoveUser(true)
+                            setRemoveUserTarget(user)
+                          }}
+                        />
+                      </Tip>
+                    )}
                   </>
                 )
               }
