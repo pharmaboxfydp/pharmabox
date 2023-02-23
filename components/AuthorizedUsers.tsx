@@ -1,4 +1,4 @@
-import { Close } from '@carbon/icons-react'
+import { Close, FacePending } from '@carbon/icons-react'
 import { Prescription } from '@prisma/client'
 import {
   Avatar,
@@ -120,14 +120,22 @@ export default function AuthorizedUsers({
   12
   if (!authorizedTeamStaff?.length && !onDutyTeamPharmacists?.length) {
     return (
-      <Box border round="small" pad="small" gap="small" align="center">
-        <Text size="xsmall">No active team members.</Text>
+      <Box
+        border
+        align="center"
+        height="small"
+        justify="center"
+        direction="row"
+        gap="small"
+      >
+        <FacePending size={16} />
+        <Text size="small">No active team members.</Text>
       </Box>
     )
   }
   const currentUser = user
   return (
-    <Box border round="small" flex="grow" pad="small" gap="small">
+    <Box border flex="grow" pad="small" gap="small">
       <Grid
         columns={size !== 'small' ? 'small' : '100%'}
         gap="medium"

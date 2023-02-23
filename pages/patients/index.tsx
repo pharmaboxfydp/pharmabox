@@ -28,7 +28,12 @@ const Patients = ({ user }: ServerPageProps) => {
         >
           <Breadcrumbs pages={['Patients']} />
           <Box direction="row" border="top" fill>
-            <Box pad="medium" basis="auto" fill="horizontal" gap="medium">
+            <Box
+              pad={{ top: 'medium', bottom: 'medium' }}
+              basis="auto"
+              fill="horizontal"
+              gap="medium"
+            >
               <PatientsTable />
             </Box>
           </Box>

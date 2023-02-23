@@ -123,16 +123,25 @@ export default function TeamMembersTable({ user }: { user: User }) {
   }
   return (
     <>
-      <Box>
+      <Box fill className="team-members-table">
         <DataTable
+          pin
           columns={[
             {
               property: 'Name',
-              header: <Text size="small">Name</Text>,
-              render: ({ firstName, lastName }) => (
-                <Text size="xsmall">
-                  {firstName} {lastName}
-                </Text>
+              header: (
+                <Box pad={{ left: 'medium' }}>
+                  <Text size="small">Name</Text>
+                </Box>
+              ),
+              render: ({ firstName, lastName, id }) => (
+                <Box pad={{ left: 'medium' }}>
+                  {' '}
+                  <Text size="xsmall">
+                    {firstName} {lastName}{' '}
+                    {user.id === id ? <b>{'(You)'}</b> : ''}
+                  </Text>
+                </Box>
               )
             },
             {
@@ -264,7 +273,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
             },
             {
               property: 'action',
-              render: (user) => {
+              render: () => {
                 /**
                  * allow edit roles if the current user is an administrator
                  * and if there are more than one user on the team.
@@ -302,7 +311,7 @@ export default function TeamMembersTable({ user }: { user: User }) {
               }
             }
           ]}
-          step={10}
+          step={20}
           paginate
           resizeable
           data={team ?? []}

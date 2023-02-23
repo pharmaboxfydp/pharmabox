@@ -35,7 +35,7 @@ export interface UpdateQueryParams {
  * to a different page
  */
 const patientsPaginationState = atom<PatientsPageState>({
-  step: '5',
+  step: '20',
   page: '1'
 })
 
@@ -107,7 +107,7 @@ export default function PatientsTable() {
     numPatients: totalPatientsCount
   } = usePatients(router.query)
 
-  const step: number = parseInt(router?.query?.step as string) ?? 5
+  const step: number = parseInt(router?.query?.step as string) ?? 20
   const page: number = parseInt(router?.query?.page as string) ?? 1
   const shouldPinColums = size === 'small'
 
@@ -143,8 +143,16 @@ export default function PatientsTable() {
           columns={[
             {
               property: 'First Name',
-              header: <Text size="small">First Name</Text>,
-              render: ({ User }) => <Text size="small">{User.firstName}</Text>
+              header: (
+                <Box pad={{ left: 'medium' }}>
+                  <Text size="small">First Name</Text>
+                </Box>
+              ),
+              render: ({ User }) => (
+                <Box pad={{ left: 'medium' }}>
+                  <Text size="small">{User.firstName}</Text>
+                </Box>
+              )
             },
             {
               property: 'Family Name',
@@ -233,6 +241,7 @@ export default function PatientsTable() {
           ]}
           resizeable
           data={patients ?? []}
+          pad="small"
         />
         <Box
           align="center"
