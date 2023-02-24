@@ -51,7 +51,6 @@ export default async function handler(
       const numPatients: number = patients.length
       res.status(200).json({ message: 'Success', patients, numPatients })
     } catch (e) {
-      debugger
       res.status(400).json({ message: 'Bad Request', error: e })
     }
   } else {
