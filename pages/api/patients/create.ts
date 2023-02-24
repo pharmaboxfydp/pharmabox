@@ -51,7 +51,7 @@ export default async function handler(
           email,
           phoneNumber: phone,
           role: Role.Patient,
-          lastLoggedIn: null,
+          lastLoggedIn: undefined,
           createdAt: dateTime,
           updatedAt: dateTime,
           Patient: {
