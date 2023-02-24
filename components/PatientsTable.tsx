@@ -9,7 +9,7 @@ import {
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
-import { ErrorFilled } from '@carbon/icons-react'
+import { ErrorFilled, Search } from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
 import usePatients from '../hooks/patients'
@@ -42,9 +42,12 @@ const patientsPaginationState = atom<PatientsPageState>({
   page: '1'
 })
 
+export const patientsSearchString = atom<string>('')
+
 export default function PatientsTable() {
   const size = useContext(ResponsiveContext)
   const [pageState, updatePageState] = useAtom(patientsPaginationState)
+  const [searchString, updateSearchString] = useAtom(patientsSearchString)
   const router = useRouter()
 
   function updateQueryParams({
@@ -67,6 +70,11 @@ export default function PatientsTable() {
         startIndex: 0,
         page: parseInt(router?.query?.page as string)
       }),
+    DEBOUNCE_MS
+  )
+
+  const debouceSearchStringChange = debounce(
+    (str: string) => updateSearchString(str),
     DEBOUNCE_MS
   )
 
@@ -135,7 +143,20 @@ export default function PatientsTable() {
 
   return (
     <>
-      <Box overflow="auto">
+      <Box>
+        <TextInput
+          size="small"
+          placeholder="Search patients by name, email or phone number..."
+          style={{
+            paddingLeft: '32px',
+            paddingRight: '32px',
+            borderRadius: '0px'
+          }}
+          icon={<Search size={16} />}
+          reverse
+          onChange={(event) => debouceSearchStringChange(event.target.value)}
+        />
+
         <DataTable
           sortable
           pin
