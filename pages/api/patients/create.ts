@@ -9,6 +9,10 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+
       const { firstName, lastName, phone, email } = req.body.data
       const dateTime = new Date().toISOString()
       const id = `patient_user_${uuid()}`

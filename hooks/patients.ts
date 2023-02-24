@@ -21,7 +21,7 @@ export interface UsePatients {
   numPatients: number | null
   isLoading: boolean
   isError: Error
-  addPatient: (data: NewPatient) => Promise<any>
+  addPatient: (data: NewPatient) => Promise<{ message: string; user: User }>
 }
 
 export type UserPagination = Record<string, string | string[] | undefined>
@@ -55,7 +55,7 @@ export default function usePatients(pagination?: UserPagination): UsePatients {
     lastName,
     email: email,
     phone
-  }: NewPatient) {
+  }: NewPatient): Promise<{ message: 'string'; user: User }> {
     const response = await fetch('/api/patients/create', {
       method: 'POST',
       body: JSON.stringify({

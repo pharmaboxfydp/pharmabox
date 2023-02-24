@@ -38,6 +38,8 @@ export default function AddPatientModal() {
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [phoneValue, setPhoneValue] = useState<string>('')
   const [emailValue, setEmailValue] = useState<string>('')
+  const [firstName, setFirstName] = useState<string>('')
+  const [lastName, setLastName] = useState<string>('')
   const { addPatient } = usePatients()
 
   async function handleSubmit(
@@ -47,7 +49,18 @@ export default function AddPatientModal() {
     const { value } = event
     const res = await addPatient(value)
     setIsFetching(false)
+    if (res.message === 'Success') {
+      clearForm()
+    }
+
     return true
+  }
+
+  function clearForm() {
+    setPhoneValue('')
+    setEmailValue('')
+    setFirstName('')
+    setLastName('')
   }
 
   return showAddPatient ? (
@@ -106,6 +119,8 @@ export default function AddPatientModal() {
                       name="firstName"
                       placeholder="Jane"
                       a11yTitle="First Name Input"
+                      value={firstName}
+                      onChange={(event) => setFirstName(event.target.value)}
                     />
                   </FormField>
                   <FormField
@@ -122,6 +137,8 @@ export default function AddPatientModal() {
                       name="lastName"
                       placeholder="Doe"
                       a11yTitle="Last Name Input"
+                      value={lastName}
+                      onChange={(event) => setLastName(event.target.value)}
                     />
                   </FormField>
                   <FormField
