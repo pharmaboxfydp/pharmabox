@@ -52,7 +52,6 @@ export default function AddPatientModal() {
     if (res.message === 'Success') {
       clearForm()
     }
-
     return true
   }
 
@@ -63,10 +62,15 @@ export default function AddPatientModal() {
     setLastName('')
   }
 
+  function closeModal() {
+    clearForm()
+    setShowAddPatientModal(false)
+  }
+
   return showAddPatient ? (
     <Layer
-      onEsc={() => setShowAddPatientModal(false)}
-      onClickOutside={() => setShowAddPatientModal(false)}
+      onEsc={closeModal}
+      onClickOutside={closeModal}
       position="center"
       full
       style={{ display: 'block', overflow: 'scroll' }}
@@ -78,10 +82,7 @@ export default function AddPatientModal() {
               <Heading level={4} margin="none">
                 Add Patient
               </Heading>
-              <Button
-                icon={<Close size={16} />}
-                onClick={() => setShowAddPatientModal(false)}
-              />
+              <Button icon={<Close size={16} />} onClick={closeModal} />
             </Box>
             <Box gap="small">
               <Text size="medium">Add a patient to Pharmabox</Text>

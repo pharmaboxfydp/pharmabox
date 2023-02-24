@@ -62,14 +62,15 @@ export default function usePatients(pagination?: UserPagination): UsePatients {
         data: { firstName, lastName, email, phone }
       })
     })
+    const res = await response.json()
+
     if (response.status === 200) {
       toast.success(`Added Patient: ${firstName} ${lastName}`, { icon: '👍' })
       mutate(url)
     } else {
-      toast.error('Unable to create patient', { icon: '😥' })
+      toast.error(res.message, { icon: '😥' })
       mutate(url)
     }
-    const res = await response.json()
     return res
   }
 
