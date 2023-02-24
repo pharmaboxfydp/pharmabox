@@ -7,6 +7,10 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+
       const { id } = req.body.data
 
       const patient = await prisma.patient.delete({
