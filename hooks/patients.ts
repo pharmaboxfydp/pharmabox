@@ -3,9 +3,8 @@ import useSWR, { mutate, useSWRConfig } from 'swr'
 import { toast } from 'react-toastify'
 import { Patient, Prescription } from '@prisma/client'
 
-export interface FullPatient extends Patient {
-  User: User
-  Prescriptions: Prescription[]
+export interface FullPatient extends User {
+  Patient: Patient
 }
 
 export interface NewPatient {
@@ -25,21 +24,32 @@ export interface UsePatients {
 }
 
 export type UserPagination = Record<string, string | string[] | undefined>
+export type UserSearch = string
+export interface UsePatientsInterface {
+  pagination?: UserPagination
+  search?: UserSearch
+}
 
 const fetcher = (
   ...arg: [string, Record<string, any>]
 ): Promise<{ message: string; patients: FullPatient[]; numPatients: number }> =>
   fetch(...arg).then((res) => res.json())
 
-export default function usePatients(pagination?: UserPagination): UsePatients {
-  const url = `/api/patients/${
-    pagination && pagination?.step && pagination?.page
-      ? `?${new URLSearchParams({
-          take: pagination.step.toString(),
-          page: pagination.page.toString()
-        })}`
-      : ''
-  }`
+export default function usePatients({
+  pagination,
+  search
+}: UsePatientsInterface): UsePatients {
+  const hasPagination = pagination && pagination?.step && pagination?.page
+  const paginationSearch = {
+    take: pagination?.step?.toString(),
+    page: pagination?.page?.toString()
+  }
+  const hasSearch = search?.length
+
+  const url = `/api/patients/${`?${new URLSearchParams({
+    ...(hasPagination && paginationSearch),
+    ...(hasSearch && { search: search })
+  })}`}`
 
   const { data, error } = useSWR(url, fetcher, {
     revalidateIfStale: true,
@@ -48,7 +58,7 @@ export default function usePatients(pagination?: UserPagination): UsePatients {
   })
 
   const activePatients =
-    data?.patients?.filter((patient) => patient.pickupEnabled) ?? null
+    data?.patients?.filter((patient) => patient.Patient.pickupEnabled) ?? null
 
   async function addPatient({
     firstName,
