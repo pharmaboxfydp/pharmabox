@@ -24,19 +24,19 @@ export default async function handler(
           }),
         where: {
           role: 'patient',
-          ...(fuzz.length && {
+          ...(fuzz?.length && {
             OR: [
               {
                 firstName: {
-                  contains: fuzz
+                  search: fuzz
                 }
               },
-              { lastName: { contains: fuzz } },
+              { lastName: { search: fuzz } },
               {
                 phoneNumber: {
-                  contains: fuzz
+                  search: fuzz
                 },
-                email: { contains: fuzz }
+                email: { search: fuzz }
               }
             ]
           })
