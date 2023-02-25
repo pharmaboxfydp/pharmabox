@@ -30,8 +30,10 @@ export default async function handler(
               {
                 firstName: {
                   contains: fuzz
-                },
-                lastName: { contains: fuzz },
+                }
+              },
+              { lastName: { contains: fuzz } },
+              {
                 phoneNumber: {
                   contains: fuzz
                 },

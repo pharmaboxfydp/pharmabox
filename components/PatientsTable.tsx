@@ -51,7 +51,6 @@ export const patientsSearchString = atom<string>('')
 export default function PatientsTable() {
   const size = useContext(ResponsiveContext)
   const [pageState, updatePageState] = useAtom(patientsPaginationState)
-  const [searchString, updateSearchString] = useAtom(patientsSearchString)
   const router = useRouter()
 
   function updateQueryParams({
@@ -170,6 +169,7 @@ export default function PatientsTable() {
           }}
           icon={<Search size={16} />}
           reverse
+          defaultValue={pageState.search}
           onChange={(event) => debouceSearchStringChange(event.target.value)}
         />
 
