@@ -51,7 +51,7 @@ export default async function handler(
       const patient = await prisma.patient.findUniqueOrThrow({
         where: { id: patientId },
         include: {
-          User: true,
+          User: true
         }
       })
 
