@@ -22,10 +22,9 @@ export default async function handler(
             skip: (parseInt(page) - 1) * parseInt(take),
             take: parseInt(take)
           }),
-
         where: {
           role: 'patient',
-          ...(fuzz && {
+          ...(fuzz.length && {
             OR: [
               {
                 firstName: {

@@ -15,9 +15,8 @@ import CardNotification from './CardNotification'
 import usePatients from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
-import { debounce } from 'ts-debounce'
 import { useContext } from 'react'
-import qs from 'query-string'
+import { useDebouncedCallback } from 'use-debounce'
 
 export type PatientsTableState = {
   step: string
@@ -51,6 +50,7 @@ export const patientsSearchString = atom<string>('')
 export default function PatientsTable() {
   const size = useContext(ResponsiveContext)
   const [pageState, updatePageState] = useAtom(patientsPaginationState)
+  const [searchString, setSearchString] = useAtom(patientsSearchString)
   const router = useRouter()
 
   function updateQueryParams({
@@ -68,30 +68,28 @@ export default function PatientsTable() {
     quietlySetQuery(newState)
   }
 
-  const debounceStepSizeChange = debounce(
+  const debounceStepSizeChange = useDebouncedCallback(
     (step: string) =>
       updateQueryParams({
         endIndex: parseInt(step),
         startIndex: 0,
         page: parseInt(router?.query?.page as string),
-        search: `${router?.query.search ?? null}`
+        search: `${router?.query.search ?? ''}`
       }),
     DEBOUNCE_MS
   )
 
-  const debouceSearchStringChange = debounce(
-    (str: string) =>
-      updateQueryParams({
-        endIndex: parseInt(router?.query?.step as string),
-        startIndex: 0,
-        page: parseInt(router?.query?.page as string),
-        search: str ?? null
-      }),
-    DEBOUNCE_MS
-  )
+  const debouceSearchStringChange = useDebouncedCallback((str: string) => {
+    updateQueryParams({
+      endIndex: parseInt(router?.query?.step as string),
+      startIndex: 0,
+      page: parseInt(router?.query?.page as string),
+      search: str ?? ''
+    })
+  }, DEBOUNCE_MS * 2)
 
   function quietlySetQuery(state: PatientsTableState) {
-    router.push(
+    router.replace(
       `${router.pathname}/?${new URLSearchParams(state).toString()}`,
       undefined,
       { shallow: true }
@@ -169,8 +167,11 @@ export default function PatientsTable() {
           }}
           icon={<Search size={16} />}
           reverse
-          defaultValue={pageState.search}
-          onChange={(event) => debouceSearchStringChange(event.target.value)}
+          value={searchString}
+          onChange={(event) => {
+            debouceSearchStringChange(event.target.value)
+            setSearchString(event.target.value)
+          }}
         />
 
         <DataTable
@@ -276,7 +277,7 @@ export default function PatientsTable() {
                 type="number"
                 size="xsmall"
                 textAlign="center"
-                defaultValue={step ?? FALLBACK_PATIENTS_PER_PAGE}
+                defaultValue={step}
                 style={{ height: '40px' }}
                 onChange={({ target: { value } }) =>
                   debounceStepSizeChange(value)
