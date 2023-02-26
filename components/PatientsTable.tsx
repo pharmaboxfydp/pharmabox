@@ -9,6 +9,8 @@ import {
   Header
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+
 import Skeleton from 'react-loading-skeleton'
 import {
   Email,
@@ -23,7 +25,7 @@ import usePatients from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
 import { useContext } from 'react'
-import { useDebouncedCallback } from 'use-debounce'
+import { useDebounce, useDebouncedCallback } from 'use-debounce'
 
 export type PatientsPageState = {
   step: string
@@ -46,14 +48,30 @@ const patientsPaginationState = atom<PatientsPageState>({
   page: '1'
 })
 
+const firstNameSearch = atomWithStorage<string>('first-name-search', '')
+const lastNameSearch = atomWithStorage<string>('last-name-search', '')
+const phoneNumberSearch = atomWithStorage<string>('phone-number-search', '')
+const emailSearch = atomWithStorage<string>('email-search', '')
+
 const DEBOUNCE_MS: number = 500
+const DEBOUNCE_MS_SEARCH: number = 1000
 const FALLBACK_PATIENTS_PER_PAGE: number = 10
 const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
 export default function PatientsTable() {
-  const size = useContext(ResponsiveContext)
-  const [pageState, updatePageState] = useAtom(patientsPaginationState)
+  const [pS, updatePageState] = useAtom(patientsPaginationState)
+  const [fN, updateFirstName] = useAtom(firstNameSearch)
+  const [lN, updateLastName] = useAtom(lastNameSearch)
+  const [pN, updatePhoneNumber] = useAtom(phoneNumberSearch)
+  const [eM, updateEmail] = useAtom(emailSearch)
+
+  const [firstName] = useDebounce(fN, DEBOUNCE_MS_SEARCH)
+  const [lastName] = useDebounce(lN, DEBOUNCE_MS_SEARCH)
+  const [phoneNumber] = useDebounce(pN, DEBOUNCE_MS_SEARCH)
+  const [email] = useDebounce(eM, DEBOUNCE_MS_SEARCH)
+
   const router = useRouter()
+  const size = useContext(ResponsiveContext)
 
   function updateQueryParams({
     page,
@@ -90,19 +108,19 @@ export default function PatientsTable() {
    * if there is no query present, then set it to the default
    */
   if (isEmpty(router.query)) {
-    quietlySetQuery(pageState)
+    quietlySetQuery(pS)
   } else {
     /**
      * if there is a valid query present then use that
      */
-    if (!isEqual(router.query, pageState)) {
+    if (!isEqual(router.query, pS)) {
       if (router.query.step && router.query.page) {
         updatePageState(router.query as PatientsPageState)
       } else {
         /**
          * otherwise use the default since the curernt one is not valid
          */
-        quietlySetQuery(pageState)
+        quietlySetQuery(pS)
       }
     }
   }
@@ -145,28 +163,36 @@ export default function PatientsTable() {
       <Box overflow="auto">
         <Header gap="none">
           <TextInput
+            value={fN}
             placeholder="Search By First Name"
             size="small"
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<LetterFf size={16} />}
+            onChange={(e) => updateFirstName(e.target.value)}
           />
           <TextInput
+            value={lN}
             placeholder="Search By Last Name"
             size="small"
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<LetterLl size={16} />}
+            onChange={(e) => updateLastName(e.target.value)}
           />
           <TextInput
+            value={pN}
             placeholder="Search By Phone Number"
             size="small"
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<Phone size={16} />}
+            onChange={(e) => updatePhoneNumber(e.target.value)}
           />
           <TextInput
+            value={eM}
             placeholder="Search By Email"
             size="small"
             style={{ borderRadius: 0 }}
             icon={<Email size={16} />}
+            onChange={(e) => updateEmail(e.target.value)}
           />
         </Header>
         <DataTable
