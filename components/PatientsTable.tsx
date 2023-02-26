@@ -9,87 +9,70 @@ import {
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
-import { ErrorFilled, Search } from '@carbon/icons-react'
+import { ErrorFilled } from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
 import usePatients from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
+import { debounce } from 'ts-debounce'
 import { useContext } from 'react'
-import { useDebouncedCallback } from 'use-debounce'
 
-export type PatientsTableState = {
+export type PatientsPageState = {
   step: string
   page: string
-  search?: string
 }
 
 export interface UpdateQueryParams {
   page: number
   startIndex: number
   endIndex: number
-  search?: string
 }
 
-const DEBOUNCE_MS: number = 500
-const FALLBACK_PATIENTS_PER_PAGE: number = 20
-const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 /**
  * imparatively define an atom
  * so that we do not loose our pagination when navigating
  * to a different page
  */
-const patientsPaginationState = atom<PatientsTableState>({
-  step: `${FALLBACK_PATIENTS_PER_PAGE}`,
-  page: '1',
-  search: ''
+const patientsPaginationState = atom<PatientsPageState>({
+  step: '5',
+  page: '1'
 })
 
-export const patientsSearchString = atom<string>('')
+const DEBOUNCE_MS: number = 500
+const FALLBACK_PATIENTS_PER_PAGE: number = 10
+const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
 export default function PatientsTable() {
   const size = useContext(ResponsiveContext)
   const [pageState, updatePageState] = useAtom(patientsPaginationState)
-  const [searchString, setSearchString] = useAtom(patientsSearchString)
   const router = useRouter()
 
   function updateQueryParams({
     page,
     startIndex,
-    endIndex,
-    search
+    endIndex
   }: UpdateQueryParams) {
     const newState = {
       step: (endIndex - startIndex).toString(),
-      page: page.toString(),
-      search
+      page: page.toString()
     }
     updatePageState(newState)
     quietlySetQuery(newState)
   }
 
-  const debounceStepSizeChange = useDebouncedCallback(
+  const debounceStepSizeChange = debounce(
     (step: string) =>
       updateQueryParams({
         endIndex: parseInt(step),
         startIndex: 0,
-        page: parseInt(router?.query?.page as string),
-        search: `${router?.query.search ?? ''}`
+        page: parseInt(router?.query?.page as string)
       }),
     DEBOUNCE_MS
   )
 
-  const debouceSearchStringChange = useDebouncedCallback((str: string) => {
-    updateQueryParams({
-      endIndex: parseInt(router?.query?.step as string),
-      startIndex: 0,
-      page: parseInt(router?.query?.page as string),
-      search: str ?? ''
-    })
-  }, DEBOUNCE_MS * 2)
-
-  function quietlySetQuery(state: PatientsTableState) {
-    router.replace(
+  function quietlySetQuery(state: PatientsPageState) {
+    router.push(
       `${router.pathname}/?${new URLSearchParams(state).toString()}`,
       undefined,
       { shallow: true }
@@ -107,7 +90,7 @@ export default function PatientsTable() {
      */
     if (!isEqual(router.query, pageState)) {
       if (router.query.step && router.query.page) {
-        updatePageState(router.query as PatientsTableState)
+        updatePageState(router.query as PatientsPageState)
       } else {
         /**
          * otherwise use the default since the curernt one is not valid
@@ -122,13 +105,9 @@ export default function PatientsTable() {
     isError,
     patients,
     numPatients: totalPatientsCount
-  } = usePatients({
-    pagination: router.query,
-    search: router?.query?.search as string
-  })
+  } = usePatients(router.query)
 
-  const step: number =
-    parseInt(router?.query?.step as string) ?? FALLBACK_PATIENTS_PER_PAGE
+  const step: number = parseInt(router?.query?.step as string) ?? 5
   const page: number = parseInt(router?.query?.page as string) ?? 1
   const shouldPinColums = size === 'small'
 
@@ -156,24 +135,7 @@ export default function PatientsTable() {
 
   return (
     <>
-      <Box>
-        <TextInput
-          size="small"
-          placeholder="Search patients by name, email or phone number..."
-          style={{
-            paddingLeft: '32px',
-            paddingRight: '32px',
-            borderRadius: '0px'
-          }}
-          icon={<Search size={16} />}
-          reverse
-          value={searchString}
-          onChange={(event) => {
-            debouceSearchStringChange(event.target.value)
-            setSearchString(event.target.value)
-          }}
-        />
-
+      <Box overflow="auto">
         <DataTable
           sortable
           pin
@@ -181,34 +143,27 @@ export default function PatientsTable() {
           columns={[
             {
               property: 'First Name',
-              header: (
-                <Box pad={{ left: 'medium' }}>
-                  <Text size="small">First Name</Text>
-                </Box>
-              ),
-              render: ({ firstName }) => (
-                <Box pad={{ left: 'medium' }}>
-                  <Text size="small">{firstName}</Text>
-                </Box>
-              )
+              header: <Text size="small">First Name</Text>,
+              render: ({ firstName }) => <Text size="small">{firstName}</Text>
             },
             {
               property: 'Family Name',
               header: <Text size="small">Last Name</Text>,
               render: ({ lastName }) => <Text size="small">{lastName}</Text>
             },
+
             {
               property: 'Contact',
               header: <Text size="small">Contact</Text>,
               pin: shouldPinColums,
-              render: (user) => (
+              render: ({ phoneNumber, email }) => (
                 <Box direction="column">
                   <Text size="small" color={theme.global.colors['dark-2']}>
                     <Text weight="bolder" size="small">
                       Phone:
                     </Text>{' '}
-                    {user.phoneNumber ? (
-                      user.phoneNumber
+                    {phoneNumber ? (
+                      phoneNumber
                     ) : (
                       <Text
                         size="small"
@@ -225,9 +180,9 @@ export default function PatientsTable() {
                     <Anchor
                       weight="normal"
                       target="_blank"
-                      href={`mailto:${user.email}`}
+                      href={`mailto:${email}`}
                     >
-                      {user.email}
+                      {email}
                     </Anchor>
                   </Text>
                 </Box>
@@ -237,11 +192,11 @@ export default function PatientsTable() {
               property: 'Pickup',
               header: <Text size="small">Pickup</Text>,
               pin: shouldPinColums,
-              render: ({ Patient: { pickupEnabled } }) => (
+              render: (user) => (
                 <Box
                   round
                   background={
-                    pickupEnabled
+                    user?.Patient?.pickupEnabled
                       ? theme.global.colors['status-ok']
                       : theme.global.colors['dark-6']
                   }
@@ -250,7 +205,7 @@ export default function PatientsTable() {
                   border
                 >
                   <Text size="xsmall" color={theme.global.colors.white}>
-                    {pickupEnabled ? 'Enabled' : 'Disabled'}
+                    {user?.Patient?.pickupEnabled ? 'Enabled' : 'Disabled'}
                   </Text>
                 </Box>
               )
@@ -258,7 +213,6 @@ export default function PatientsTable() {
           ]}
           resizeable
           data={patients ?? []}
-          pad="small"
         />
         <Box
           align="center"
@@ -299,12 +253,7 @@ export default function PatientsTable() {
             page={page}
             numberItems={totalPatientsCount ?? FALLBACK_PATIENTS_PER_PAGE}
             onChange={({ page, startIndex, endIndex }) =>
-              updateQueryParams({
-                page,
-                startIndex,
-                endIndex,
-                search: `${router.query.search}`
-              })
+              updateQueryParams({ page, startIndex, endIndex })
             }
           />
         </Box>

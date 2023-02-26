@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      const { page, take, search } = req.query
+      const { page, take } = req.query
       if (
         (page || take) &&
         (typeof page !== 'string' || typeof take !== 'string')
@@ -15,7 +15,6 @@ export default async function handler(
         throw new Error('Expected page and take of type string')
       }
 
-      const fuzz = search as string
       const patients = await prisma.user.findMany({
         ...(page &&
           take && {
@@ -23,23 +22,7 @@ export default async function handler(
             take: parseInt(take)
           }),
         where: {
-          role: 'patient',
-          ...(fuzz?.length && {
-            OR: [
-              {
-                firstName: {
-                  search: fuzz
-                }
-              },
-              { lastName: { search: fuzz } },
-              {
-                phoneNumber: {
-                  search: fuzz
-                },
-                email: { search: fuzz }
-              }
-            ]
-          })
+          role: 'patient'
         },
         include: {
           Patient: {
@@ -49,7 +32,7 @@ export default async function handler(
           }
         }
       })
-      const numPatients: number = patients.length
+      const numPatients: number = await prisma.patient.count()
       res.status(200).json({ message: 'Success', patients, numPatients })
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
