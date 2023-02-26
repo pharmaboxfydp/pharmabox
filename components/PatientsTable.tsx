@@ -11,7 +11,7 @@ import {
   Button
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithStorage } from 'jotai/utils'
 
 import Skeleton from 'react-loading-skeleton'
 import {
@@ -186,7 +186,7 @@ export default function PatientsTable() {
   return (
     <>
       <Box overflow="auto">
-        <Header gap="none">
+        <Header gap="none" animation="slideUp" sticky="scrollup">
           <TextInput
             value={fN}
             placeholder="Search By First Name"
@@ -225,10 +225,13 @@ export default function PatientsTable() {
             icon={<Email size={16} />}
             onChange={(e) => updateEmail(e.target.value)}
           />
-          <Button icon={<Close size={16} />} onClick={clearSearch} />
+          <Button
+            icon={<Close size={16} />}
+            onClick={clearSearch}
+            tip={{ content: <Text size="xsmall">Clear Search</Text> }}
+          />
         </Header>
         <DataTable
-          sortable
           pin
           className="patients-table"
           columns={[
@@ -289,11 +292,12 @@ export default function PatientsTable() {
                   background={
                     user?.Patient?.pickupEnabled
                       ? theme.global.colors['status-ok']
-                      : theme.global.colors['dark-6']
+                      : theme.global.colors['status-warning']
                   }
                   pad="xxsmall"
                   align="center"
                   border
+                  width="xsmall"
                 >
                   <Text size="xsmall" color={theme.global.colors.white}>
                     {user?.Patient?.pickupEnabled ? 'Enabled' : 'Disabled'}
