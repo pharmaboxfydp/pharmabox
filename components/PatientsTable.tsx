@@ -9,7 +9,7 @@ import {
   Header
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import Skeleton from 'react-loading-skeleton'
 import {
@@ -21,7 +21,7 @@ import {
 } from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
-import usePatients from '../hooks/patients'
+import usePatients, { UserPagination, UserSearch } from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
 import { useContext } from 'react'
@@ -125,12 +125,22 @@ export default function PatientsTable() {
     }
   }
 
+  const search: UserSearch = {
+    firstName,
+    lastName,
+    phoneNumber,
+    email
+  }
+
   const {
     isLoading,
     isError,
     patients,
     numPatients: totalPatientsCount
-  } = usePatients(router.query)
+  } = usePatients({
+    pagination: router.query as unknown as UserPagination,
+    search
+  })
 
   const step: number = parseInt(router?.query?.step as string) ?? 5
   const page: number = parseInt(router?.query?.page as string) ?? 1

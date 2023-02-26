@@ -24,22 +24,54 @@ export interface UsePatients {
   addPatient: (data: NewPatient) => Promise<{ message: string; user: User }>
 }
 
-export type UserPagination = Record<string, string | string[] | undefined>
+export type UserSearch = {
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  email: string
+}
+
+export type UserPagination = {
+  page: number
+  step: number
+}
 
 const fetcher = (
   ...arg: [string, Record<string, any>]
 ): Promise<{ message: string; patients: User[]; numPatients: number }> =>
   fetch(...arg).then((res) => res.json())
 
-export default function usePatients(pagination?: UserPagination): UsePatients {
-  const url = `/api/patients/${
-    pagination && pagination?.step && pagination?.page
-      ? `?${new URLSearchParams({
-          take: pagination.step.toString(),
-          page: pagination.page.toString()
-        })}`
-      : ''
-  }`
+export default function usePatients({
+  pagination,
+  search
+}: {
+  pagination?: UserPagination
+  search?: UserSearch
+}): UsePatients {
+  const hasPagination = pagination && pagination.page && pagination.step
+  const hasFirstNameSearch = search?.firstName
+  const hasLastNameSearch = search?.lastName
+  const hasPhoneNumberSearch = search?.phoneNumber
+  const hasEmailSearch = search?.email
+
+  const url = `/api/patients/${`?${new URLSearchParams({
+    ...(hasPagination && {
+      take: pagination.step.toString(),
+      page: pagination.page.toString()
+    }),
+    ...(hasFirstNameSearch && {
+      firstName: search.firstName
+    }),
+    ...(hasLastNameSearch && {
+      lastName: search.lastName
+    }),
+    ...(hasPhoneNumberSearch && {
+      phoneNumber: search.phoneNumber
+    }),
+    ...(hasEmailSearch && {
+      email: search.email
+    })
+  })}`}`
 
   const { data, error } = useSWR(url, fetcher, {
     revalidateIfStale: true,
