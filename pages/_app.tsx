@@ -59,7 +59,16 @@ function App({ Component, pageProps }: AppProps) {
   function handleShortCutKeys(event: React.KeyboardEvent<HTMLElement>) {
     const { key } = event
     if (key === 'F1') {
+      /**
+       * Shortcut to add patient modal
+       */
       setShowAddPatientModal(true)
+    }
+    if (key === 'F2') {
+      /**
+       * Shortcut to bring user to patients page
+       */
+      router.push('/patients')
     }
   }
   return (

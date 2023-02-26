@@ -2,6 +2,7 @@ import { User } from '../types/types'
 import useSWR, { mutate } from 'swr'
 import { Patient, Prescription } from '@prisma/client'
 import { toast } from 'react-toastify'
+import { stripNonDigets } from '../helpers/validators'
 
 export interface FullPatient extends Patient {
   User: User[]
@@ -88,7 +89,7 @@ export default function usePatients({
     const response = await fetch('/api/patients/create', {
       method: 'POST',
       body: JSON.stringify({
-        data: { firstName, lastName, email, phone }
+        data: { firstName, lastName, email, phone: stripNonDigets(phone) }
       })
     })
     const res = await response.json()

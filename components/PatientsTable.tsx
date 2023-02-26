@@ -6,13 +6,16 @@ import {
   TextInput,
   Anchor,
   ResponsiveContext,
-  Header
+  Header,
+  MaskedInput,
+  Button
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import Skeleton from 'react-loading-skeleton'
 import {
+  Close,
   Email,
   ErrorFilled,
   LetterFf,
@@ -26,6 +29,11 @@ import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
 import { useContext } from 'react'
 import { useDebounce, useDebouncedCallback } from 'use-debounce'
+import {
+  emailValidator,
+  formatPhoneNumber,
+  phoneNumberValidator
+} from '../helpers/validators'
 
 export type PatientsPageState = {
   step: string
@@ -44,7 +52,7 @@ export interface UpdateQueryParams {
  * to a different page
  */
 const patientsPaginationState = atom<PatientsPageState>({
-  step: '5',
+  step: '20',
   page: '1'
 })
 
@@ -55,7 +63,7 @@ const emailSearch = atomWithStorage<string>('email-search', '')
 
 const DEBOUNCE_MS: number = 500
 const DEBOUNCE_MS_SEARCH: number = 1000
-const FALLBACK_PATIENTS_PER_PAGE: number = 10
+const FALLBACK_PATIENTS_PER_PAGE: number = 20
 const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
 export default function PatientsTable() {
@@ -72,6 +80,13 @@ export default function PatientsTable() {
 
   const router = useRouter()
   const size = useContext(ResponsiveContext)
+
+  function clearSearch() {
+    updateFirstName('')
+    updateLastName('')
+    updatePhoneNumber('')
+    updateEmail('')
+  }
 
   function updateQueryParams({
     page,
@@ -142,7 +157,7 @@ export default function PatientsTable() {
     search
   })
 
-  const step: number = parseInt(router?.query?.step as string) ?? 5
+  const step: number = parseInt(router?.query?.step as string) ?? 20
   const page: number = parseInt(router?.query?.page as string) ?? 1
   const shouldPinColums = size === 'small'
 
@@ -175,6 +190,7 @@ export default function PatientsTable() {
           <TextInput
             value={fN}
             placeholder="Search By First Name"
+            a11yTitle="Search By First Name"
             size="small"
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<LetterFf size={16} />}
@@ -183,20 +199,25 @@ export default function PatientsTable() {
           <TextInput
             value={lN}
             placeholder="Search By Last Name"
+            a11yTitle="Search By Last Name"
             size="small"
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<LetterLl size={16} />}
             onChange={(e) => updateLastName(e.target.value)}
           />
-          <TextInput
+          <MaskedInput
+            mask={phoneNumberValidator}
             value={pN}
             placeholder="Search By Phone Number"
             size="small"
+            a11yTitle="Search By Phone Number"
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<Phone size={16} />}
             onChange={(e) => updatePhoneNumber(e.target.value)}
           />
-          <TextInput
+          <MaskedInput
+            mask={emailValidator}
+            a11yTitle="Search By Email"
             value={eM}
             placeholder="Search By Email"
             size="small"
@@ -204,6 +225,7 @@ export default function PatientsTable() {
             icon={<Email size={16} />}
             onChange={(e) => updateEmail(e.target.value)}
           />
+          <Button icon={<Close size={16} />} onClick={clearSearch} />
         </Header>
         <DataTable
           sortable
@@ -232,7 +254,7 @@ export default function PatientsTable() {
                       Phone:
                     </Text>{' '}
                     {phoneNumber ? (
-                      phoneNumber
+                      formatPhoneNumber(phoneNumber)
                     ) : (
                       <Text
                         size="small"
