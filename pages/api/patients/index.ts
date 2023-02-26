@@ -30,7 +30,8 @@ export default async function handler(
               Prescriptions: true
             }
           }
-        }
+        },
+        orderBy: [{ lastName: 'asc' }]
       })
       const numPatients: number = await prisma.patient.count()
       res.status(200).json({ message: 'Success', patients, numPatients })

@@ -5,18 +5,25 @@ import {
   Pagination,
   TextInput,
   Anchor,
-  ResponsiveContext
+  ResponsiveContext,
+  Header
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
 import Skeleton from 'react-loading-skeleton'
-import { ErrorFilled } from '@carbon/icons-react'
+import {
+  Email,
+  ErrorFilled,
+  LetterFf,
+  LetterLl,
+  Phone
+} from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
 import usePatients from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
-import { debounce } from 'ts-debounce'
 import { useContext } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 
 export type PatientsPageState = {
   step: string
@@ -61,7 +68,7 @@ export default function PatientsTable() {
     quietlySetQuery(newState)
   }
 
-  const debounceStepSizeChange = debounce(
+  const debounceStepSizeChange = useDebouncedCallback(
     (step: string) =>
       updateQueryParams({
         endIndex: parseInt(step),
@@ -136,6 +143,32 @@ export default function PatientsTable() {
   return (
     <>
       <Box overflow="auto">
+        <Header gap="none">
+          <TextInput
+            placeholder="Search By First Name"
+            size="small"
+            style={{ borderRadius: 0, borderRight: 0 }}
+            icon={<LetterFf size={16} />}
+          />
+          <TextInput
+            placeholder="Search By Last Name"
+            size="small"
+            style={{ borderRadius: 0, borderRight: 0 }}
+            icon={<LetterLl size={16} />}
+          />
+          <TextInput
+            placeholder="Search By Phone Number"
+            size="small"
+            style={{ borderRadius: 0, borderRight: 0 }}
+            icon={<Phone size={16} />}
+          />
+          <TextInput
+            placeholder="Search By Email"
+            size="small"
+            style={{ borderRadius: 0 }}
+            icon={<Email size={16} />}
+          />
+        </Header>
         <DataTable
           sortable
           pin
