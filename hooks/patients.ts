@@ -1,13 +1,8 @@
 import { User } from '../types/types'
 import useSWR, { mutate } from 'swr'
-import { Patient, Prescription } from '@prisma/client'
 import { toast } from 'react-toastify'
 import { stripNonDigets } from '../helpers/validators'
-
-export interface FullPatient extends Patient {
-  User: User[]
-  Prescriptions: Prescription[]
-}
+import { Patient, Prescription } from '@prisma/client'
 
 export interface NewPatient {
   firstName: string
@@ -16,9 +11,17 @@ export interface NewPatient {
   email: string
 }
 
+export interface PatientWithPrescription extends Patient {
+  Prescriptions: Prescription[]
+}
+
+export interface UserWithPrescription extends User {
+  Patient: PatientWithPrescription
+}
+
 export interface UsePatients {
-  patients: User[] | null
-  activePatients: User[] | null
+  patients: UserWithPrescription[] | null
+  activePatients: UserWithPrescription[] | null
   numPatients: number | null
   isLoading: boolean
   isError: Error
@@ -39,8 +42,11 @@ export type UserPagination = {
 
 const fetcher = (
   ...arg: [string, Record<string, any>]
-): Promise<{ message: string; patients: User[]; numPatients: number }> =>
-  fetch(...arg).then((res) => res.json())
+): Promise<{
+  message: string
+  patients: UserWithPrescription[]
+  numPatients: number
+}> => fetch(...arg).then((res) => res.json())
 
 export default function usePatients({
   pagination,

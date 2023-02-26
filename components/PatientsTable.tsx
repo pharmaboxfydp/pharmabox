@@ -283,8 +283,17 @@ export default function PatientsTable() {
               )
             },
             {
-              property: 'Pickup',
-              header: <Text size="small">Pickup</Text>,
+              property: 'Active-Prescriptions',
+              header: <Text size="small">Rx Awaiting Pickup</Text>,
+              pin: shouldPinColums,
+              render: ({ Patient }) => {
+                const numRx = Patient?.Prescriptions.length
+                return <Text size="small">{numRx}</Text>
+              }
+            },
+            {
+              property: 'Status',
+              header: <Text size="small">Status</Text>,
               pin: shouldPinColums,
               render: (user) => (
                 <Box

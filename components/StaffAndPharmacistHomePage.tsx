@@ -29,7 +29,7 @@ import { useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import useAuthorization from '../hooks/authorization'
 import { useLockerboxes } from '../hooks/lockerbox'
-import usePatients, { FullPatient } from '../hooks/patients'
+import usePatients from '../hooks/patients'
 import {
   useLocationPrescriptions,
   usePrescriptions
