@@ -227,12 +227,12 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
 }
 
 function mapPatientsToValues(
-  patients: FullPatient[]
+  patients: User[]
 ): { search: string; id: string; patient: User }[] {
-  return patients.map((patient) => ({
-    search: `${patient.firstName} ${patient.lastName}, ${(() => '-')()}`,
-    id: patient.id,
-    patient
+  return patients.map((u) => ({
+    search: `${u.firstName} ${u.lastName}, ${(() => '-')()}`,
+    id: u.id,
+    patient: u
   }))
 }
 
@@ -242,7 +242,7 @@ function PrescriptionCreationBar({
   locationId,
   user
 }: {
-  activePatients: FullPatient[]
+  activePatients: User[]
   lockerboxes: LockerBox[] | null
   locationId: number | null | undefined
   user: User
@@ -439,7 +439,7 @@ function PrescriptionCreationBar({
 }
 
 export default function StaffAndPharmacistHomePage({ user }: { user: User }) {
-  const { activePatients } = usePatients({})
+  const { activePatients } = usePatients()
   const { lockerboxes } = useLockerboxes(user)
 
   return (

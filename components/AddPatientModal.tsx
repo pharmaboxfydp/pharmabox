@@ -1,5 +1,4 @@
 import {
-  Add,
   Close,
   Email,
   Launch,
@@ -40,7 +39,7 @@ export default function AddPatientModal() {
   const [emailValue, setEmailValue] = useState<string>('')
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setLastName] = useState<string>('')
-  const { addPatient } = usePatients({})
+  const { addPatient } = usePatients()
 
   async function handleSubmit(
     event: FormExtendedEvent<NewPatient>
