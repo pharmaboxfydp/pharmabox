@@ -28,6 +28,8 @@ import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtom } from 'jotai'
 import { addPatientModalState } from '../../components/AddPatientModal'
+import NotFound from '../../public/not-found.svg'
+import Image from 'next/image'
 
 const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   const router = useRouter()
@@ -283,6 +285,12 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                 align="center"
                 gap="medium"
               >
+                <Image
+                  src={NotFound}
+                  alt="Not Found"
+                  width={656 / 2}
+                  height={458.68642 / 2}
+                />
                 <Text size="small">
                   The patient you are looking for does not exist in the
                   Pharmabox Database.
