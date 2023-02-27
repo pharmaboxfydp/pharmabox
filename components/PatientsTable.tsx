@@ -34,6 +34,7 @@ import {
   formatPhoneNumber,
   phoneNumberValidator
 } from '../helpers/validators'
+import { atob } from 'buffer'
 
 export type PatientsPageState = {
   step: string
@@ -315,6 +316,9 @@ export default function PatientsTable() {
               )
             }
           ]}
+          onClickRow={({ datum }) => {
+            router.push(`/patients/${datum.Patient.id}`)
+          }}
           resizeable
           data={patients ?? []}
         />

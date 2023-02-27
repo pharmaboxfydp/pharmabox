@@ -5,7 +5,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
     try {
       const { id } = req.query
       if (typeof id !== 'string') {

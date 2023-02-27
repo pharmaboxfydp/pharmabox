@@ -12,7 +12,6 @@ const fetcher = (
   fetch(...arg).then((res) => res.json())
 
 export default function useClerkUser(userId: string): UseClerkUser {
-  const { mutate } = useSWRConfig()
   /**
    * we will automatically handle an error here from useSWR if locationId is null
    */
