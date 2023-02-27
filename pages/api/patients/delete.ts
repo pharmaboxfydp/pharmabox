@@ -7,15 +7,17 @@ export default async function handler(
 ) {
   if (req.method === 'DELETE') {
     try {
-      if (typeof req.body === 'string') {
-        req.body = JSON.parse(req.body)
-      }
+      const { id } = req.query
 
-      const { id } = req.body.data
-
-      const patient = await prisma.patient.delete({
+      const patient = await prisma.patient.findFirstOrThrow({
         where: {
-          id: id
+          id: parseInt(`${id}`)
+        }
+      })
+
+      await prisma.user.delete({
+        where: {
+          id: patient.userId
         }
       })
 

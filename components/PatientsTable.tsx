@@ -242,7 +242,7 @@ export default function PatientsTable() {
               render: ({ firstName }) => <Text size="small">{firstName}</Text>
             },
             {
-              property: 'Family Name',
+              property: 'Last Name',
               header: <Text size="small">Last Name</Text>,
               render: ({ lastName }) => <Text size="small">{lastName}</Text>
             },
