@@ -24,6 +24,7 @@ import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
 import { emailValidator, phoneNumberValidator } from '../helpers/validators'
 import usePatients, { NewPatient } from '../hooks/patients'
+import useAuthorization from '../hooks/authorization'
 
 /**
  * imparatively define an atom
@@ -76,12 +77,21 @@ export default function AddPatientModal() {
     >
       <Box pad="large" overflow="scroll">
         {!isFetching ? (
-          <Box direction="column" overflow="scroll" gap="small">
+          <Box
+            direction="column"
+            overflow="scroll"
+            gap="small"
+            data-cy="add-patients-modal"
+          >
             <Box flex={false} direction="row" justify="between">
               <Heading level={4} margin="none">
                 Add Patient
               </Heading>
-              <Button icon={<Close size={16} />} onClick={closeModal} />
+              <Button
+                icon={<Close size={16} />}
+                onClick={closeModal}
+                data-cy="close-modal"
+              />
             </Box>
             <Box gap="small">
               <Text size="medium">Add a patient to Pharmabox</Text>
@@ -189,14 +199,11 @@ export default function AddPatientModal() {
                       borderBottomLeftRadius: '10px',
                       borderBottomRightRadius: '10px'
                     }}
+                    data-cy="submit-add-patient-form"
                   />
                 </Box>
               </Form>
             </Box>
-            <Text size="small">
-              Tip: You can open the patient creation window from anywhere using
-              the <kbd>F1</kbd> Key, and close it using the <kbd>Esc</kbd> key.
-            </Text>
           </Box>
         ) : (
           <Box pad="xlarge" align="center" gap="medium" animation="fadeIn">

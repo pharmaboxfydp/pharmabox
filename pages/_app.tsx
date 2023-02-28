@@ -54,16 +54,10 @@ Router.events.on('routeChangeError', () => NProgress.done())
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
-  const [, setShowAddPatientModal] = useAtom(addPatientModalState)
 
   function handleShortCutKeys(event: React.KeyboardEvent<HTMLElement>) {
     const { key } = event
-    if (key === 'F1') {
-      /**
-       * Shortcut to add patient modal
-       */
-      setShowAddPatientModal(true)
-    }
+
     if (key === 'F2') {
       /**
        * Shortcut to bring user to patients page
