@@ -18,6 +18,7 @@ export default function AddPatientButton({ user }: { user: User }) {
         size="small"
         onClick={() => setShowAddPatientModal(true)}
         disabled={!isAuthorized}
+        data-cy="add-patient-button"
       />
     </Box>
   )

@@ -196,6 +196,7 @@ export default function PatientsTable() {
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<LetterFf size={16} />}
             onChange={(e) => updateFirstName(e.target.value)}
+            data-cy="search-first-name"
           />
           <TextInput
             value={lN}
@@ -205,6 +206,7 @@ export default function PatientsTable() {
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<LetterLl size={16} />}
             onChange={(e) => updateLastName(e.target.value)}
+            data-cy="search-last-name"
           />
           <MaskedInput
             mask={phoneNumberValidator}
@@ -215,6 +217,7 @@ export default function PatientsTable() {
             style={{ borderRadius: 0, borderRight: 0 }}
             icon={<Phone size={16} />}
             onChange={(e) => updatePhoneNumber(e.target.value)}
+            data-cy="search-phone-number"
           />
           <MaskedInput
             mask={emailValidator}
@@ -225,11 +228,13 @@ export default function PatientsTable() {
             style={{ borderRadius: 0 }}
             icon={<Email size={16} />}
             onChange={(e) => updateEmail(e.target.value)}
+            data-cy="search-email"
           />
           <Button
             icon={<Close size={16} />}
             onClick={clearSearch}
             tip={{ content: <Text size="xsmall">Clear Search</Text> }}
+            data-cy="table-clear-search"
           />
         </Header>
         <DataTable
@@ -246,7 +251,6 @@ export default function PatientsTable() {
               header: <Text size="small">Last Name</Text>,
               render: ({ lastName }) => <Text size="small">{lastName}</Text>
             },
-
             {
               property: 'Contact',
               header: <Text size="small">Contact</Text>,

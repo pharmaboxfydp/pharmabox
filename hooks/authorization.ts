@@ -33,7 +33,7 @@ const fetcher = (
 }> => fetch(...arg).then((res) => res.json())
 
 export default function useAuthorization(user: User): UseAuthorization {
-  const member = user.Pharmacist ? user.Pharmacist : user.Staff
+  const member = user?.Pharmacist ? user.Pharmacist : user.Staff
   const { mutate } = useSWRConfig()
 
   const { data, error } = useSWR(
