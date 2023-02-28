@@ -125,8 +125,7 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
               message={
                 <Text size="small">
                   Patient information sucessfully updated on:{' '}
-                  {new Date().toDateString()}
-                  {new Date().toTimeString()}
+                  {new Date().toDateString()}, {new Date().toTimeString()}
                 </Text>
               }
               onClose={() => setShowSuccessNotification(false)}
