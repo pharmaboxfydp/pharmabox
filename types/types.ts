@@ -56,7 +56,6 @@ export enum StaffRootPages {
 export enum PatientRootPages {
   Home = '/home',
   Payments = '/payments',
-  Notifications = '/notifications',
   Settings = '/settings/[[...index]]',
   Profile = '/settings/profile/[[...index]]'
 }
