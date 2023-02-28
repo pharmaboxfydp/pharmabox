@@ -354,6 +354,7 @@ export default function PatientsTable() {
                 max={MAX_ALLOWABLE_PATIENT_DISPLAYED}
                 // enforce step size of 1
                 step={1}
+                data-cy="step-size"
               />
             </Box>
             <Box pad="small">

@@ -55,6 +55,7 @@ function AuthorizedUserCard({
       pad="small"
       width="small"
       gap="small"
+      data-cy="authorized-user-card"
     >
       <CardHeader>
         <Box direction="row" flex="grow" gap="small">

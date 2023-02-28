@@ -46,10 +46,11 @@ export function stripNonDigets(str: string): string {
 }
 
 export function formatPhoneNumber(p: string): string {
-  const clnd: string = ('' + p).replace(/\D/g, '')
-  const m: RegExpMatchArray | null = clnd.match(/^(\d{3})(\d{3})(\d{4})$/)
-  if (m) {
-    return '(' + m[1] + ') ' + m[2] + '-' + m[3]
+  const cleaned = ('' + p).replace(/\D/g, '')
+  const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/)
+  if (match) {
+    const intlCode = match[1] ? '+1 ' : ''
+    return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('')
   }
   return p
 }

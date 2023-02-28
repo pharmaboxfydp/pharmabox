@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-function loginStaffPatients() {
+function loginStaffPatientsPage() {
   cy.login(
     Cypress.env('test_staff_username_1'),
     Cypress.env('test_staff_password_1')
@@ -8,11 +8,11 @@ function loginStaffPatients() {
 }
 
 function goToPatientsPage() {
-  loginStaffPatients()
+  loginStaffPatientsPage()
   cy.get('[data-cy="Patients"]').click()
 }
 
-describe('Patients Page', () => {
+describe('Patients Page and Table Search', () => {
   beforeEach(() => {
     cy.visit('/')
   })
@@ -57,6 +57,9 @@ describe('Patients Page', () => {
 
     // clear search input exists
     cy.get('[data-cy="table-clear-search"]').should('exist')
+
+    // should have correct value of step size
+    cy.get('[data-cy="step-size"]').should('have.value', 20)
   })
 
   it('Should allow a user to search by first name', () => {
