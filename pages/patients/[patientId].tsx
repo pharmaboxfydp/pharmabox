@@ -1,14 +1,5 @@
 import Head from 'next/head'
-import {
-  Anchor,
-  Box,
-  Button,
-  CheckBox,
-  Header,
-  Layer,
-  Menu,
-  Text
-} from 'grommet'
+import { Anchor, Box, Button, CheckBox, Header, Menu, Text } from 'grommet'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../../helpers/user-details'
 import Page from '../../components/Page'
@@ -19,6 +10,7 @@ import usePatient from '../../hooks/patient'
 import { formatPhoneNumber } from '../../helpers/validators'
 import theme from '../../styles/theme'
 import {
+  Add,
   Close,
   Edit,
   OverflowMenuHorizontal,
@@ -30,6 +22,7 @@ import { useAtom } from 'jotai'
 import { addPatientModalState } from '../../components/AddPatientModal'
 import NotFound from '../../public/not-found.svg'
 import Image from 'next/image'
+import DeletePatientModal from '../../components/DeletePatientModal'
 
 const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   const router = useRouter()
@@ -78,51 +71,11 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
     return (
       <>
         {showDeleteModal && (
-          <Layer
-            onEsc={() => setShowDeleteModal(false)}
-            onClickOutside={() => setShowDeleteModal(false)}
-          >
-            <Box pad="medium">
-              <>
-                <Box flex={false} direction="row" justify="between">
-                  <Box pad="small">
-                    <Text size="medium" weight="bold">
-                      Delete Patient
-                    </Text>
-                  </Box>
-                  <Button
-                    icon={<Close size={16} />}
-                    onClick={() => setShowDeleteModal(false)}
-                  />
-                </Box>
-                <Box pad="small" gap="medium">
-                  <Text size="small">
-                    Delete <b>{patientFullName}</b> from PharmaBox? This action
-                    cannot be undone.
-                  </Text>
-                  <Box
-                    flex={false}
-                    direction="row"
-                    justify="between"
-                    gap="medium"
-                  >
-                    <Button
-                      label="Cancel"
-                      size="small"
-                      onClick={() => setShowDeleteModal(false)}
-                    />
-                    <Button
-                      label={`Remove ${patientFullName}`}
-                      primary
-                      size="small"
-                      color={theme.global.colors['status-critical']}
-                      onClick={handleDeletePatient}
-                    />
-                  </Box>
-                </Box>
-              </>
-            </Box>
-          </Layer>
+          <DeletePatientModal
+            patientFullName={patientFullName}
+            onClose={() => setShowDeleteModal(false)}
+            onSubmit={handleDeletePatient}
+          />
         )}
         <Head>
           <title>Patients | {patientFullName}</title>
@@ -156,7 +109,9 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                       {
                         label: <Text size="small">Edit Patient</Text>,
                         icon: <Edit size={20} />,
-                        gap: 'small'
+                        gap: 'small',
+                        onClick: () =>
+                          router.push(`/patients/edit/${patientId}`)
                       },
                       {
                         label: (
@@ -291,17 +246,21 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                   width={656 / 2}
                   height={458.68642 / 2}
                 />
-                <Text size="small">
+                <Text
+                  size="small"
+                  color={theme.global.colors['status-critical']}
+                >
                   The patient you are looking for does not exist in the
                   Pharmabox Database.
                 </Text>
                 <Box width="medium">
                   <Button
-                    label="Add New Patient"
+                    label="New Patient"
                     primary
                     size="small"
                     fill={false}
                     onClick={() => setShowAddPatientModal(true)}
+                    icon={<Add size={16} />}
                   />
                 </Box>
               </Box>
