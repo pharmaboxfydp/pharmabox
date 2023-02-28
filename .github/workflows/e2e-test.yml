@@ -18,6 +18,7 @@ jobs:
       CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
       CLERK_API_KEY: ${{ secrets.CLERK_API_KEY }}
       NEXT_PUBLIC_CLERK_FRONTEND_API: ${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
+      CI: $CI
     steps:
       - name: Checkout 🏁
         uses: actions/checkout@v3
@@ -35,6 +36,7 @@ jobs:
           echo 'CLERK_JWT_KEY=${{ secrets.CLERK_JWT_KEY }}' >> .env
           echo 'CLERK_API_KEY=${{ secrets.CLERK_API_KEY }}' >> .env
           echo 'NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}' >> .env
+          echo 'CI=$CI' >> .env
       - name: Generate Prisma Database
         run: |
           npx prisma validate

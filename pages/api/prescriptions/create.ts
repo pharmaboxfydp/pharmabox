@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
 import { Status, LockerBoxState, Role } from '../../../types/types'
+import { sendSMS } from '../../../twilio/twilio'
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,7 +32,7 @@ export default async function handler(
       const lockerBoxId: number = parseInt(LB)
       const pharmacistId = parseInt(PI)
       const staffId = SI ? parseInt(SI) : null
-      const random_key = crypto.randomBytes(20).toString('hex')
+      const random_key = crypto.randomInt(100000, 999999).toString()
 
       const prescription = await prisma.prescription.create({
         data: {
@@ -46,6 +47,41 @@ export default async function handler(
           staffId
         }
       })
+
+      const patient = await prisma.patient.findUniqueOrThrow({
+        where: { id: patientId },
+        include: {
+          User: true
+        }
+      })
+
+      const location = await prisma.location.findUniqueOrThrow({
+        where: { id: locationId }
+      })
+
+      if (!patient.User?.phoneNumber) {
+        return res.status(400).json({
+          message:
+            "User does not have a phone number. Please add a phone number to this users's account"
+        })
+      }
+
+      let phoneNumber: string = patient.User?.phoneNumber
+
+      if (phoneNumber?.charAt(0) === '1') {
+        phoneNumber = '+' + phoneNumber
+      } else {
+        phoneNumber = '+1' + phoneNumber
+      }
+
+      const formatted_message = `There has been an order placed for your prescription: ${prescription.name}. Please go to the pharmacy to pick up your prescription.
+      The prescription is located in locker box ${lockerBoxId} at ${location.streetAddress}, ${location.city}, ${location.province}, ${location.country}.
+
+      Your pickup code is ${random_key}`
+
+      if (process.env.CI) {
+        await sendSMS(phoneNumber, formatted_message)
+      }
 
       const lockerBox = await prisma.lockerBox.update({
         where: { id: lockerBoxId },

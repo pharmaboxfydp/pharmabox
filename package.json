@@ -46,6 +46,7 @@
     "swr": "^1.3.0",
     "ts-debounce": "^4.0.0",
     "use-debounce": "^9.0.3",
+    "twilio": "^4.7.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
