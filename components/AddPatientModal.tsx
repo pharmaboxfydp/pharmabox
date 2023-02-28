@@ -194,6 +194,7 @@ export default function AddPatientModal() {
                   <Button
                     type="submit"
                     label="Add Patient"
+                    id="submit-add-patient-form"
                     primary
                     style={{
                       borderBottomLeftRadius: '10px',
