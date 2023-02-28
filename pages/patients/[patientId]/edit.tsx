@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Form,
+  FormExtendedEvent,
   FormField,
   Header,
   MaskedInput,
@@ -16,17 +17,16 @@ import Page from '../../../components/Page'
 import { ServerPageProps } from '../../../types/types'
 import Breadcrumbs from '../../../components/Breadcrumbs'
 import { useRouter } from 'next/router'
-import usePatient from '../../../hooks/patient'
+import usePatient, { UpdatePatient } from '../../../hooks/patient'
 import {
   emailValidator,
+  formatPhoneNumber,
   phoneNumberValidator
 } from '../../../helpers/validators'
 import theme from '../../../styles/theme'
 import {
   Add,
-  Close,
   Email,
-  Launch,
   Phone,
   TrashCan,
   UpdateNow,
@@ -48,9 +48,8 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   const [, setShowAddPatientModal] = useAtom(addPatientModalState)
 
   // cast to string to be safe
-  const { patient, error, isLoading, updatePickup, deletePatient } = usePatient(
-    `${patientId}`
-  )
+  const { patient, error, isLoading, deletePatient, updatePatientDetails } =
+    usePatient(`${patientId}`)
 
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
 
@@ -73,7 +72,14 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   )
   const [patientPhoneNumber, setPatientPhoneNumber] = useState<
     string | undefined
-  >(patient?.User.phoneNumber)
+  >(() => formatPhoneNumber(patient?.User.phoneNumber as string))
+
+  async function handleSubmit(
+    event: FormExtendedEvent<UpdatePatient>
+  ): Promise<void> {
+    const { value } = event
+    await updatePatientDetails({ ...value })
+  }
 
   let patientFullName: string | undefined
 
@@ -86,7 +92,8 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   }
 
   if (patient && !error) {
-    patientFullName = `${patientFirstName} ${patientLastName}` ?? '... ...'
+    patientFullName =
+      `${patient?.User.firstName} ${patient.User.lastName}` ?? '... ...'
 
     return (
       <>
@@ -116,7 +123,7 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
             </Header>
             <Box pad={{ left: 'medium', right: 'medium' }}>
               <Box direction="column" gap="small">
-                <Form>
+                <Form onSubmit={handleSubmit}>
                   <Box
                     border
                     round="xsmall"
@@ -160,17 +167,17 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                       />
                     </FormField>
                     <FormField
-                      label="Phone"
-                      htmlFor="phone"
-                      name="phone"
+                      label="Phone Number"
+                      htmlFor="phoneNumber"
+                      name="phoneNumber"
                       required
                     >
                       <MaskedInput
                         size="small"
                         reverse
                         icon={<Phone size={16} />}
-                        id="phone"
-                        name="phone"
+                        id="phoneNumber"
+                        name="phoneNumber"
                         a11yTitle="Phone Number Input"
                         mask={phoneNumberValidator}
                         value={patientPhoneNumber}

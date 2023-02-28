@@ -2,6 +2,7 @@ import { User } from '../types/types'
 import useSWR, { mutate } from 'swr'
 import { Patient, Prescription } from '@prisma/client'
 import { toast } from 'react-toastify'
+import { stripNonDigets } from '../helpers/validators'
 
 export interface PatientWithPrescriptionAndUser extends Patient {
   Prescriptions: Prescription[]
@@ -14,10 +15,18 @@ export interface UsePatient {
   isLoading: boolean
   updatePickup: (data: UpdatePickupInterface) => Promise<void>
   deletePatient: () => Promise<boolean>
+  updatePatientDetails: (data: UpdatePatient) => Promise<void>
 }
 
 export interface UpdatePickupInterface {
   pickupEnabled: boolean
+}
+
+export type UpdatePatient = {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
 }
 
 const fetcher = (
@@ -72,11 +81,38 @@ export default function usePatient(patientId: string): UsePatient {
     return false
   }
 
+  async function updatePatientDetails({
+    firstName,
+    lastName,
+    email,
+    phoneNumber
+  }: UpdatePatient): Promise<void> {
+    const response = await fetch('/api/patients/update', {
+      method: 'POST',
+      body: JSON.stringify({
+        data: {
+          id: patientId,
+          firstName,
+          lastName,
+          email,
+          phoneNumber: stripNonDigets(phoneNumber)
+        }
+      })
+    })
+    if (response.status === 200) {
+      mutate(url)
+      toast.success('Updated Patient')
+    } else {
+      toast.error('Unable to Update Patient')
+    }
+  }
+
   return {
     patient: data?.patient ?? null,
     isLoading: !error && !data,
     error,
     updatePickup,
-    deletePatient
+    deletePatient,
+    updatePatientDetails
   }
 }
