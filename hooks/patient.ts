@@ -15,7 +15,7 @@ export interface UsePatient {
   isLoading: boolean
   updatePickup: (data: UpdatePickupInterface) => Promise<void>
   deletePatient: () => Promise<boolean>
-  updatePatientDetails: (data: UpdatePatient) => Promise<void>
+  updatePatientDetails: (data: UpdatePatient) => Promise<boolean>
 }
 
 export interface UpdatePickupInterface {
@@ -86,7 +86,7 @@ export default function usePatient(patientId: string): UsePatient {
     lastName,
     email,
     phoneNumber
-  }: UpdatePatient): Promise<void> {
+  }: UpdatePatient): Promise<boolean> {
     const response = await fetch('/api/patients/update', {
       method: 'POST',
       body: JSON.stringify({
@@ -102,9 +102,10 @@ export default function usePatient(patientId: string): UsePatient {
     if (response.status === 200) {
       mutate(url)
       toast.success('Updated Patient')
-    } else {
-      toast.error('Unable to Update Patient')
+      return true
     }
+    toast.error('Unable to Update Patient')
+    return false
   }
 
   return {

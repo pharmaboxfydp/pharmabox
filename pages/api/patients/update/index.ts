@@ -26,7 +26,8 @@ export default async function handler(
           firstName,
           lastName,
           phoneNumber,
-          email
+          email,
+          updatedAt: new Date().toUTCString()
         },
         include: {
           Patient: {

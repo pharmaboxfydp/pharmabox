@@ -8,6 +8,7 @@ import {
   Header,
   MaskedInput,
   Menu,
+  Notification,
   Text,
   TextInput
 } from 'grommet'
@@ -52,6 +53,8 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
     usePatient(`${patientId}`)
 
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [showSuccessNotification, setShowSuccessNotification] =
+    useState<boolean>(false)
 
   async function handleDeletePatient() {
     const deleted = await deletePatient()
@@ -78,7 +81,10 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
     event: FormExtendedEvent<UpdatePatient>
   ): Promise<void> {
     const { value } = event
-    await updatePatientDetails({ ...value })
+    const result = await updatePatientDetails({ ...value })
+    if (result) {
+      setShowSuccessNotification(true)
+    }
   }
 
   let patientFullName: string | undefined
@@ -113,6 +119,19 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Page user={currentUser}>
+          {showSuccessNotification && (
+            <Notification
+              status="normal"
+              message={
+                <Text size="small">
+                  Patient information sucessfully updated on:{' '}
+                  {new Date().toDateString()}
+                  {new Date().toTimeString()}
+                </Text>
+              }
+              onClose={() => setShowSuccessNotification(false)}
+            />
+          )}
           <Box basis="auto" fill="horizontal">
             <Header>
               <Box>
