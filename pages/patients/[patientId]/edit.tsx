@@ -86,7 +86,6 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   }
 
   if (patient && !error) {
-    const { User } = patient
     patientFullName = `${patientFirstName} ${patientLastName}` ?? '... ...'
 
     return (
@@ -110,7 +109,9 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
           <Box basis="auto" fill="horizontal">
             <Header>
               <Box>
-                <Breadcrumbs pages={['Patients', 'Edit', 'Patient']} />
+                <Breadcrumbs
+                  pages={['Patients', `${patientFullName}`, 'Edit']}
+                />
               </Box>
             </Header>
             <Box pad={{ left: 'medium', right: 'medium' }}>

@@ -1,17 +1,16 @@
 import Head from 'next/head'
 import { Anchor, Box, Button, CheckBox, Header, Menu, Text } from 'grommet'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
-import { SSRUser } from '../../helpers/user-details'
-import Page from '../../components/Page'
-import { ServerPageProps } from '../../types/types'
-import Breadcrumbs from '../../components/Breadcrumbs'
+import { SSRUser } from '../../../helpers/user-details'
+import Page from '../../../components/Page'
+import { ServerPageProps } from '../../../types/types'
+import Breadcrumbs from '../../../components/Breadcrumbs'
 import { useRouter } from 'next/router'
-import usePatient from '../../hooks/patient'
-import { formatPhoneNumber } from '../../helpers/validators'
-import theme from '../../styles/theme'
+import usePatient from '../../../hooks/patient'
+import { formatPhoneNumber } from '../../../helpers/validators'
+import theme from '../../../styles/theme'
 import {
   Add,
-  Close,
   Edit,
   OverflowMenuHorizontal,
   TrashCan
@@ -19,10 +18,10 @@ import {
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useAtom } from 'jotai'
-import { addPatientModalState } from '../../components/AddPatientModal'
-import NotFound from '../../public/not-found.svg'
+import { addPatientModalState } from '../../../components/AddPatientModal'
+import NotFound from '../../../public/not-found.svg'
 import Image from 'next/image'
-import DeletePatientModal from '../../components/DeletePatientModal'
+import DeletePatientModal from '../../../components/DeletePatientModal'
 
 const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   const router = useRouter()
@@ -111,7 +110,7 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                         icon: <Edit size={20} />,
                         gap: 'small',
                         onClick: () =>
-                          router.push(`/patients/edit/${patientId}`)
+                          router.push(`/patients/${patientId}/edit`)
                       },
                       {
                         label: (

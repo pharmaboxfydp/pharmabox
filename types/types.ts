@@ -50,7 +50,7 @@ export enum StaffRootPages {
   Settings = '/settings/[[...index]]',
   Profile = '/settings/profile/[[...index]]',
   Patient = '/patients/[patientId]',
-  PatientEdit = '/patients/edit/[patientId]'
+  PatientEdit = '/patients/[patientId]/edit'
 }
 
 export enum PatientRootPages {
@@ -70,7 +70,7 @@ export enum PharmacistRootPages {
   Settings = '/settings/[[...index]]',
   Profile = '/settings/profile/[[...index]]',
   Patient = '/patients/[patientId]',
-  PatientEdit = '/patients/edit/[patientId]'
+  PatientEdit = '/patients/[patientId]/edit'
 }
 
 export type User = {
