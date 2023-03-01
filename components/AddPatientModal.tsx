@@ -24,7 +24,6 @@ import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
 import { emailValidator, phoneNumberValidator } from '../helpers/validators'
 import usePatients, { NewPatient } from '../hooks/patients'
-import useAuthorization from '../hooks/authorization'
 
 /**
  * imparatively define an atom

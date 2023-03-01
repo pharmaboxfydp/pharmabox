@@ -6,6 +6,7 @@ import Protector from './Protector'
 import PageErrorBoundary from './PageErrorBoundary'
 import Navbar from './Navbar'
 import MobileNav from './MobileNav'
+import CreatePrescriptionModal from './CreatePrescriptionModal'
 
 export default function Page({
   user,
@@ -14,7 +15,6 @@ export default function Page({
   return (
     <Box direction="column" fill>
       <Navbar user={user} />
-
       <ResponsiveContext.Consumer>
         {(responsive) =>
           responsive === 'small' ? (
@@ -22,7 +22,12 @@ export default function Page({
               <Box overflow="scroll" fill="horizontal">
                 <Box fill>
                   <PageErrorBoundary>
-                    <Protector role={user.role}>{children}</Protector>
+                    <Protector role={user.role}>
+                      <>
+                        {children}
+                        <CreatePrescriptionModal user={user} />
+                      </>
+                    </Protector>
                   </PageErrorBoundary>
                 </Box>
                 <MobileNav role={user.role} />
