@@ -48,13 +48,14 @@ export enum StaffRootPages {
   Team = '/team',
   Logbook = '/logbook',
   Settings = '/settings/[[...index]]',
-  Profile = '/settings/profile/[[...index]]'
+  Profile = '/settings/profile/[[...index]]',
+  Patient = '/patients/[patientId]',
+  PatientEdit = '/patients/[patientId]/edit'
 }
 
 export enum PatientRootPages {
   Home = '/home',
   Payments = '/payments',
-  Notifications = '/notifications',
   Settings = '/settings/[[...index]]',
   Profile = '/settings/profile/[[...index]]'
 }
@@ -66,7 +67,9 @@ export enum PharmacistRootPages {
   Team = '/team',
   Logbook = '/logbook',
   Settings = '/settings/[[...index]]',
-  Profile = '/settings/profile/[[...index]]'
+  Profile = '/settings/profile/[[...index]]',
+  Patient = '/patients/[patientId]',
+  PatientEdit = '/patients/[patientId]/edit'
 }
 
 export type User = {

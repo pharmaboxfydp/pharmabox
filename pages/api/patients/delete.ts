@@ -5,13 +5,19 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
+  if (req.method === 'DELETE') {
     try {
-      const { id } = req.body.data
+      const { id } = req.query
 
-      const patient = await prisma.patient.delete({
+      const patient = await prisma.patient.findFirstOrThrow({
         where: {
-          id: id
+          id: parseInt(`${id}`)
+        }
+      })
+
+      await prisma.user.delete({
+        where: {
+          id: patient.userId
         }
       })
 

@@ -5,18 +5,36 @@ import {
   Pagination,
   TextInput,
   Anchor,
-  ResponsiveContext
+  ResponsiveContext,
+  Header,
+  MaskedInput,
+  Button
 } from 'grommet'
 import { atom, useAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+
 import Skeleton from 'react-loading-skeleton'
-import { ErrorFilled } from '@carbon/icons-react'
+import {
+  Close,
+  Email,
+  ErrorFilled,
+  LetterFf,
+  LetterLl,
+  Phone
+} from '@carbon/icons-react'
 import theme from '../styles/theme'
 import CardNotification from './CardNotification'
-import usePatients from '../hooks/patients'
+import usePatients, { UserPagination, UserSearch } from '../hooks/patients'
 import { useRouter } from 'next/router'
 import { isEmpty, isEqual } from 'lodash'
-import { debounce } from 'ts-debounce'
 import { useContext } from 'react'
+import { useDebounce, useDebouncedCallback } from 'use-debounce'
+import {
+  emailValidator,
+  formatPhoneNumber,
+  phoneNumberValidator
+} from '../helpers/validators'
+import { atob } from 'buffer'
 
 export type PatientsPageState = {
   step: string
@@ -35,18 +53,41 @@ export interface UpdateQueryParams {
  * to a different page
  */
 const patientsPaginationState = atom<PatientsPageState>({
-  step: '5',
+  step: '20',
   page: '1'
 })
 
+const firstNameSearch = atomWithStorage<string>('first-name-search', '')
+const lastNameSearch = atomWithStorage<string>('last-name-search', '')
+const phoneNumberSearch = atomWithStorage<string>('phone-number-search', '')
+const emailSearch = atomWithStorage<string>('email-search', '')
+
 const DEBOUNCE_MS: number = 500
-const FALLBACK_PATIENTS_PER_PAGE: number = 10
+const DEBOUNCE_MS_SEARCH: number = 1000
+const FALLBACK_PATIENTS_PER_PAGE: number = 20
 const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
 export default function PatientsTable() {
-  const size = useContext(ResponsiveContext)
-  const [pageState, updatePageState] = useAtom(patientsPaginationState)
+  const [pS, updatePageState] = useAtom(patientsPaginationState)
+  const [fN, updateFirstName] = useAtom(firstNameSearch)
+  const [lN, updateLastName] = useAtom(lastNameSearch)
+  const [pN, updatePhoneNumber] = useAtom(phoneNumberSearch)
+  const [eM, updateEmail] = useAtom(emailSearch)
+
+  const [firstName] = useDebounce(fN, DEBOUNCE_MS_SEARCH)
+  const [lastName] = useDebounce(lN, DEBOUNCE_MS_SEARCH)
+  const [phoneNumber] = useDebounce(pN, DEBOUNCE_MS_SEARCH)
+  const [email] = useDebounce(eM, DEBOUNCE_MS_SEARCH)
+
   const router = useRouter()
+  const size = useContext(ResponsiveContext)
+
+  function clearSearch() {
+    updateFirstName('')
+    updateLastName('')
+    updatePhoneNumber('')
+    updateEmail('')
+  }
 
   function updateQueryParams({
     page,
@@ -61,7 +102,7 @@ export default function PatientsTable() {
     quietlySetQuery(newState)
   }
 
-  const debounceStepSizeChange = debounce(
+  const debounceStepSizeChange = useDebouncedCallback(
     (step: string) =>
       updateQueryParams({
         endIndex: parseInt(step),
@@ -83,21 +124,28 @@ export default function PatientsTable() {
    * if there is no query present, then set it to the default
    */
   if (isEmpty(router.query)) {
-    quietlySetQuery(pageState)
+    quietlySetQuery(pS)
   } else {
     /**
      * if there is a valid query present then use that
      */
-    if (!isEqual(router.query, pageState)) {
+    if (!isEqual(router.query, pS)) {
       if (router.query.step && router.query.page) {
         updatePageState(router.query as PatientsPageState)
       } else {
         /**
          * otherwise use the default since the curernt one is not valid
          */
-        quietlySetQuery(pageState)
+        quietlySetQuery(pS)
       }
     }
+  }
+
+  const search: UserSearch = {
+    firstName,
+    lastName,
+    phoneNumber,
+    email
   }
 
   const {
@@ -105,9 +153,12 @@ export default function PatientsTable() {
     isError,
     patients,
     numPatients: totalPatientsCount
-  } = usePatients(router.query)
+  } = usePatients({
+    pagination: router.query as unknown as UserPagination,
+    search
+  })
 
-  const step: number = parseInt(router?.query?.step as string) ?? 5
+  const step: number = parseInt(router?.query?.step as string) ?? 20
   const page: number = parseInt(router?.query?.page as string) ?? 1
   const shouldPinColums = size === 'small'
 
@@ -136,54 +187,82 @@ export default function PatientsTable() {
   return (
     <>
       <Box overflow="auto">
+        <Header gap="none" animation="slideUp" sticky="scrollup">
+          <TextInput
+            value={fN}
+            placeholder="Search By First Name"
+            a11yTitle="Search By First Name"
+            size="small"
+            style={{ borderRadius: 0, borderRight: 0 }}
+            icon={<LetterFf size={16} />}
+            onChange={(e) => updateFirstName(e.target.value)}
+            data-cy="search-first-name"
+          />
+          <TextInput
+            value={lN}
+            placeholder="Search By Last Name"
+            a11yTitle="Search By Last Name"
+            size="small"
+            style={{ borderRadius: 0, borderRight: 0 }}
+            icon={<LetterLl size={16} />}
+            onChange={(e) => updateLastName(e.target.value)}
+            data-cy="search-last-name"
+          />
+          <MaskedInput
+            mask={phoneNumberValidator}
+            value={pN}
+            placeholder="Search By Phone Number"
+            size="small"
+            a11yTitle="Search By Phone Number"
+            style={{ borderRadius: 0, borderRight: 0 }}
+            icon={<Phone size={16} />}
+            onChange={(e) => updatePhoneNumber(e.target.value)}
+            data-cy="search-phone-number"
+          />
+          <MaskedInput
+            mask={emailValidator}
+            a11yTitle="Search By Email"
+            value={eM}
+            placeholder="Search By Email"
+            size="small"
+            style={{ borderRadius: 0 }}
+            icon={<Email size={16} />}
+            onChange={(e) => updateEmail(e.target.value)}
+            data-cy="search-email"
+          />
+          <Button
+            icon={<Close size={16} />}
+            onClick={clearSearch}
+            tip={{ content: <Text size="xsmall">Clear Search</Text> }}
+            data-cy="table-clear-search"
+          />
+        </Header>
         <DataTable
-          sortable
           pin
           className="patients-table"
           columns={[
             {
               property: 'First Name',
               header: <Text size="small">First Name</Text>,
-              render: ({ User }) => <Text size="small">{User.firstName}</Text>
+              render: ({ firstName }) => <Text size="small">{firstName}</Text>
             },
             {
-              property: 'Family Name',
+              property: 'Last Name',
               header: <Text size="small">Last Name</Text>,
-              render: ({ User }) => <Text size="small">{User.lastName}</Text>
-            },
-            {
-              pin: shouldPinColums,
-              property: 'Date of Birth',
-              header: <Text size="small">Date of Birth</Text>,
-              render: ({ dob }) => (
-                <>
-                  {dob ? (
-                    <Text size="small">
-                      {`${new Date(dob).toDateString()}`}
-                    </Text>
-                  ) : (
-                    <Text
-                      size="small"
-                      color={theme.global.colors['status-warning']}
-                    >
-                      -
-                    </Text>
-                  )}
-                </>
-              )
+              render: ({ lastName }) => <Text size="small">{lastName}</Text>
             },
             {
               property: 'Contact',
               header: <Text size="small">Contact</Text>,
               pin: shouldPinColums,
-              render: ({ User: user }) => (
+              render: ({ phoneNumber, email }) => (
                 <Box direction="column">
                   <Text size="small" color={theme.global.colors['dark-2']}>
                     <Text weight="bolder" size="small">
                       Phone:
                     </Text>{' '}
-                    {user.phoneNumber ? (
-                      user.phoneNumber
+                    {phoneNumber ? (
+                      formatPhoneNumber(phoneNumber)
                     ) : (
                       <Text
                         size="small"
@@ -200,37 +279,50 @@ export default function PatientsTable() {
                     <Anchor
                       weight="normal"
                       target="_blank"
-                      href={`mailto:${user.email}`}
+                      href={`mailto:${email}`}
                     >
-                      {user.email}
+                      {email}
                     </Anchor>
                   </Text>
                 </Box>
               )
             },
             {
-              property: 'Pickup',
-              header: <Text size="small">Pickup</Text>,
+              property: 'Active-Prescriptions',
+              header: <Text size="small">Rx Awaiting Pickup</Text>,
               pin: shouldPinColums,
-              render: ({ pickupEnabled, dob }) => (
+              render: ({ Patient }) => {
+                const numRx = Patient?.Prescriptions.length
+                return <Text size="small">{numRx}</Text>
+              }
+            },
+            {
+              property: 'Status',
+              header: <Text size="small">Status</Text>,
+              pin: shouldPinColums,
+              render: (user) => (
                 <Box
                   round
                   background={
-                    pickupEnabled && dob
+                    user?.Patient?.pickupEnabled
                       ? theme.global.colors['status-ok']
-                      : theme.global.colors['dark-6']
+                      : theme.global.colors['status-warning']
                   }
                   pad="xxsmall"
                   align="center"
                   border
+                  width="xsmall"
                 >
                   <Text size="xsmall" color={theme.global.colors.white}>
-                    {pickupEnabled ? 'Enabled' : 'Disabled'}
+                    {user?.Patient?.pickupEnabled ? 'Enabled' : 'Disabled'}
                   </Text>
                 </Box>
               )
             }
           ]}
+          onClickRow={({ datum }) => {
+            router.push(`/patients/${datum.Patient.id}`)
+          }}
           resizeable
           data={patients ?? []}
         />
@@ -262,6 +354,7 @@ export default function PatientsTable() {
                 max={MAX_ALLOWABLE_PATIENT_DISPLAYED}
                 // enforce step size of 1
                 step={1}
+                data-cy="step-size"
               />
             </Box>
             <Box pad="small">

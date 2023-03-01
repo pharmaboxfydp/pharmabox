@@ -28,18 +28,24 @@ const Team = ({ user }: ServerPageProps) => {
           direction="column"
           align="start"
           fill
-          className="Settings"
+          className="Patients"
         >
           <Breadcrumbs pages={['Team']} />
           <Box direction="row" border="top" fill>
-            <Box pad="medium" basis="auto" fill="horizontal" gap="medium">
+            <Box basis="auto" fill="horizontal" gap="medium">
               <Header>
-                <Text>Active Team</Text>
+                <Box pad={{ left: 'medium', top: 'medium' }}>
+                  <Text>Active Team</Text>
+                </Box>
               </Header>
               <AuthorizedUsers user={user} />
               <Header>
-                <Text>Team Members</Text>
-                <Box> {isCurrentUserAdmin && <InviteStaff user={user} />}</Box>
+                <Box pad={{ left: 'medium' }}>
+                  <Text>Team Members</Text>
+                </Box>
+                <Box pad={{ right: 'small' }}>
+                  {isCurrentUserAdmin && <InviteStaff user={user} />}
+                </Box>
               </Header>
               <TeamMembersTable user={user} />
             </Box>

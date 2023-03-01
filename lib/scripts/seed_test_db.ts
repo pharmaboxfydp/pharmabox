@@ -10,6 +10,7 @@ import { UserJSON } from '@clerk/backend-core'
 import data from './test_data'
 import { LockerBox } from '@prisma/client'
 import { faker } from '@faker-js/faker'
+import { stripNonDigets } from '../../helpers/validators'
 
 dotenv.config()
 
@@ -145,8 +146,6 @@ async function seedPatients() {
     `CREATING ${numPatientsToCreate} RANDOM PATIENTS....`
   )
 
-  const numCharacters = 24
-
   /**
    * Create random users (not connected to clerk so that cannot sign in
    */
@@ -160,7 +159,7 @@ async function seedPatients() {
       email: faker.internet.email(),
       createdAt: faker.date.past().toISOString(),
       updatedAt: faker.date.past().toISOString(),
-      phoneNumber: faker.phone.number(),
+      phoneNumber: stripNonDigets(faker.phone.number()),
       role: Role.Patient,
       lastLoggedIn: faker.date.past().toISOString()
     }
@@ -183,8 +182,7 @@ async function seedPatients() {
                   userId: patientUser.id
                 },
                 create: {
-                  pickupEnabled: faker.helpers.arrayElement([true, false]),
-                  dob: faker.date.birthdate().toISOString()
+                  pickupEnabled: faker.helpers.arrayElement([true, false])
                 }
               }
             }

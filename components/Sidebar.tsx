@@ -41,11 +41,6 @@ export const allowedUrls: Record<
       Icon: <Purchase size={24} />
     },
     {
-      link: PatientRootPages.Notifications,
-      name: 'Notifications',
-      Icon: <Notification size={24} />
-    },
-    {
       link: PatientRootPages.Settings,
       name: 'Settings',
       Icon: <Settings size={24} />

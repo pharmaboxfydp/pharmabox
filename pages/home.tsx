@@ -5,7 +5,6 @@ import Page from '../components/Page'
 import { Role, ServerPageProps } from '../types/types'
 import { Box } from 'grommet'
 
-import PatientHomePage from '../components/PatientHomePage'
 import Breadcrumbs from '../components/Breadcrumbs'
 import StaffAndPharmacistHomePage from '../components/StaffAndPharmacistHomePage'
 
@@ -27,7 +26,6 @@ const Home = ({ user }: ServerPageProps) => {
             {/**
              * do an exact match so that we never conditinally render the wrong page
              */}
-            {user.role === Role.Patient && <PatientHomePage user={user} />}
             {(user.role === Role.Staff || user.role === Role.Pharmacist) && (
               <StaffAndPharmacistHomePage user={user} />
             )}

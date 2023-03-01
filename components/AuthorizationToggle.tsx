@@ -32,6 +32,7 @@ export default function AuthorizationToggle({ user }: { user: User }) {
         checked={isAuthorized}
         a11yTitle="Grant authorization to yourself to use the service"
         onChange={handleChange}
+        data-cy="pharmacist-authorization-toggle"
       />
     </Box>
   )

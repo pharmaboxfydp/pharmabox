@@ -29,7 +29,7 @@ import { useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import useAuthorization from '../hooks/authorization'
 import { useLockerboxes } from '../hooks/lockerbox'
-import usePatients, { FullPatient } from '../hooks/patients'
+import usePatients from '../hooks/patients'
 import {
   useLocationPrescriptions,
   usePrescriptions
@@ -179,7 +179,7 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
             id,
             name,
             LockerBox: { label },
-            Patient: { dob, id: patientId }
+            Patient: { id: patientId }
           }: {
             id: number
             name: string
@@ -202,10 +202,7 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
                     Patient Information
                   </Text>
                   <Box direction="row" gap="medium">
-                    <Text size="small">
-                      Date of Birth:{'  '}
-                      {(() => (dob ? new Date(dob).toDateString() : '-'))()}
-                    </Text>
+                    <Text size="small">Date of Birth:{'  '}</Text>
                     <Box direction="row" gap="small">
                       <Person size={20} />
                       <Text size="small">{patientId}</Text>
@@ -230,13 +227,12 @@ function LocationPrescriptionStatus({ user }: { user: User }) {
 }
 
 function mapPatientsToValues(
-  patients: FullPatient[]
-): { search: string; id: number; patient: Patient }[] {
-  return patients.map((patient) => ({
-    search: `${patient.User.firstName} ${patient.User.lastName}, ${(() =>
-      patient.dob ? new Date(patient.dob).toDateString() : '-')()}`,
-    id: patient.id,
-    patient
+  patients: User[]
+): { search: string; id: string; patient: User }[] {
+  return patients.map((u) => ({
+    search: `${u.firstName} ${u.lastName}, ${(() => '-')()}`,
+    id: u.id,
+    patient: u
   }))
 }
 
@@ -246,7 +242,7 @@ function PrescriptionCreationBar({
   locationId,
   user
 }: {
-  activePatients: FullPatient[]
+  activePatients: User[]
   lockerboxes: LockerBox[] | null
   locationId: number | null | undefined
   user: User
@@ -443,7 +439,7 @@ function PrescriptionCreationBar({
 }
 
 export default function StaffAndPharmacistHomePage({ user }: { user: User }) {
-  const { activePatients } = usePatients()
+  const { activePatients } = usePatients({})
   const { lockerboxes } = useLockerboxes(user)
 
   return (

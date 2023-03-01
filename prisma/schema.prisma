@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -9,15 +10,15 @@ datasource db {
 
 model User {
   id           String      @id @default(uuid())
-  firstName    String      @default("Josh")
-  lastName     String      @default("Wilkinson")
+  firstName    String      @default("Player")
+  lastName     String      @default("One")
   email        String      @unique
   phoneNumber  String?
   role         String      @default("patient")
   Patient      Patient?
   Staff        Staff?
   Pharmacist   Pharmacist?
-  lastLoggedIn DateTime    @default(now()) @map(name: "last_logged_in")
+  lastLoggedIn DateTime?   @default(now()) @map(name: "last_logged_in")
   createdAt    DateTime    @default(now()) @map(name: "created_at")
   updatedAt    DateTime    @default(now()) @map(name: "updated_at")
 
@@ -27,9 +28,8 @@ model User {
 model Patient {
   id            Int            @id @unique @default(autoincrement())
   userId        String         @unique
-  User          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User          User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   pickupEnabled Boolean        @default(false) @map(name: "pickup_enabled")
-  dob           String?        @map(name: "date_of_birth")
   Prescriptions Prescription[]
 
   @@map(name: "patients")
@@ -38,10 +38,10 @@ model Patient {
 model Pharmacist {
   id           Int            @id @unique @default(autoincrement())
   userId       String         @unique
-  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   isAdmin      Boolean        @default(false) @map(name: "is_admin")
   isOnDuty     Boolean        @default(false) @map(name: "is_on_duty")
-  Location     Location?      @relation(fields: [locationId], references: [id])
+  Location     Location?      @relation(fields: [locationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   locationId   Int?
   Staff        Staff[]
   Prescription Prescription[]
@@ -52,12 +52,12 @@ model Pharmacist {
 model Staff {
   id           Int            @id @unique @default(autoincrement())
   userId       String         @unique
-  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   isAdmin      Boolean        @default(false) @map(name: "is_admin")
   isAuthorized Boolean        @default(false) @map(name: "is_authoized")
-  Location     Location?      @relation(fields: [locationId], references: [id])
+  Location     Location?      @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locationId   Int?
-  authorizer   Pharmacist?    @relation(fields: [pharmacistId], references: [id])
+  authorizer   Pharmacist?    @relation(fields: [pharmacistId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   pharmacistId Int?
   Prescription Prescription[]
 
@@ -105,7 +105,7 @@ model LockerBox {
   id            Int            @id @unique @default(autoincrement())
   label         Int
   status        String
-  Location      Location       @relation(fields: [locationId], references: [id])
+  Location      Location       @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locationId    Int
   Prescriptions Prescription[]
 
