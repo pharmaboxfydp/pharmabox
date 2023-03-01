@@ -99,6 +99,7 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                 </Box>
                 <Box pad={{ right: 'medium' }}>
                   <Menu
+                    data-cy="dots-menu"
                     dropProps={{
                       align: { top: 'bottom', right: 'left' },
                       round: 'small'
