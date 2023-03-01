@@ -1,12 +1,5 @@
 /// <reference types="cypress" />
 
-function loginStaffCreatePatient() {
-  cy.login(
-    Cypress.env('test_staff_username_2'),
-    Cypress.env('test_staff_password_2')
-  )
-}
-
 function loginPharmacistCreatePatient() {
   cy.login(
     Cypress.env('test_pharmacist_username_1'),
