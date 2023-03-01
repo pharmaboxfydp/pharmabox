@@ -52,7 +52,7 @@ describe('Create a new patient', () => {
     cy.get('[data-cy="pharmacist-authorization-toggle"]').click({ force: true })
   })
 
-  it('Should allow a pharmacist to create a patient', () => {
+  it('Should allow an authorized user to create a patient', () => {
     // login as a pharmacist
     loginPharmacistCreatePatient()
 
