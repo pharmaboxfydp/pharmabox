@@ -23,7 +23,8 @@ import {
 import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
 
-import { User } from '../types/types'
+import { ServerPageProps, User } from '../types/types'
+import PatientsTable, { PatientsPageState } from './PatientsTable'
 
 /**
  * imparatively define an atom
@@ -32,7 +33,12 @@ import { User } from '../types/types'
  */
 export const createPrescriptionModalState = atom<boolean>(false)
 
-export default function CreatePrescriptionModal({ user }: { user: User }) {
+const patientsSearchPaginationState = atom<PatientsPageState>({
+  step: '3',
+  page: '1'
+})
+
+export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [showCreatePrescription, setShowCreatePrescriptionModal] = useAtom(
     createPrescriptionModalState
   )
@@ -42,11 +48,14 @@ export default function CreatePrescriptionModal({ user }: { user: User }) {
 
   function clearForm() {}
 
+  function handleRowClick(datum: User) {
+    console.log(datum)
+  }
+
   function closeModal() {
     clearForm()
     setShowCreatePrescriptionModal(false)
   }
-
   return showCreatePrescription ? (
     <Layer
       onEsc={closeModal}
@@ -65,7 +74,7 @@ export default function CreatePrescriptionModal({ user }: { user: User }) {
           >
             <Box flex={false} direction="row" justify="between">
               <Heading level={4} margin="none">
-                Add Patient
+                Create Prescription
               </Heading>
               <Button
                 icon={<Close size={16} />}
@@ -83,6 +92,13 @@ export default function CreatePrescriptionModal({ user }: { user: User }) {
               overflow="scroll"
             >
               <Form onSubmit={handleSubmit}>
+                <PatientsTable
+                  patientsPageState={patientsSearchPaginationState}
+                  defaultPage={1}
+                  defaultStep={3}
+                  onRowClickOverride={handleRowClick}
+                  filterOnEnabled
+                />
                 <Box
                   flex="grow"
                   overflow="auto"

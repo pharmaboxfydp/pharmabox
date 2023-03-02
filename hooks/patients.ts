@@ -21,7 +21,6 @@ export interface UserWithPrescription extends User {
 
 export interface UsePatients {
   patients: UserWithPrescription[] | null
-  activePatients: UserWithPrescription[] | null
   numPatients: number | null
   isLoading: boolean
   isError: Error
@@ -50,10 +49,12 @@ const fetcher = (
 
 export default function usePatients({
   pagination,
-  search
+  search,
+  filterOnEnabled = false
 }: {
   pagination?: UserPagination
   search?: UserSearch
+  filterOnEnabled?: boolean
 }): UsePatients {
   const hasPagination = pagination && pagination.page && pagination.step
   const hasFirstNameSearch = search?.firstName
@@ -77,6 +78,9 @@ export default function usePatients({
     }),
     ...(hasEmailSearch && {
       email: search.email
+    }),
+    ...(filterOnEnabled && {
+      onlyEnabled: `${filterOnEnabled}`
     })
   })}`}`
 
@@ -110,13 +114,9 @@ export default function usePatients({
     return res
   }
 
-  const activePatients =
-    data?.patients.filter((u) => u.Patient?.pickupEnabled) ?? null
-
   return {
     patients: data?.patients ?? null,
     numPatients: data?.numPatients ?? null,
-    activePatients,
     isLoading: !error && !data,
     isError: error,
     addPatient

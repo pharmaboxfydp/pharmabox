@@ -22,12 +22,7 @@ export default function Page({
               <Box overflow="scroll" fill="horizontal">
                 <Box fill>
                   <PageErrorBoundary>
-                    <Protector role={user.role}>
-                      <>
-                        {children}
-                        <CreatePrescriptionModal user={user} />
-                      </>
-                    </Protector>
+                    <Protector role={user.role}>{children}</Protector>
                   </PageErrorBoundary>
                 </Box>
                 <MobileNav role={user.role} />

@@ -5,7 +5,7 @@ import useAuthorization from '../hooks/authorization'
 import { User } from '../types/types'
 import { createPrescriptionModalState } from './CreatePrescriptionModal'
 
-export default function AddPatientButton({ user }: { user: User }) {
+export default function CreatePrescriptionButton({ user }: { user: User }) {
   const { isAuthorized } = useAuthorization(user)
   const [, setShowCreatePrescriptionModal] = useAtom(
     createPrescriptionModalState
@@ -16,6 +16,7 @@ export default function AddPatientButton({ user }: { user: User }) {
         icon={<PillsAdd size={16} />}
         label="Add New Prescription"
         primary
+        fill
         size="small"
         onClick={() => setShowCreatePrescriptionModal(true)}
         disabled={!isAuthorized}

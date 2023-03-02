@@ -10,7 +10,7 @@ import {
   MaskedInput,
   Button
 } from 'grommet'
-import { atom, useAtom } from 'jotai'
+import { atom, PrimitiveAtom, useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import Skeleton from 'react-loading-skeleton'
@@ -34,7 +34,7 @@ import {
   formatPhoneNumber,
   phoneNumberValidator
 } from '../helpers/validators'
-import { atob } from 'buffer'
+import { User } from '../types/types'
 
 export type PatientsPageState = {
   step: string
@@ -45,6 +45,14 @@ export interface UpdateQueryParams {
   page: number
   startIndex: number
   endIndex: number
+}
+
+export interface PatientsTableInferface {
+  patientsPageState?: PrimitiveAtom<PatientsPageState>
+  defaultStep?: number
+  defaultPage?: number
+  filterOnEnabled?: boolean
+  onRowClickOverride?: (datum: User) => void | undefined
 }
 
 /**
@@ -67,8 +75,14 @@ const DEBOUNCE_MS_SEARCH: number = 1000
 const FALLBACK_PATIENTS_PER_PAGE: number = 20
 const MAX_ALLOWABLE_PATIENT_DISPLAYED: number = 300
 
-export default function PatientsTable() {
-  const [pS, updatePageState] = useAtom(patientsPaginationState)
+export default function PatientsTable({
+  patientsPageState = patientsPaginationState,
+  defaultStep = 20,
+  defaultPage = 1,
+  filterOnEnabled = false,
+  onRowClickOverride = undefined
+}: PatientsTableInferface) {
+  const [pS, updatePageState] = useAtom(patientsPageState)
   const [fN, updateFirstName] = useAtom(firstNameSearch)
   const [lN, updateLastName] = useAtom(lastNameSearch)
   const [pN, updatePhoneNumber] = useAtom(phoneNumberSearch)
@@ -155,11 +169,14 @@ export default function PatientsTable() {
     numPatients: totalPatientsCount
   } = usePatients({
     pagination: router.query as unknown as UserPagination,
-    search
+    search,
+    filterOnEnabled
   })
 
-  const step: number = parseInt(router?.query?.step as string) ?? 20
-  const page: number = parseInt(router?.query?.page as string) ?? 1
+  const step: number =
+    parseInt(router?.query?.step as string) ?? defaultStep ?? 20
+  const page: number =
+    parseInt(router?.query?.page as string) ?? defaultPage ?? 1
   const shouldPinColums = size === 'small'
 
   if (isLoading && !isError) {
@@ -321,7 +338,11 @@ export default function PatientsTable() {
             }
           ]}
           onClickRow={({ datum }) => {
-            router.push(`/patients/${datum.Patient.id}`)
+            if (onRowClickOverride) {
+              onRowClickOverride(datum)
+            } else {
+              router.push(`/patients/${datum.Patient.id}`)
+            }
           }}
           resizeable
           data={patients ?? []}
