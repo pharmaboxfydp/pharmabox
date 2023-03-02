@@ -41,10 +41,12 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [prescriptionName, updatePrescriptionName] = useState<string>('')
   const { emptyLockerboxes } = useLockerboxes(user)
+  const [prescriptionLocker, updatePrescriptionLocker] = useState<number>(
+    emptyLockerboxes?.map((locker) => locker.label)[0] ?? 1
+  )
 
   async function handleSubmit(event: FormExtendedEvent) {
     const { value } = event
-    console.log(value)
     //setIsFetching(true)
   }
 
@@ -188,6 +190,9 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                         options={
                           emptyLockerboxes?.map((locker) => locker.label) ?? []
                         }
+                        onChange={({ option }) => {
+                          updatePrescriptionLocker(option)
+                        }}
                         defaultValue={
                           emptyLockerboxes?.map((locker) => locker.label)[0] ??
                           1
