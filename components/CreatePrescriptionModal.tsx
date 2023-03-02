@@ -1,13 +1,4 @@
-import {
-  Close,
-  Email,
-  Launch,
-  Phone,
-  Portfolio,
-  User as UserIcon,
-  UserAvatar,
-  UserIdentification
-} from '@carbon/icons-react'
+import { Close, Edit } from '@carbon/icons-react'
 import {
   Box,
   Button,
@@ -19,16 +10,14 @@ import {
   Form,
   Spinner,
   Anchor,
-  MaskedInput,
   FormExtendedEvent
 } from 'grommet'
 import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
-
 import { ServerPageProps, User } from '../types/types'
 import PatientsTable, { PatientsPageState } from './PatientsTable'
 import theme from '../styles/theme'
-import { useRouter } from 'next/router'
+import { formatPhoneNumber } from '../helpers/validators'
 
 /**
  * imparatively define an atom
@@ -46,9 +35,9 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [showCreatePrescription, setShowCreatePrescriptionModal] = useAtom(
     createPrescriptionModalState
   )
-  const router = useRouter()
   const [selectedPatient, setSelectedPatient] = useState<User | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
+  const [prescriptionName, updatePrescriptionName] = useState<string>('')
 
   async function handleSubmit(event: FormExtendedEvent) {}
 
@@ -138,7 +127,9 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                           <Anchor
                             href={`/patients/${selectedPatient.Patient?.id}`}
                           >
-                            {selectedPatient.phoneNumber}
+                            {formatPhoneNumber(
+                              `${selectedPatient.phoneNumber}`
+                            )}
                           </Anchor>
                         </Text>
                         <Text>
@@ -152,8 +143,26 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                       </Box>
                     </Box>
                   )}
+                  <FormField
+                    label="Prescription Name"
+                    htmlFor="prescriptionName"
+                    name="prescriptionName"
+                    required
+                  >
+                    <TextInput
+                      icon={<Edit size={16} />}
+                      size="small"
+                      id="prescriptionName"
+                      name="prescriptionName"
+                      placeholder="Name"
+                      a11yTitle="Prescription Name Input"
+                      value={prescriptionName}
+                      onChange={(event) =>
+                        updatePrescriptionName(event.target.value)
+                      }
+                    />
+                  </FormField>
                 </Box>
-
                 <Box
                   flex="grow"
                   overflow="auto"
@@ -170,10 +179,6 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                     label="Create Prescription"
                     id="submit-create-prescription-form"
                     primary
-                    style={{
-                      borderBottomLeftRadius: '10px',
-                      borderBottomRightRadius: '10px'
-                    }}
                     data-cy="submit-create-prescription-form"
                   />
                 </Box>
