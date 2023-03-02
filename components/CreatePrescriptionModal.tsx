@@ -20,6 +20,8 @@ import PatientsTable, { PatientsPageState } from './PatientsTable'
 import theme from '../styles/theme'
 import { formatPhoneNumber } from '../helpers/validators'
 import { useLockerboxes } from '../hooks/lockerbox'
+import { toast } from 'react-toastify'
+import { usePrescriptions } from '../hooks/prescriptions'
 
 /**
  * imparatively define an atom
@@ -39,20 +41,60 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   )
   const [selectedPatient, setSelectedPatient] = useState<User | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
-  const [prescriptionName, updatePrescriptionName] = useState<string>('')
+  const [prescriptionName, setPrescriptionName] = useState<string>('')
+  const [selectPatientError, setSelectPatientError] = useState<boolean>(false)
   const { emptyLockerboxes } = useLockerboxes(user)
-  const [prescriptionLocker, updatePrescriptionLocker] = useState<number>(
+  const [lockerNumber, setLockerNumber] = useState<number>(
     emptyLockerboxes?.map((locker) => locker.label)[0] ?? 1
   )
+  const { createPrescription } = usePrescriptions({ user })
 
-  async function handleSubmit(event: FormExtendedEvent) {
-    const { value } = event
-    //setIsFetching(true)
+  async function handleSubmit(
+    event: FormExtendedEvent<{ prescriptionName: string }>
+  ): Promise<boolean> {
+    const {
+      value: { prescriptionName }
+    } = event
+
+    if (!selectedPatient) {
+      toast.warning('You must select a patient.')
+      setSelectPatientError(true)
+      return false
+    }
+    setIsFetching(true)
+
+    const locker = emptyLockerboxes?.find(
+      (locker) => locker.id === lockerNumber
+    )
+
+    if (!locker) {
+      toast.error('The current selected locker is invalid.')
+      return false
+    }
+    const success = await createPrescription({
+      name: prescriptionName,
+      patientUserId: selectedPatient.id,
+      lockerBoxId: locker.id
+    })
+
+    setIsFetching(false)
+
+    if (success) {
+      closeModal()
+      return true
+    }
+    return false
   }
 
-  function clearForm() {}
+  function clearForm() {
+    setPrescriptionName('')
+    setSelectedPatient(null)
+  }
 
   function handleRowClick(datum: User) {
+    if (selectPatientError) {
+      setSelectPatientError(false)
+    }
     setSelectedPatient(datum)
   }
 
@@ -131,7 +173,15 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                 {emptyLockerboxes.length && (
                   <Form onSubmit={handleSubmit}>
                     <Box gap="medium">
-                      <Box border pad="small" round="small">
+                      <Box
+                        border={{
+                          color: selectPatientError
+                            ? theme.global.colors['status-critical']
+                            : theme.global.colors['light-3']
+                        }}
+                        pad="small"
+                        round="small"
+                      >
                         <PatientsTable
                           patientsPageState={patientsSearchPaginationState}
                           defaultPage={1}
@@ -216,7 +266,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                             a11yTitle="Prescription Name Input"
                             value={prescriptionName}
                             onChange={(event) =>
-                              updatePrescriptionName(event.target.value)
+                              setPrescriptionName(event.target.value)
                             }
                           />
                         </FormField>
@@ -235,7 +285,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                               []
                             }
                             onChange={({ option }) => {
-                              updatePrescriptionLocker(option)
+                              setLockerNumber(option)
                             }}
                             defaultValue={
                               emptyLockerboxes?.map(

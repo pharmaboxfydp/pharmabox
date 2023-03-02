@@ -18,28 +18,21 @@ export interface UsePatientPrescriptions {
   refresh: any
 }
 
+export interface CreatePrescription {
+  name: string
+  patientUserId: string
+  lockerBoxId: number
+}
+
 export interface UsePrescription {
   prescription: Prescription | Prescription[] | null
   isLoading: boolean
   isError: boolean
   createPrescription: ({
     name,
-    status,
-    patientId,
-    balance,
-    locationId,
+    patientUserId,
     lockerBoxId
-  }: {
-    name: string
-    status: Status
-    patientId: number
-    balance: number
-    locationId: number
-    lockerBoxId: number
-    pharmacistId: number | null | undefined
-    staffId: number | null | undefined
-    role: Role | undefined
-  }) => Promise<any>
+  }: CreatePrescription) => Promise<any>
 }
 
 const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
@@ -116,7 +109,13 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   }
 }
 
-export function usePrescriptions(prescriptionId?: number): UsePrescription {
+export function usePrescriptions({
+  prescriptionId,
+  user
+}: {
+  prescriptionId?: number
+  user: User
+}): UsePrescription {
   const { mutate } = useSWRConfig()
 
   const { data, error } = useSWR<{
@@ -130,54 +129,29 @@ export function usePrescriptions(prescriptionId?: number): UsePrescription {
 
   async function createPrescription({
     name = 'Unnamed Prescription',
-    status = Status.AwaitingPickup,
-    patientId,
-    balance = 0,
-    locationId,
-    lockerBoxId,
-    pharmacistId,
-    staffId,
-    role
-  }: {
-    name: string
-    status: Status
-    patientId: number
-    balance: number
-    locationId: number
-    lockerBoxId: number
-    pharmacistId: number | null | undefined
-    staffId: number | null | undefined
-    role: Role | undefined
-  }): Promise<{ message: string; prescription: Prescription }> {
+    patientUserId: patientId,
+    lockerBoxId
+  }: CreatePrescription): Promise<boolean> {
     const response = await fetch('/api/prescriptions/create', {
       method: 'POST',
       body: JSON.stringify({
         data: {
           name,
-          status,
           patientId,
-          balance,
-          locationId,
-          lockerBoxId,
-          pharmacistId,
-          staffId,
-          role
+          lockerBoxId
         }
       })
     })
     if (response.status === 200) {
-      mutate(`/api/prescriptions/location/${locationId}`)
-      mutate(`/api/prescriptions/patient/${patientId}`)
-      mutate(`/api/lockerboxes/${locationId}`)
+      // mutate(`/api/prescriptions/location/${locationId}`)
+      // mutate(`/api/prescriptions/patient/${patientId}`)
+      // mutate(`/api/lockerboxes/${locationId}`)
 
-      toast.success(`Prescription Created for Patient ${patientId}`, {
-        icon: '✨'
-      })
-    } else {
-      toast.error('Unable to Create Prescription', { icon: '❌' })
+      toast.success(`Prescription Created for Patient ${patientId}`)
+      return true
     }
-    const res = await response.json()
-    return res
+    toast.error('Unable to Create Prescription')
+    return false
   }
 
   return {
