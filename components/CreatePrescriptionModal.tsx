@@ -10,7 +10,8 @@ import {
   Spinner,
   Anchor,
   FormExtendedEvent,
-  TextArea
+  TextArea,
+  Select
 } from 'grommet'
 import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
@@ -19,6 +20,7 @@ import PatientsTable, { PatientsPageState } from './PatientsTable'
 import theme from '../styles/theme'
 import { formatPhoneNumber } from '../helpers/validators'
 import { useLockerboxes } from '../hooks/lockerbox'
+import { LockerBox } from '@prisma/client'
 
 /**
  * imparatively define an atom
@@ -39,10 +41,11 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [selectedPatient, setSelectedPatient] = useState<User | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [prescriptionName, updatePrescriptionName] = useState<string>('')
+  const { emptyLockerboxes } = useLockerboxes(user)
 
-  const { lockerboxes } = useLockerboxes(user)
-
-  async function handleSubmit(event: FormExtendedEvent) {}
+  async function handleSubmit(event: FormExtendedEvent) {
+    setIsFetching(true)
+  }
 
   function clearForm() {}
 
@@ -54,6 +57,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
     clearForm()
     setShowCreatePrescriptionModal(false)
   }
+
   return showCreatePrescription ? (
     <Layer
       onEsc={closeModal}
@@ -142,11 +146,13 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                     </Box>
                   ) : (
                     <Box
-                      border={{ color: theme.global.colors['status-warning'] }}
+                      border={{ color: theme.global.colors['status-critical'] }}
                       round="small"
                       pad="medium"
                     >
-                      <Text>Select Patient From Table</Text>
+                      <Text color={theme.global.colors['status-critical']}>
+                        Select Patient From Table
+                      </Text>
                     </Box>
                   )}
                   <Box border round="small" pad="medium">
@@ -174,8 +180,18 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                       label="Locker Number"
                       htmlFor="lockerBox"
                       name="lockerBox"
-                      required
-                    ></FormField>
+                    >
+                      <Select
+                        name="lockerBox"
+                        options={
+                          emptyLockerboxes?.map((locker) => locker.label) ?? []
+                        }
+                        defaultValue={
+                          emptyLockerboxes?.map((locker) => locker.label)[0] ??
+                          1
+                        }
+                      />
+                    </FormField>
                   </Box>
                 </Box>
                 <Box
