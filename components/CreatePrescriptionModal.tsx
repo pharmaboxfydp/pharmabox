@@ -10,7 +10,8 @@ import {
   Form,
   Spinner,
   Anchor,
-  FormExtendedEvent
+  FormExtendedEvent,
+  TextArea
 } from 'grommet'
 import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
@@ -77,13 +78,9 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                 data-cy="close-modal"
               />
             </Box>
-            <Box gap="small">
-              <Text size="medium">Create Prescription For Pickup</Text>
-            </Box>
             <Box margin={{ vertical: 'medium' }} overflow="scroll">
               <Form onSubmit={handleSubmit}>
                 <Box gap="medium">
-                  <Text size="small">Search and Select a Patient</Text>
                   <Box border pad="small" round="small">
                     <PatientsTable
                       patientsPageState={patientsSearchPaginationState}
@@ -93,10 +90,9 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                       filterOnEnabled
                     />
                   </Box>
-                  <Text size="small">Patient Currently Selected:</Text>
-                  {selectedPatient && (
+                  {selectedPatient ? (
                     <Box
-                      border={{ color: theme.global.colors['neutral-4'] }}
+                      border={{ color: theme.global.colors['neutral-2'] }}
                       round="small"
                     >
                       <Box
@@ -142,26 +138,43 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                         </Text>
                       </Box>
                     </Box>
+                  ) : (
+                    <Box
+                      border={{ color: theme.global.colors['status-warning'] }}
+                      round="small"
+                      pad="medium"
+                    >
+                      <Text>Select Patient From Table</Text>
+                    </Box>
                   )}
-                  <FormField
-                    label="Prescription Name"
-                    htmlFor="prescriptionName"
-                    name="prescriptionName"
-                    required
-                  >
-                    <TextInput
-                      icon={<Edit size={16} />}
-                      size="small"
-                      id="prescriptionName"
+                  <Box border round="small" pad="medium">
+                    <FormField
+                      label="Prescription Name / Description"
+                      htmlFor="prescriptionName"
                       name="prescriptionName"
-                      placeholder="Name"
-                      a11yTitle="Prescription Name Input"
-                      value={prescriptionName}
-                      onChange={(event) =>
-                        updatePrescriptionName(event.target.value)
-                      }
-                    />
-                  </FormField>
+                      required
+                    >
+                      <TextArea
+                        size="small"
+                        id="prescriptionName"
+                        name="prescriptionName"
+                        placeholder="Name / Description"
+                        a11yTitle="Prescription Name Input"
+                        value={prescriptionName}
+                        onChange={(event) =>
+                          updatePrescriptionName(event.target.value)
+                        }
+                      />
+                    </FormField>
+                  </Box>
+                  <Box border round="small" pad="medium">
+                    <FormField
+                      label="Locker Number"
+                      htmlFor="lockerBox"
+                      name="lockerBox"
+                      required
+                    ></FormField>
+                  </Box>
                 </Box>
                 <Box
                   flex="grow"
