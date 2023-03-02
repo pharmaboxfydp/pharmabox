@@ -48,9 +48,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
 
   function clearForm() {}
 
-  function handleRowClick(datum: User) {
-    console.log(datum)
-  }
+  function handleRowClick(datum: User) {}
 
   function closeModal() {
     clearForm()
