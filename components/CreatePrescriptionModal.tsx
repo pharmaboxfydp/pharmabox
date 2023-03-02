@@ -3,8 +3,10 @@ import {
   Email,
   Launch,
   Phone,
+  Portfolio,
   User as UserIcon,
-  UserAvatar
+  UserAvatar,
+  UserIdentification
 } from '@carbon/icons-react'
 import {
   Box,
@@ -25,6 +27,8 @@ import { atom, useAtom } from 'jotai'
 
 import { ServerPageProps, User } from '../types/types'
 import PatientsTable, { PatientsPageState } from './PatientsTable'
+import theme from '../styles/theme'
+import { useRouter } from 'next/router'
 
 /**
  * imparatively define an atom
@@ -42,13 +46,17 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [showCreatePrescription, setShowCreatePrescriptionModal] = useAtom(
     createPrescriptionModalState
   )
+  const router = useRouter()
+  const [selectedPatient, setSelectedPatient] = useState<User | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
 
   async function handleSubmit(event: FormExtendedEvent) {}
 
   function clearForm() {}
 
-  function handleRowClick(datum: User) {}
+  function handleRowClick(datum: User) {
+    setSelectedPatient(datum)
+  }
 
   function closeModal() {
     clearForm()
@@ -68,7 +76,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
             direction="column"
             overflow="scroll"
             gap="small"
-            data-cy="add-patients-modal"
+            data-cy="create-prescription-modal"
           >
             <Box flex={false} direction="row" justify="between">
               <Heading level={4} margin="none">
@@ -83,20 +91,69 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
             <Box gap="small">
               <Text size="medium">Create Prescription For Pickup</Text>
             </Box>
-            <Box
-              border
-              round="small"
-              margin={{ vertical: 'medium' }}
-              overflow="scroll"
-            >
+            <Box margin={{ vertical: 'medium' }} overflow="scroll">
               <Form onSubmit={handleSubmit}>
-                <PatientsTable
-                  patientsPageState={patientsSearchPaginationState}
-                  defaultPage={1}
-                  defaultStep={3}
-                  onRowClickOverride={handleRowClick}
-                  filterOnEnabled
-                />
+                <Box gap="medium">
+                  <Text size="small">Search and Select a Patient</Text>
+                  <Box border pad="small" round="small">
+                    <PatientsTable
+                      patientsPageState={patientsSearchPaginationState}
+                      defaultPage={1}
+                      defaultStep={3}
+                      onRowClickOverride={handleRowClick}
+                      filterOnEnabled
+                    />
+                  </Box>
+                  <Text size="small">Patient Currently Selected:</Text>
+                  {selectedPatient && (
+                    <Box
+                      border={{ color: theme.global.colors['neutral-4'] }}
+                      round="small"
+                    >
+                      <Box
+                        direction="row"
+                        gap="small"
+                        pad="medium"
+                        align="center"
+                        justify="stretch"
+                      >
+                        <Text size="medium">
+                          First Name:{' '}
+                          <Anchor
+                            href={`/patients/${selectedPatient.Patient?.id}`}
+                          >
+                            {selectedPatient.firstName}
+                          </Anchor>
+                        </Text>
+                        <Text>
+                          Last Name:{' '}
+                          <Anchor
+                            href={`/patients/${selectedPatient.Patient?.id}`}
+                          >
+                            {selectedPatient.lastName}
+                          </Anchor>
+                        </Text>
+                        <Text>
+                          Phone Number:{' '}
+                          <Anchor
+                            href={`/patients/${selectedPatient.Patient?.id}`}
+                          >
+                            {selectedPatient.phoneNumber}
+                          </Anchor>
+                        </Text>
+                        <Text>
+                          Email:{' '}
+                          <Anchor
+                            href={`/patients/${selectedPatient.Patient?.id}`}
+                          >
+                            {selectedPatient.email}
+                          </Anchor>
+                        </Text>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+
                 <Box
                   flex="grow"
                   overflow="auto"
@@ -110,7 +167,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                   </Box>
                   <Button
                     type="submit"
-                    label="Add Patient"
+                    label="Create Prescription"
                     id="submit-create-prescription-form"
                     primary
                     style={{
