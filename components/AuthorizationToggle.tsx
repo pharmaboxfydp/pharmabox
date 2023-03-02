@@ -1,4 +1,4 @@
-import { Box, CheckBox, Text, Tip } from 'grommet'
+import { Box, CheckBox } from 'grommet'
 import useAuthorization from '../hooks/authorization'
 import { Role, User } from '../types/types'
 

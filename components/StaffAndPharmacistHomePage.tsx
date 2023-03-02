@@ -1,5 +1,4 @@
 import { Box, Grid } from 'grommet'
-
 import { User } from '../types/types'
 import CreatePrescriptionButton from './CreatePrescriptionButton'
 import { LocationPrescriptionStatus } from './LocationPrescriptionStatus'

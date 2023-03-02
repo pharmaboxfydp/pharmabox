@@ -12,7 +12,6 @@ import {
   Home,
   Dashboard,
   WatsonHealthNominate,
-  Notification,
   Purchase,
   Settings,
   Schematics,

@@ -1,11 +1,10 @@
-import { Close, Edit } from '@carbon/icons-react'
+import { Close } from '@carbon/icons-react'
 import {
   Box,
   Button,
   Layer,
   Heading,
   FormField,
-  TextInput,
   Text,
   Form,
   Spinner,
@@ -19,6 +18,7 @@ import { ServerPageProps, User } from '../types/types'
 import PatientsTable, { PatientsPageState } from './PatientsTable'
 import theme from '../styles/theme'
 import { formatPhoneNumber } from '../helpers/validators'
+import { useLockerboxes } from '../hooks/lockerbox'
 
 /**
  * imparatively define an atom
@@ -39,6 +39,8 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [selectedPatient, setSelectedPatient] = useState<User | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [prescriptionName, updatePrescriptionName] = useState<string>('')
+
+  const { lockerboxes } = useLockerboxes(user)
 
   async function handleSubmit(event: FormExtendedEvent) {}
 

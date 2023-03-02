@@ -1,4 +1,4 @@
-import { Location, Patient, Prescription } from '@prisma/client'
+import { Prescription } from '@prisma/client'
 import { toast } from 'react-toastify'
 import useSWR, { useSWRConfig } from 'swr'
 

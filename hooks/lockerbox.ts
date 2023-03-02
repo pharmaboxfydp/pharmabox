@@ -1,6 +1,6 @@
-import { Location, LockerBox } from '@prisma/client'
+import { LockerBox } from '@prisma/client'
 import useSWR from 'swr'
-import { LockerBoxState, Status, User } from '../types/types'
+import { LockerBoxState, User } from '../types/types'
 
 export interface UseLockerboxes {
   lockerboxes: LockerBox[] | null

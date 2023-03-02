@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Card, Clock, Footer, Text } from 'grommet'
+import { Anchor, Box, Button, Card, Footer, Text } from 'grommet'
 import Image from 'next/image'
 import theme from '../styles/theme'
 import Logo from '../public/pharmabox_logo.svg'
@@ -10,7 +10,7 @@ import loginAnimation from '../public/assets/avatar.json'
 import Link from 'next/link'
 
 export default function UserSignIn() {
-  const [loaded, setLoaded] = useState<boolean>(false)
+  const [, setLoaded] = useState<boolean>(false)
 
   useEffect(() => setLoaded(true), [])
 

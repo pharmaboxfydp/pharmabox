@@ -1,4 +1,4 @@
-import { Pharmacist, Staff, User } from '@prisma/client'
+import { Pharmacist, Staff } from '@prisma/client'
 import { capitalize } from 'lodash'
 import { toast } from 'react-toastify'
 import { useSWRConfig } from 'swr'

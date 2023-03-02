@@ -6,7 +6,6 @@ import Protector from './Protector'
 import PageErrorBoundary from './PageErrorBoundary'
 import Navbar from './Navbar'
 import MobileNav from './MobileNav'
-import CreatePrescriptionModal from './CreatePrescriptionModal'
 
 export default function Page({
   user,

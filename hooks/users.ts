@@ -1,6 +1,4 @@
-import { User } from '@clerk/nextjs/dist/api'
-import { UsersApi } from '@clerk/nextjs/dist/server/types'
-import useSWR, { useSWRConfig } from 'swr'
+import useSWR from 'swr'
 
 export interface UseClerkUser {
   user: { profile_image_url: string } | null
