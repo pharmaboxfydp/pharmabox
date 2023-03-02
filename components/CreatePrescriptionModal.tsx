@@ -20,7 +20,6 @@ import PatientsTable, { PatientsPageState } from './PatientsTable'
 import theme from '../styles/theme'
 import { formatPhoneNumber } from '../helpers/validators'
 import { useLockerboxes } from '../hooks/lockerbox'
-import { LockerBox } from '@prisma/client'
 
 /**
  * imparatively define an atom
@@ -44,7 +43,9 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const { emptyLockerboxes } = useLockerboxes(user)
 
   async function handleSubmit(event: FormExtendedEvent) {
-    setIsFetching(true)
+    const { value } = event
+    console.log(value)
+    //setIsFetching(true)
   }
 
   function clearForm() {}
@@ -177,11 +178,12 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                   </Box>
                   <Box border round="small" pad="medium">
                     <FormField
-                      label="Locker Number"
+                      label="Locker Box"
                       htmlFor="lockerBox"
                       name="lockerBox"
                     >
                       <Select
+                        id="lockerBox"
                         name="lockerBox"
                         options={
                           emptyLockerboxes?.map((locker) => locker.label) ?? []
