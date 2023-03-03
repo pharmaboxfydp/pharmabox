@@ -132,22 +132,27 @@ export function usePrescriptions({
     patientUserId: patientId,
     lockerBoxId
   }: CreatePrescription): Promise<boolean> {
+    const creatorRole = user.role
+    const locationId = user?.Pharmacist?.locationId || user?.Staff?.locationId
+
     const response = await fetch('/api/prescriptions/create', {
       method: 'POST',
       body: JSON.stringify({
         data: {
           name,
           patientId,
-          lockerBoxId
+          lockerBoxId,
+          creatorRole,
+          creatorId: user.id,
+          locationId
         }
       })
     })
     if (response.status === 200) {
-      // mutate(`/api/prescriptions/location/${locationId}`)
-      // mutate(`/api/prescriptions/patient/${patientId}`)
-      // mutate(`/api/lockerboxes/${locationId}`)
-
-      toast.success(`Prescription Created for Patient ${patientId}`)
+      mutate(`/api/prescriptions/location/${locationId}`)
+      mutate(`/api/prescriptions/patient/${patientId}`)
+      mutate(`/api/lockerboxes/${locationId}`)
+      toast.success('Prescription Created')
       return true
     }
     toast.error('Unable to Create Prescription')
