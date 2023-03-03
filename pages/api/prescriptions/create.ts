@@ -41,9 +41,11 @@ export default async function handler(
 
       const randomKey = crypto.randomInt(100000, 999999).toString()
 
-      let creator
+      let creator: Staff | Pharmacist
+      const isPharmacist: boolean = creatorRole === Role.Pharmacist
+      const isStaff: boolean = creatorRole === Role.Staff
 
-      if (creatorRole === Role.Pharmacist) {
+      if (isPharmacist) {
         creator = await prisma.pharmacist.findUniqueOrThrow({
           where: {
             userId: creatorId
@@ -52,8 +54,7 @@ export default async function handler(
             User: true
           }
         })
-      }
-      if (creatorRole === Role.Staff) {
+      } else {
         creator = await prisma.staff.findUniqueOrThrow({
           where: {
             userId: creatorId
@@ -86,7 +87,26 @@ export default async function handler(
             connect: {
               id: lockerBoxId
             }
-          }
+          },
+          ...(isStaff && {
+            Staff: {
+              connect: {
+                id: creator?.id
+              }
+            },
+            Pharmacist: {
+              connect: {
+                id: (creator as Staff).pharmacistId as number
+              }
+            }
+          }),
+          ...(isPharmacist && {
+            Pharmacist: {
+              connect: {
+                id: creator.id
+              }
+            }
+          })
         }
       })
 
@@ -116,12 +136,9 @@ export default async function handler(
         phoneNumber = '+1' + phoneNumber
       }
 
-      const message = `There has been an order placed for your prescription: ${prescription.name}. Please go to the pharmacy to pick up your prescription.
-      The prescription is located in locker box ${lockerBoxId} at ${location.streetAddress}, ${location.city}, ${location.province}, ${location.country}.
+      const message = `💊 Your prescription: ${prescription.name} is ready for pick-up! Please go to the pharmacy to pick up your prescription. The prescription is located in locker box: ${lockerBoxId} at ${location.streetAddress}, ${location.city}. Your pickup code is ${randomKey}`
 
-      Your pickup code is ${randomKey}`
-
-      if (process.env.CI) {
+      if (!process.env.CI) {
         await sendSMS(phoneNumber, message)
       }
 

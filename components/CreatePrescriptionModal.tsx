@@ -69,6 +69,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
 
     if (!locker) {
       toast.error('The current selected locker is invalid.')
+      setIsFetching(false)
       return false
     }
     const success = await createPrescription({
