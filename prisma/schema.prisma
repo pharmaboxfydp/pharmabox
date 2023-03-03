@@ -69,6 +69,7 @@ model Prescription {
   name         String
   status       String      @default("Unfilled")
   pickupTime   DateTime?
+  createdTime  DateTime?
   Patient      Patient?    @relation(fields: [patientId], references: [id])
   patientId    Int
   balance      Float

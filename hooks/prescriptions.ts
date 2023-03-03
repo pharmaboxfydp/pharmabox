@@ -128,7 +128,7 @@ export function usePrescriptions({
   })
 
   async function createPrescription({
-    name = 'Unnamed Prescription',
+    name,
     patientUserId: patientId,
     lockerBoxId
   }: CreatePrescription): Promise<boolean> {
