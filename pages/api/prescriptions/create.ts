@@ -79,7 +79,7 @@ export default async function handler(
 
       Your pickup code is ${random_key}`
 
-      if (process.env.CI) {
+      if (!process.env.CI) {
         await sendSMS(phoneNumber, formatted_message)
       }
 
