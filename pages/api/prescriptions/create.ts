@@ -3,9 +3,24 @@ import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
 import { Status, LockerBoxState, Role } from '../../../types/types'
 import { sendSMS } from '../../../twilio/twilio'
+import { Pharmacist, Prescription, Staff } from '@prisma/client'
+
+interface IncommingRequest extends NextApiRequest {
+  body: {
+    data: {
+      name: string
+      createdTime: string
+      creatorId: string
+      creatorRole: Role
+      locationId: number
+      lockerBoxId: number
+      patientId: number
+    }
+  }
+}
 
 export default async function handler(
-  req: NextApiRequest,
+  req: IncommingRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
@@ -13,38 +28,65 @@ export default async function handler(
       if (typeof req.body === 'string') {
         req.body = JSON.parse(req.body)
       }
+
       const {
-        name: N,
-        status: S,
-        patientId: P,
-        balance: B,
-        locationId: L,
-        lockerBoxId: LB,
-        staffId: SI,
-        pharmacistId: PI,
-        role: R
+        name,
+        createdTime,
+        creatorId,
+        creatorRole,
+        locationId,
+        lockerBoxId,
+        patientId
       } = req.body.data
-      const name: string = N
-      const status: Status.AwaitingPickup = S
-      const patientId: number = parseInt(P)
-      const balance: number = parseFloat(B)
-      const locationId: number = parseInt(L)
-      const lockerBoxId: number = parseInt(LB)
-      const pharmacistId = parseInt(PI)
-      const staffId = SI ? parseInt(SI) : null
-      const random_key = crypto.randomInt(100000, 999999).toString()
+
+      const randomKey = crypto.randomInt(100000, 999999).toString()
+
+      let creator
+
+      if (creatorRole === Role.Pharmacist) {
+        creator = await prisma.pharmacist.findUniqueOrThrow({
+          where: {
+            userId: creatorId
+          },
+          include: {
+            User: true
+          }
+        })
+      }
+      if (creatorRole === Role.Staff) {
+        creator = await prisma.staff.findUniqueOrThrow({
+          where: {
+            userId: creatorId
+          },
+          include: {
+            User: true,
+            authorizer: true
+          }
+        })
+      }
 
       const prescription = await prisma.prescription.create({
         data: {
-          name: name,
-          status: status,
-          balance: balance,
-          pickupCode: random_key,
-          patientId: patientId,
-          lockerBoxId: lockerBoxId,
-          locationId: locationId,
-          pharmacistId,
-          staffId
+          name,
+          status: Status.AwaitingPickup,
+          createdTime,
+          balance: 0,
+          Patient: {
+            connect: {
+              id: patientId
+            }
+          },
+          Location: {
+            connect: {
+              id: locationId
+            }
+          },
+          pickupCode: randomKey,
+          LockerBox: {
+            connect: {
+              id: lockerBoxId
+            }
+          }
         }
       })
 
@@ -74,13 +116,13 @@ export default async function handler(
         phoneNumber = '+1' + phoneNumber
       }
 
-      const formatted_message = `There has been an order placed for your prescription: ${prescription.name}. Please go to the pharmacy to pick up your prescription.
+      const message = `There has been an order placed for your prescription: ${prescription.name}. Please go to the pharmacy to pick up your prescription.
       The prescription is located in locker box ${lockerBoxId} at ${location.streetAddress}, ${location.city}, ${location.province}, ${location.country}.
 
-      Your pickup code is ${random_key}`
+      Your pickup code is ${randomKey}`
 
       if (process.env.CI) {
-        await sendSMS(phoneNumber, formatted_message)
+        await sendSMS(phoneNumber, message)
       }
 
       const lockerBox = await prisma.lockerBox.update({

@@ -73,7 +73,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
     }
     const success = await createPrescription({
       name: prescriptionName,
-      patientUserId: selectedPatient.id,
+      patientId: selectedPatient.Patient?.id,
       lockerBoxId: locker.id
     })
 

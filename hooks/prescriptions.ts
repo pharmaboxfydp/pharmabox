@@ -20,7 +20,7 @@ export interface UsePatientPrescriptions {
 
 export interface CreatePrescription {
   name: string
-  patientUserId: string
+  patientId: number | undefined
   lockerBoxId: number
 }
 
@@ -30,7 +30,7 @@ export interface UsePrescription {
   isError: boolean
   createPrescription: ({
     name,
-    patientUserId,
+    patientId,
     lockerBoxId
   }: CreatePrescription) => Promise<any>
 }
@@ -129,11 +129,12 @@ export function usePrescriptions({
 
   async function createPrescription({
     name,
-    patientUserId: patientId,
+    patientId,
     lockerBoxId
   }: CreatePrescription): Promise<boolean> {
     const creatorRole = user.role
     const locationId = user?.Pharmacist?.locationId || user?.Staff?.locationId
+    const createdTime = new Date().toISOString()
 
     const response = await fetch('/api/prescriptions/create', {
       method: 'POST',
@@ -144,7 +145,8 @@ export function usePrescriptions({
           lockerBoxId,
           creatorRole,
           creatorId: user.id,
-          locationId
+          locationId,
+          createdTime
         }
       })
     })
