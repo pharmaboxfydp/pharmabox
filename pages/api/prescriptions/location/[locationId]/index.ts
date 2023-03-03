@@ -20,7 +20,11 @@ export default async function handler(
         include: {
           Location: true,
           LockerBox: true,
-          Patient: true
+          Patient: {
+            include: {
+              User: true
+            }
+          }
         }
       })
 

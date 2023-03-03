@@ -44,8 +44,8 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [prescriptionName, setPrescriptionName] = useState<string>('')
   const [selectPatientError, setSelectPatientError] = useState<boolean>(false)
   const { emptyLockerboxes } = useLockerboxes(user)
-  const [lockerNumber, setLockerNumber] = useState<number>(
-    emptyLockerboxes?.map((locker) => locker.label)[0] ?? 1
+  const [lockerNumber, setLockerNumber] = useState<number | undefined>(
+    emptyLockerboxes?.map((locker) => locker.label)[0]
   )
   const { createPrescription } = usePrescriptions({ user })
 
@@ -64,7 +64,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
     setIsFetching(true)
 
     const locker = emptyLockerboxes?.find(
-      (locker) => locker.id === lockerNumber
+      (locker) => locker.label === lockerNumber
     )
 
     if (!locker) {

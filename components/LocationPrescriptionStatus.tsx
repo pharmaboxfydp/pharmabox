@@ -1,6 +1,14 @@
 import { Medication, Person, QID } from '@carbon/icons-react'
 import { LockerBox, Patient } from '@prisma/client'
-import { Box, Card, CardBody, CardFooter, CardHeader, Text } from 'grommet'
+import {
+  Anchor,
+  Box,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Text
+} from 'grommet'
 import { useLocationPrescriptions } from '../hooks/prescriptions'
 import { User } from '../types/types'
 import { Error } from './Error'
@@ -23,7 +31,6 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
       <Box overflow={{ vertical: 'scroll' }} pad="small">
         {activePrescriptions?.map(
           ({
-            id,
             name,
             LockerBox: { label },
             Patient: { id: patientId }
@@ -49,21 +56,14 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
                     Patient Information
                   </Text>
                   <Box direction="row" gap="medium">
-                    <Text size="small">Date of Birth:{'  '}</Text>
                     <Box direction="row" gap="small">
                       <Person size={20} />
-                      <Text size="small">{patientId}</Text>
+                      <Anchor size="small" href={`/patients/${patientId}`}>
+                        {patientId}
+                      </Anchor>
                     </Box>
                   </Box>
                 </CardBody>
-                <CardFooter>
-                  <Box direction="row" justify="between">
-                    <Box direction="row">
-                      <QID size={20} />
-                      <Text size="small">{id}</Text>
-                    </Box>
-                  </Box>
-                </CardFooter>
               </Card>
             </Box>
           )
