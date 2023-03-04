@@ -28,7 +28,7 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
   return (
     <Box gap="small" border pad="medium" round="small" overflow="auto" fill>
       <Text weight="bold">Prescriptions Awaiting Pickup</Text>
-      <Box overflow={{ vertical: 'scroll' }} pad="small">
+      <Box overflow={{ vertical: 'scroll' }} pad="xsmall" gap="medium">
         {activePrescriptions?.map(
           ({
             name,
@@ -40,7 +40,7 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
             LockerBox: LockerBox
             Patient: Patient
           }) => (
-            <Box key={label + Math.random()} height={{ min: '180px' }}>
+            <Box key={label + Math.random()}>
               <Card pad="small" gap="small" width="medium">
                 <CardHeader>
                   <Box direction="row" gap="medium">

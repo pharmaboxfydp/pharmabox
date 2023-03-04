@@ -48,11 +48,10 @@ export function LockerboxesStatus({ user }: { user: User }) {
           ></Box>
         </Box>
       </Box>
-      <Box overflow={{ vertical: 'scroll' }} pad="small">
+      <Box overflow={{ vertical: 'scroll' }} gap="small">
         {lockerboxes?.map(
           ({
             label,
-            id,
             status
           }: {
             label: number
@@ -61,42 +60,33 @@ export function LockerboxesStatus({ user }: { user: User }) {
           }) => (
             <Box
               key={label}
-              height={{ min: '96px' }}
               data-cy="locker-box-status"
+              direction="row"
+              align="center"
+              gap="medium"
+              border
+              pad="small"
+              round="xsmall"
             >
-              <Card pad="small" gap="small">
-                <CardHeader>
-                  <Text size="small" weight="bold">
-                    Locker Number:{' '}
-                    <Text size="small" weight="bold">
-                      {label}
-                    </Text>
-                  </Text>
-                </CardHeader>
-                <CardBody>
-                  <Box direction="row" justify="between">
-                    <Box direction="row">
-                      <QID size={24} />
-                      <Text>{id}</Text>
-                    </Box>
-                    <Box
-                      round
-                      background={
-                        status === LockerBoxState.empty
-                          ? theme.global.colors['status-ok']
-                          : theme.global.colors['status-warning']
-                      }
-                      style={{ color: theme.global.colors.white }}
-                    >
-                      <Tag
-                        size="xsmall"
-                        name="Status"
-                        value={capitalize(status)}
-                      />
-                    </Box>
-                  </Box>
-                </CardBody>
-              </Card>
+              <Text size="small" weight="bold">
+                Locker Number:{' '}
+                <Text size="small" weight="bold">
+                  {label}
+                </Text>
+              </Text>
+              <Box direction="row" justify="between">
+                <Box
+                  round
+                  background={
+                    status === LockerBoxState.empty
+                      ? theme.global.colors['status-ok']
+                      : theme.global.colors['status-warning']
+                  }
+                  style={{ color: theme.global.colors.white }}
+                >
+                  <Tag size="xsmall" name="Status" value={capitalize(status)} />
+                </Box>
+              </Box>
             </Box>
           )
         )}
