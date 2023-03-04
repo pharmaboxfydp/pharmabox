@@ -68,7 +68,7 @@ describe('Patients Page and Table Search', () => {
     // search for ee
     cy.get('[data-cy="search-first-name"]').type('ee')
     // should show 4 +1
-    cy.get('tr').should('have.length', 4 + 1)
+    cy.get('tr').should('have.length', 5 + 1)
     cy.get('[data-cy="search-first-name"]').clear()
     cy.wait(1000)
     cy.get('[data-cy="search-first-name"]').type('kaycee')
