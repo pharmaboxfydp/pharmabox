@@ -5,8 +5,8 @@ import { toast } from 'react-toastify'
 import { stripNonDigets } from '../helpers/validators'
 
 export interface PatientWithPrescriptionAndUser extends Patient {
-  Prescriptions: Prescription[]
-  User: User
+  readonly Prescriptions: Prescription[]
+  readonly User: User
 }
 
 export interface UsePatient {

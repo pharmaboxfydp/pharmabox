@@ -50,7 +50,7 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
             Patient,
             Staff: { User: StaffUser },
             Pharmacist: { User: PharmUser }
-          }: PrescriptionAndLocationAndPatientAndStaffAndPharmacist) => (
+          }) => (
             <Card pad="small" gap="small" key={label} border>
               <CardHeader>
                 <Box direction="row" gap="medium">
