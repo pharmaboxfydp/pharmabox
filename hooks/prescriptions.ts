@@ -3,7 +3,6 @@ import { toast } from 'react-toastify'
 import useSWR, { useSWRConfig } from 'swr'
 
 import {
-  PrescriptionAndLocationAndPatient,
   PrescriptionAndLocationAndPatientAndStaffAndPharmacist,
   Status,
   User
@@ -37,47 +36,15 @@ export interface UsePrescription {
     patientId,
     lockerBoxId
   }: CreatePrescription) => Promise<any>
+  sendPickupReminder: ({
+    prescriptionId
+  }: {
+    prescriptionId: number
+  }) => Promise<boolean>
 }
 
 const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
   fetch(...arg).then((res) => res.json())
-
-export function usePatientPrescriptions(
-  patientId: number | undefined
-): UsePatientPrescriptions {
-  const { data, error } = useSWR<{
-    message: string
-    prescriptions: PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
-  }>(`/api/prescriptions/patient/${patientId}`, fetcher, {
-    revalidateIfStale: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: false
-  })
-
-  const { mutate } = useSWRConfig()
-  function refresh() {
-    mutate(`/api/prescriptions/patient/${patientId}`)
-  }
-
-  const activePrescriptions =
-    data?.prescriptions.filter(
-      (prescription) => prescription.status === Status.AwaitingPickup
-    ) ?? null
-
-  const prevPrescriptions =
-    data?.prescriptions.filter(
-      (prescription) => prescription.status === Status.PickupCompleted
-    ) ?? null
-
-  return {
-    prescriptions: data?.prescriptions ?? null,
-    activePrescriptions,
-    prevPrescriptions,
-    isLoading: !error && !data,
-    isError: error,
-    refresh
-  }
-}
 
 export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
@@ -165,10 +132,35 @@ export function usePrescriptions({
     return false
   }
 
+  async function sendPickupReminder({
+    prescriptionId
+  }: {
+    prescriptionId: number
+  }): Promise<boolean> {
+    const response = await fetch(
+      `/api/prescriptions/${prescriptionId}/remind`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          data: {
+            prescriptionId
+          }
+        })
+      }
+    )
+    if (response.status === 200) {
+      toast.success('Reminder Sent')
+      return true
+    }
+    toast.error('Unable to Send Reminder')
+    return false
+  }
+
   return {
     prescription: data?.prescription ?? null,
     isLoading: !error && !data,
     isError: error,
-    createPrescription
+    createPrescription,
+    sendPickupReminder
   }
 }

@@ -18,7 +18,11 @@ import TimeAgo from 'javascript-time-ago'
 
 import en from 'javascript-time-ago/locale/en.json'
 
-TimeAgo.addDefaultLocale(en)
+try {
+  TimeAgo.addDefaultLocale(en)
+} catch (error) {
+  // catch the error that the locale has already been created
+}
 
 NProgress.configure({
   minimum: 0.3,

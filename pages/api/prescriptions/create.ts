@@ -3,7 +3,7 @@ import prisma from '../../../lib/prisma'
 import * as crypto from 'crypto'
 import { Status, LockerBoxState, Role } from '../../../types/types'
 import { sendSMS } from '../../../twilio/twilio'
-import { Pharmacist, Prescription, Staff } from '@prisma/client'
+import { Pharmacist, Staff } from '@prisma/client'
 
 interface IncommingRequest extends NextApiRequest {
   body: {

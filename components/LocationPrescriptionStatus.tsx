@@ -1,7 +1,8 @@
-import { Medication, Person } from '@carbon/icons-react'
+import { Alarm, Medication, Person } from '@carbon/icons-react'
 import {
   Anchor,
   Box,
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -10,7 +11,10 @@ import {
 } from 'grommet'
 import ReactTimeAgo from 'react-time-ago'
 import { formatPhoneNumber } from '../helpers/validators'
-import { useLocationPrescriptions } from '../hooks/prescriptions'
+import {
+  useLocationPrescriptions,
+  usePrescriptions
+} from '../hooks/prescriptions'
 import theme from '../styles/theme'
 import {
   PrescriptionAndLocationAndPatientAndStaffAndPharmacist,
@@ -22,6 +26,7 @@ import { Loading } from './Loading'
 export function LocationPrescriptionStatus({ user }: { user: User }) {
   const { activePrescriptions, isLoading, isError } =
     useLocationPrescriptions(user)
+  const { sendPickupReminder } = usePrescriptions({ user: user })
   if (isLoading) {
     return <Loading />
   }
@@ -36,6 +41,7 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
       <Box overflow={{ vertical: 'scroll' }} pad="xsmall" gap="medium">
         {activePrescriptions?.map(
           ({
+            id,
             name,
             createdTime,
             LockerBox: { label },
@@ -95,6 +101,33 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
                   </Text>
                 </Box>
               </CardBody>
+              <CardFooter justify="end">
+                <Box
+                  background={theme.global.colors['neutral-3']}
+                  round="xsmall"
+                >
+                  <Button
+                    justify="start"
+                    label="Send Pickup Reminder"
+                    size="small"
+                    icon={<Alarm size={16} />}
+                    onClick={() =>
+                      sendPickupReminder({
+                        prescriptionId: id
+                      })
+                    }
+                    style={{ borderRadius: '6px' }}
+                    tip={{
+                      content: (
+                        <Text size="small">
+                          Send an SMS Reminder to {Patient.User.firstName}{' '}
+                          {Patient.User.lastName}
+                        </Text>
+                      )
+                    }}
+                  />
+                </Box>
+              </CardFooter>
             </Card>
           )
         )}
