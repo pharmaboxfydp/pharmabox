@@ -1,4 +1,4 @@
-import { Alarm, Medication, Person } from '@carbon/icons-react'
+import { Alarm, Medication, Person, TrashCan } from '@carbon/icons-react'
 import {
   Anchor,
   Box,
@@ -26,7 +26,9 @@ import { Loading } from './Loading'
 export function LocationPrescriptionStatus({ user }: { user: User }) {
   const { activePrescriptions, isLoading, isError } =
     useLocationPrescriptions(user)
-  const { sendPickupReminder } = usePrescriptions({ user: user })
+  const { sendPickupReminder, deletePrescription } = usePrescriptions({
+    user: user
+  })
   if (isLoading) {
     return <Loading />
   }
@@ -101,7 +103,28 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
                   </Text>
                 </Box>
               </CardBody>
-              <CardFooter justify="end">
+              <CardFooter justify="between">
+                <Box
+                  background={theme.global.colors['status-warning']}
+                  round="xsmall"
+                >
+                  <Button
+                    justify="start"
+                    label="Remove Prescription"
+                    size="small"
+                    icon={<TrashCan size={16} />}
+                    onClick={() =>
+                      deletePrescription({
+                        prescriptionId: id,
+                        patientId: Patient.id
+                      })
+                    }
+                    style={{ borderRadius: '6px' }}
+                    tip={{
+                      content: <Text size="small">Delete Prescription</Text>
+                    }}
+                  />
+                </Box>
                 <Box
                   background={theme.global.colors['neutral-3']}
                   round="xsmall"

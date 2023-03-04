@@ -136,7 +136,7 @@ export default async function handler(
         phoneNumber = '+1' + phoneNumber
       }
 
-      const message = `💊 Your prescription: ${prescription.name} is ready for pick-up! Please go to the pharmacy to pick up your prescription. The prescription is located in locker box: ${lockerBoxId} at ${location.streetAddress}, ${location.city}. Your pickup code is ${randomKey}`
+      const message = `💊 Your prescription: ${prescription.name} is ready for pick-up! Please go to the pharmacy to pick up your prescription. The prescription is located in locker box: ${lockerBoxId} at ${location.streetAddress}, ${location.city}. Your pickup code is ${randomKey}.`
 
       if (!process.env.CI) {
         await sendSMS(phoneNumber, message)

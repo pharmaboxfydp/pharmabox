@@ -41,6 +41,13 @@ export interface UsePrescription {
   }: {
     prescriptionId: number
   }) => Promise<boolean>
+  deletePrescription: ({
+    prescriptionId,
+    patientId
+  }: {
+    prescriptionId: number
+    patientId: number
+  }) => Promise<boolean>
 }
 
 const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
@@ -88,6 +95,7 @@ export function usePrescriptions({
   user: User
 }): UsePrescription {
   const { mutate } = useSWRConfig()
+  const locationId = user?.Pharmacist?.locationId || user?.Staff?.locationId
 
   const { data, error } = useSWR<{
     message: string
@@ -104,7 +112,6 @@ export function usePrescriptions({
     lockerBoxId
   }: CreatePrescription): Promise<boolean> {
     const creatorRole = user.role
-    const locationId = user?.Pharmacist?.locationId || user?.Staff?.locationId
     const createdTime = new Date().toISOString()
 
     const response = await fetch('/api/prescriptions/create', {
@@ -156,11 +163,36 @@ export function usePrescriptions({
     return false
   }
 
+  async function deletePrescription({
+    prescriptionId,
+    patientId
+  }: {
+    prescriptionId: number
+    patientId: number
+  }): Promise<boolean> {
+    const response = await fetch(
+      `/api/prescriptions/delete?id=${prescriptionId}`,
+      {
+        method: 'DELETE'
+      }
+    )
+    if (response.status === 200) {
+      mutate(`/api/prescriptions/location/${locationId}`)
+      mutate(`/api/prescriptions/patient/${patientId}`)
+      mutate(`/api/lockerboxes/${locationId}`)
+      toast.success('Prescription Removed')
+      return true
+    }
+    toast.error('Unable to Delete Prescription')
+    return false
+  }
+
   return {
     prescription: data?.prescription ?? null,
     isLoading: !error && !data,
     isError: error,
     createPrescription,
-    sendPickupReminder
+    sendPickupReminder,
+    deletePrescription
   }
 }
