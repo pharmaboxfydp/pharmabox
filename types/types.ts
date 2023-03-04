@@ -29,7 +29,8 @@ export interface PharmacistWithUser extends Pharmacist {
 }
 
 export interface PrescriptionAndLocationAndPatientAndStaffAndPharmacist
-  extends PrescriptionAndLocationAndPatient {
+  extends PrescriptionAndLocationAndPatient,
+    Prescription {
   readonly Staff: StaffWithUser
   readonly Pharmacist: PharmacistWithUser
 }
