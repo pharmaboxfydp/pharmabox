@@ -13,7 +13,12 @@ import styled from 'styled-components'
 import Router from 'next/router'
 import AddPatientModal from '../components/AddPatientModal'
 import CreatePrescriptionModal from '../components/CreatePrescriptionModal'
-import { ServerPageProps, User } from '../types/types'
+import { ServerPageProps } from '../types/types'
+import TimeAgo from 'javascript-time-ago'
+
+import en from 'javascript-time-ago/locale/en.json'
+
+TimeAgo.addDefaultLocale(en)
 
 NProgress.configure({
   minimum: 0.3,

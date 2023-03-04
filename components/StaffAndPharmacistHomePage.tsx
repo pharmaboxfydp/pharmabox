@@ -9,7 +9,7 @@ export default function StaffAndPharmacistHomePage({ user }: { user: User }) {
     <Box>
       <Grid
         rows={['auto', 'flex']}
-        columns={['auto', 'flex']}
+        columns={['1/2', '1/2']}
         gap="small"
         areas={[
           { name: 'fulfill', start: [0, 0], end: [1, 1] },

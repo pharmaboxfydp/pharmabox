@@ -9,8 +9,14 @@ import {
   CardHeader,
   Text
 } from 'grommet'
+import ReactTimeAgo from 'react-time-ago'
+import { formatPhoneNumber } from '../helpers/validators'
 import { useLocationPrescriptions } from '../hooks/prescriptions'
-import { User } from '../types/types'
+import theme from '../styles/theme'
+import {
+  PrescriptionAndLocationAndPatientAndStaffAndPharmacist,
+  User
+} from '../types/types'
 import { Error } from './Error'
 import { Loading } from './Loading'
 
@@ -32,40 +38,65 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
         {activePrescriptions?.map(
           ({
             name,
+            createdTime,
             LockerBox: { label },
-            Patient: { id: patientId }
-          }: {
-            id: number
-            name: string
-            LockerBox: LockerBox
-            Patient: Patient
-          }) => (
-            <Box key={label + Math.random()}>
-              <Card pad="small" gap="small" width="medium">
-                <CardHeader>
-                  <Box direction="row" gap="medium">
-                    <Medication size={24} />
-                    <Text size="small" weight="bold">
-                      {name}
-                    </Text>
-                    <Text size="small">Box: {label}</Text>
-                  </Box>
-                </CardHeader>
-                <CardBody gap="small">
+            Patient,
+            Staff: { User: StaffUser },
+            Pharmacist: { User: PharmUser }
+          }: PrescriptionAndLocationAndPatientAndStaffAndPharmacist) => (
+            <Card pad="small" gap="small" key={label} border>
+              <CardHeader>
+                <Box direction="row" gap="medium">
+                  <Medication
+                    size={24}
+                    color={theme.global.colors['neutral-3']}
+                  />
                   <Text size="small" weight="bold">
-                    Patient Information
+                    {name}
                   </Text>
-                  <Box direction="row" gap="medium">
-                    <Box direction="row" gap="small">
-                      <Person size={20} />
-                      <Anchor size="small" href={`/patients/${patientId}`}>
-                        {patientId}
-                      </Anchor>
-                    </Box>
+                  <Text size="small">Box: {label}</Text>
+                </Box>
+              </CardHeader>
+              <CardBody gap="small">
+                <Box direction="row" gap="medium">
+                  <Text size="small">
+                    Created:{' '}
+                    <ReactTimeAgo
+                      date={new Date(createdTime as Date)}
+                      locale="en-US"
+                    />
+                  </Text>
+                  <Text size="small">
+                    Pharm:{' '}
+                    {`${PharmUser.firstName?.charAt(0)} ${PharmUser.lastName}`}
+                  </Text>
+                  {StaffUser && (
+                    <Text size="small">
+                      Staff:{' '}
+                      {`${StaffUser.firstName?.charAt(0)} ${
+                        StaffUser.lastName
+                      }`}
+                    </Text>
+                  )}
+                </Box>
+                <Text size="small" weight="bold">
+                  Patient Information
+                </Text>
+                <Box direction="row" gap="small" flex>
+                  <Person size={20} />
+                  <Anchor size="small" href={`/patients/${Patient.id}`}>
+                    {Patient.id}
+                  </Anchor>
+                  <Box direction="row" gap="xsmall">
+                    <Text size="small">{Patient.User.firstName}</Text>
+                    <Text size="small">{Patient.User.lastName}</Text>
                   </Box>
-                </CardBody>
-              </Card>
-            </Box>
+                  <Text size="small">
+                    {formatPhoneNumber(`${Patient.User.phoneNumber}`)}
+                  </Text>
+                </Box>
+              </CardBody>
+            </Card>
           )
         )}
       </Box>

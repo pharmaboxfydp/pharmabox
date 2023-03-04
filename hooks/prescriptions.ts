@@ -4,15 +4,19 @@ import useSWR, { useSWRConfig } from 'swr'
 
 import {
   PrescriptionAndLocationAndPatient,
-  Role,
+  PrescriptionAndLocationAndPatientAndStaffAndPharmacist,
   Status,
   User
 } from '../types/types'
 
 export interface UsePatientPrescriptions {
-  prescriptions: PrescriptionAndLocationAndPatient[] | null
-  activePrescriptions: PrescriptionAndLocationAndPatient[] | null
-  prevPrescriptions: PrescriptionAndLocationAndPatient[] | null
+  prescriptions: PrescriptionAndLocationAndPatientAndStaffAndPharmacist[] | null
+  activePrescriptions:
+    | PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
+    | null
+  prevPrescriptions:
+    | PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
+    | null
   isLoading: boolean
   isError: boolean
   refresh: any
@@ -43,7 +47,7 @@ export function usePatientPrescriptions(
 ): UsePatientPrescriptions {
   const { data, error } = useSWR<{
     message: string
-    prescriptions: PrescriptionAndLocationAndPatient[]
+    prescriptions: PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
   }>(`/api/prescriptions/patient/${patientId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
@@ -79,7 +83,7 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
   const { data, error } = useSWR<{
     message: string
-    prescriptions: PrescriptionAndLocationAndPatient[]
+    prescriptions: PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
   }>(`/api/prescriptions/location/${locationId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
