@@ -16,10 +16,7 @@ import {
   usePrescriptions
 } from '../hooks/prescriptions'
 import theme from '../styles/theme'
-import {
-  PrescriptionAndLocationAndPatientAndStaffAndPharmacist,
-  User
-} from '../types/types'
+import { FullPrescription, User } from '../types/types'
 import { Error } from './Error'
 import { Loading } from './Loading'
 

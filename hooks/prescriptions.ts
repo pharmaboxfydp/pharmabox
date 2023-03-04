@@ -2,20 +2,12 @@ import { Prescription } from '@prisma/client'
 import { toast } from 'react-toastify'
 import useSWR, { useSWRConfig } from 'swr'
 
-import {
-  PrescriptionAndLocationAndPatientAndStaffAndPharmacist,
-  Status,
-  User
-} from '../types/types'
+import { FullPrescription, Status, User } from '../types/types'
 
 export interface UsePatientPrescriptions {
-  prescriptions: PrescriptionAndLocationAndPatientAndStaffAndPharmacist[] | null
-  activePrescriptions:
-    | PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
-    | null
-  prevPrescriptions:
-    | PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
-    | null
+  prescriptions: FullPrescription[] | null
+  activePrescriptions: FullPrescription[] | null
+  prevPrescriptions: FullPrescription[] | null
   isLoading: boolean
   isError: boolean
   refresh: any
@@ -57,7 +49,7 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
   const { data, error } = useSWR<{
     message: string
-    prescriptions: PrescriptionAndLocationAndPatientAndStaffAndPharmacist[]
+    prescriptions: FullPrescription[]
   }>(`/api/prescriptions/location/${locationId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,

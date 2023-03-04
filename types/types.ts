@@ -32,8 +32,7 @@ export interface PharmacistWithUser extends Pharmacist {
   User: User
 }
 
-export interface PrescriptionAndLocationAndPatientAndStaffAndPharmacist
-  extends Prescription {
+export interface FullPrescription extends Prescription {
   LockerBox: LockerBox
   Patient: PatientWithUser
   Staff: StaffWithUser
