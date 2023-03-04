@@ -17,10 +17,11 @@ export default function CreatePrescriptionButton({ user }: { user: User }) {
         label="Add New Prescription"
         primary
         fill
-        size="small"
+        size="medium"
         onClick={() => setShowCreatePrescriptionModal(true)}
         disabled={!isAuthorized}
         data-cy="create-prescription-button"
+        style={{ borderRadius: '10px' }}
       />
     </Box>
   )

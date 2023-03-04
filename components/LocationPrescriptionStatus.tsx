@@ -1,5 +1,4 @@
-import { Medication, Person, QID } from '@carbon/icons-react'
-import { LockerBox, Patient } from '@prisma/client'
+import { Medication, Person } from '@carbon/icons-react'
 import {
   Anchor,
   Box,
