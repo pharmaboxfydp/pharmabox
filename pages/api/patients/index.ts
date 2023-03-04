@@ -8,7 +8,15 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      const { page, take, firstName, lastName, phoneNumber, email } = req.query
+      const {
+        page,
+        take,
+        firstName,
+        lastName,
+        phoneNumber,
+        email,
+        onlyEnabled
+      } = req.query
 
       if (
         (page || take) &&
@@ -17,9 +25,16 @@ export default async function handler(
         throw new Error('Expected page and take of type string')
       }
 
+      const pickupEnabled: boolean = onlyEnabled === 'true'
+
       const filter = {
         where: {
           role: 'patient',
+          ...(pickupEnabled && {
+            Patient: {
+              pickupEnabled: pickupEnabled
+            }
+          }),
           ...(firstName?.length && {
             firstName: {
               contains: firstName as string,

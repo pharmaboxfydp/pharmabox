@@ -7,18 +7,36 @@ import {
   LockerBox,
   Pharmacist
 } from '@prisma/client'
+import { PatientWithPrescriptionAndUser } from '../hooks/patient'
 
 export enum Role {
   Staff = 'staff',
   Patient = 'patient',
   Pharmacist = 'pharmacist'
 }
-export type PrescriptionAndLocationAndPatient = Prescription & {
+export interface PrescriptionAndLocationAndPatient extends Prescription {
   readonly Location: Location
-} & {
   readonly LockerBox: LockerBox
-} & {
-  readonly Patient: Patient
+  readonly Patient: PatientWithPrescriptionAndUser
+}
+
+export interface PatientWithUser extends Patient {
+  User: User
+}
+
+export interface StaffWithUser extends Staff {
+  User: User
+}
+
+export interface PharmacistWithUser extends Pharmacist {
+  User: User
+}
+
+export interface FullPrescription extends Prescription {
+  LockerBox: LockerBox
+  Patient: PatientWithUser
+  Staff: StaffWithUser
+  Pharmacist: PharmacistWithUser
 }
 
 export type PharmacyLocation = Location & {

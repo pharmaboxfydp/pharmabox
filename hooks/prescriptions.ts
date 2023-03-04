@@ -1,21 +1,22 @@
-import { Location, Patient, Prescription } from '@prisma/client'
+import { Prescription } from '@prisma/client'
 import { toast } from 'react-toastify'
 import useSWR, { useSWRConfig } from 'swr'
 
-import {
-  PrescriptionAndLocationAndPatient,
-  Role,
-  Status,
-  User
-} from '../types/types'
+import { FullPrescription, Status, User } from '../types/types'
 
 export interface UsePatientPrescriptions {
-  prescriptions: PrescriptionAndLocationAndPatient[] | null
-  activePrescriptions: PrescriptionAndLocationAndPatient[] | null
-  prevPrescriptions: PrescriptionAndLocationAndPatient[] | null
+  prescriptions: FullPrescription[] | null
+  activePrescriptions: FullPrescription[] | null
+  prevPrescriptions: FullPrescription[] | null
   isLoading: boolean
   isError: boolean
   refresh: any
+}
+
+export interface CreatePrescription {
+  name: string
+  patientId: number | undefined
+  lockerBoxId: number
 }
 
 export interface UsePrescription {
@@ -24,69 +25,31 @@ export interface UsePrescription {
   isError: boolean
   createPrescription: ({
     name,
-    status,
     patientId,
-    balance,
-    locationId,
     lockerBoxId
+  }: CreatePrescription) => Promise<any>
+  sendPickupReminder: ({
+    prescriptionId
   }: {
-    name: string
-    status: Status
+    prescriptionId: number
+  }) => Promise<boolean>
+  deletePrescription: ({
+    prescriptionId,
+    patientId
+  }: {
+    prescriptionId: number
     patientId: number
-    balance: number
-    locationId: number
-    lockerBoxId: number
-    pharmacistId: number | null | undefined
-    staffId: number | null | undefined
-    role: Role | undefined
-  }) => Promise<any>
+  }) => Promise<boolean>
 }
 
 const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
   fetch(...arg).then((res) => res.json())
 
-export function usePatientPrescriptions(
-  patientId: number | undefined
-): UsePatientPrescriptions {
-  const { data, error } = useSWR<{
-    message: string
-    prescriptions: PrescriptionAndLocationAndPatient[]
-  }>(`/api/prescriptions/patient/${patientId}`, fetcher, {
-    revalidateIfStale: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: false
-  })
-
-  const { mutate } = useSWRConfig()
-  function refresh() {
-    mutate(`/api/prescriptions/patient/${patientId}`)
-  }
-
-  const activePrescriptions =
-    data?.prescriptions.filter(
-      (prescription) => prescription.status === Status.AwaitingPickup
-    ) ?? null
-
-  const prevPrescriptions =
-    data?.prescriptions.filter(
-      (prescription) => prescription.status === Status.PickupCompleted
-    ) ?? null
-
-  return {
-    prescriptions: data?.prescriptions ?? null,
-    activePrescriptions,
-    prevPrescriptions,
-    isLoading: !error && !data,
-    isError: error,
-    refresh
-  }
-}
-
 export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   const locationId = user.Staff?.locationId || user.Pharmacist?.locationId
   const { data, error } = useSWR<{
     message: string
-    prescriptions: PrescriptionAndLocationAndPatient[]
+    prescriptions: FullPrescription[]
   }>(`/api/prescriptions/location/${locationId}`, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: true,
@@ -116,8 +79,15 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   }
 }
 
-export function usePrescriptions(prescriptionId?: number): UsePrescription {
+export function usePrescriptions({
+  prescriptionId,
+  user
+}: {
+  prescriptionId?: number
+  user: User
+}): UsePrescription {
   const { mutate } = useSWRConfig()
+  const locationId = user?.Pharmacist?.locationId || user?.Staff?.locationId
 
   const { data, error } = useSWR<{
     message: string
@@ -129,39 +99,24 @@ export function usePrescriptions(prescriptionId?: number): UsePrescription {
   })
 
   async function createPrescription({
-    name = 'Unnamed Prescription',
-    status = Status.AwaitingPickup,
+    name,
     patientId,
-    balance = 0,
-    locationId,
-    lockerBoxId,
-    pharmacistId,
-    staffId,
-    role
-  }: {
-    name: string
-    status: Status
-    patientId: number
-    balance: number
-    locationId: number
-    lockerBoxId: number
-    pharmacistId: number | null | undefined
-    staffId: number | null | undefined
-    role: Role | undefined
-  }): Promise<{ message: string; prescription: Prescription }> {
+    lockerBoxId
+  }: CreatePrescription): Promise<boolean> {
+    const creatorRole = user.role
+    const createdTime = new Date().toISOString()
+
     const response = await fetch('/api/prescriptions/create', {
       method: 'POST',
       body: JSON.stringify({
         data: {
           name,
-          status,
           patientId,
-          balance,
-          locationId,
           lockerBoxId,
-          pharmacistId,
-          staffId,
-          role
+          creatorRole,
+          creatorId: user.id,
+          locationId,
+          createdTime
         }
       })
     })
@@ -169,21 +124,67 @@ export function usePrescriptions(prescriptionId?: number): UsePrescription {
       mutate(`/api/prescriptions/location/${locationId}`)
       mutate(`/api/prescriptions/patient/${patientId}`)
       mutate(`/api/lockerboxes/${locationId}`)
-
-      toast.success(`Prescription Created for Patient ${patientId}`, {
-        icon: '✨'
-      })
-    } else {
-      toast.error('Unable to Create Prescription', { icon: '❌' })
+      toast.success('Prescription Created')
+      return true
     }
-    const res = await response.json()
-    return res
+    toast.error('Unable to Create Prescription')
+    return false
+  }
+
+  async function sendPickupReminder({
+    prescriptionId
+  }: {
+    prescriptionId: number
+  }): Promise<boolean> {
+    const response = await fetch(
+      `/api/prescriptions/${prescriptionId}/remind`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          data: {
+            prescriptionId
+          }
+        })
+      }
+    )
+    if (response.status === 200) {
+      toast.success('Reminder Sent')
+      return true
+    }
+    toast.error('Unable to Send Reminder')
+    return false
+  }
+
+  async function deletePrescription({
+    prescriptionId,
+    patientId
+  }: {
+    prescriptionId: number
+    patientId: number
+  }): Promise<boolean> {
+    const response = await fetch(
+      `/api/prescriptions/delete?id=${prescriptionId}`,
+      {
+        method: 'DELETE'
+      }
+    )
+    if (response.status === 200) {
+      mutate(`/api/prescriptions/location/${locationId}`)
+      mutate(`/api/prescriptions/patient/${patientId}`)
+      mutate(`/api/lockerboxes/${locationId}`)
+      toast.success('Prescription Removed')
+      return true
+    }
+    toast.error('Unable to Delete Prescription')
+    return false
   }
 
   return {
     prescription: data?.prescription ?? null,
     isLoading: !error && !data,
     isError: error,
-    createPrescription
+    createPrescription,
+    sendPickupReminder,
+    deletePrescription
   }
 }

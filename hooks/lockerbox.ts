@@ -1,9 +1,10 @@
-import { Location, LockerBox } from '@prisma/client'
+import { LockerBox } from '@prisma/client'
 import useSWR from 'swr'
-import { LockerBoxState, Status, User } from '../types/types'
+import { LockerBoxState, User } from '../types/types'
 
 export interface UseLockerboxes {
   lockerboxes: LockerBox[] | null
+  emptyLockerboxes: LockerBox[] | null
   isLoading: boolean
   isError: boolean
 }
@@ -31,9 +32,16 @@ export function useLockerboxes(user: User): UseLockerboxes {
     }
   )
 
+  const lockerboxes =
+    data?.lockerboxes?.sort((a, b) => a.label - b.label) ?? null
+
+  const emptyLockerboxes =
+    lockerboxes?.filter((box) => box.status === LockerBoxState.empty) ?? null
+
   return {
-    lockerboxes: data?.lockerboxes?.sort((a, b) => a.label - b.label) ?? null,
+    lockerboxes,
     isLoading: !error && !data,
+    emptyLockerboxes,
     isError: error
   }
 }

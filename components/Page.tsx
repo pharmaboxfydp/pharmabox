@@ -14,7 +14,6 @@ export default function Page({
   return (
     <Box direction="column" fill>
       <Navbar user={user} />
-
       <ResponsiveContext.Consumer>
         {(responsive) =>
           responsive === 'small' ? (

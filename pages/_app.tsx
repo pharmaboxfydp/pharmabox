@@ -11,10 +11,18 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 import styled from 'styled-components'
 import Router from 'next/router'
-import AddPatientModal, {
-  addPatientModalState
-} from '../components/AddPatientModal'
-import { useAtom } from 'jotai'
+import AddPatientModal from '../components/AddPatientModal'
+import CreatePrescriptionModal from '../components/CreatePrescriptionModal'
+import { ServerPageProps } from '../types/types'
+import TimeAgo from 'javascript-time-ago'
+
+import en from 'javascript-time-ago/locale/en.json'
+
+try {
+  TimeAgo.addDefaultLocale(en)
+} catch (error) {
+  // catch the error that the locale has already been created
+}
 
 NProgress.configure({
   minimum: 0.3,
@@ -52,7 +60,7 @@ Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps<ServerPageProps>) {
   const router = useRouter()
 
   function handleShortCutKeys(event: React.KeyboardEvent<HTMLElement>) {
@@ -77,6 +85,7 @@ function App({ Component, pageProps }: AppProps) {
                 <Keyboard target="document" onKeyDown={handleShortCutKeys}>
                   <Component {...pageProps} />
                   <AddPatientModal />
+                  <CreatePrescriptionModal {...pageProps} />
                 </Keyboard>
               </SignedIn>
               <SignedOut>
