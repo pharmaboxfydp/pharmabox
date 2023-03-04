@@ -16,7 +16,7 @@ import {
   usePrescriptions
 } from '../hooks/prescriptions'
 import theme from '../styles/theme'
-import { FullPrescription, User } from '../types/types'
+import { User } from '../types/types'
 import { Error } from './Error'
 import { Loading } from './Loading'
 
@@ -45,7 +45,7 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
             createdTime,
             LockerBox: { label },
             Patient,
-            Staff: { User: StaffUser },
+            Staff,
             Pharmacist: { User: PharmUser }
           }) => (
             <Card pad="small" gap="small" key={label} border>
@@ -74,11 +74,11 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
                     Pharm:{' '}
                     {`${PharmUser.firstName?.charAt(0)} ${PharmUser.lastName}`}
                   </Text>
-                  {StaffUser && (
+                  {Staff && (
                     <Text size="small">
                       Staff:{' '}
-                      {`${StaffUser.firstName?.charAt(0)} ${
-                        StaffUser.lastName
+                      {`${Staff?.User.firstName?.charAt(0)} ${
+                        Staff?.User?.lastName
                       }`}
                     </Text>
                   )}
