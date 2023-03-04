@@ -20,6 +20,10 @@ export interface PrescriptionAndLocationAndPatient extends Prescription {
   readonly Patient: PatientWithPrescriptionAndUser
 }
 
+export interface PatientWithUser extends Patient {
+  User: User
+}
+
 export interface StaffWithUser extends Staff {
   User: User
 }
@@ -29,10 +33,11 @@ export interface PharmacistWithUser extends Pharmacist {
 }
 
 export interface PrescriptionAndLocationAndPatientAndStaffAndPharmacist
-  extends PrescriptionAndLocationAndPatient,
-    Prescription {
-  readonly Staff: StaffWithUser
-  readonly Pharmacist: PharmacistWithUser
+  extends Prescription {
+  LockerBox: LockerBox
+  Patient: PatientWithUser
+  Staff: StaffWithUser
+  Pharmacist: PharmacistWithUser
 }
 
 export type PharmacyLocation = Location & {
