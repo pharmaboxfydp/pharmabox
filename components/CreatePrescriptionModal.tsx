@@ -13,7 +13,7 @@ import {
   TextArea,
   Select
 } from 'grommet'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { atom, useAtom } from 'jotai'
 import { ServerPageProps, User } from '../types/types'
 import PatientsTable, { PatientsPageState } from './PatientsTable'
@@ -103,6 +103,10 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
     clearForm()
     setShowCreatePrescriptionModal(false)
   }
+
+  useEffect(() => {
+    setLockerNumber(emptyLockerboxes?.map((locker) => locker.label)[0])
+  }, [emptyLockerboxes])
 
   if (showCreatePrescription) {
     if (emptyLockerboxes?.length === 0) {
