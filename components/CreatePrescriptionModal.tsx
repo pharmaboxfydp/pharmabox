@@ -13,7 +13,7 @@ import {
   TextArea,
   Select
 } from 'grommet'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { atom, useAtom } from 'jotai'
 import { ServerPageProps, User } from '../types/types'
 import PatientsTable, { PatientsPageState } from './PatientsTable'
@@ -45,9 +45,16 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [selectPatientError, setSelectPatientError] = useState<boolean>(false)
   const { emptyLockerboxes } = useLockerboxes(user)
   const [lockerNumber, setLockerNumber] = useState<number | undefined>(
-    emptyLockerboxes?.map((locker) => locker.label)[0]
+    emptyLockerboxes?.map((locker) => locker.label)[0] ?? 1
   )
   const { createPrescription } = usePrescriptions({ user })
+
+  useEffect(() => {
+    setLockerNumber(emptyLockerboxes?.map((locker) => locker.label)[0])
+    // only refresh when the number of available lockers has changed. otherwise leave it as-is
+    // This is intentionally done
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emptyLockerboxes?.length])
 
   async function handleSubmit(
     event: FormExtendedEvent<{ prescriptionName: string }>
@@ -87,6 +94,11 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
     return false
   }
 
+  function closeModal() {
+    clearForm()
+    setShowCreatePrescriptionModal(false)
+  }
+
   function clearForm() {
     setPrescriptionName('')
     setSelectedPatient(null)
@@ -98,15 +110,6 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
     }
     setSelectedPatient(datum)
   }
-
-  function closeModal() {
-    clearForm()
-    setShowCreatePrescriptionModal(false)
-  }
-
-  useEffect(() => {
-    setLockerNumber(emptyLockerboxes?.map((locker) => locker.label)[0])
-  }, [emptyLockerboxes])
 
   if (showCreatePrescription) {
     if (emptyLockerboxes?.length === 0) {

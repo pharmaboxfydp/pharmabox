@@ -124,6 +124,7 @@ export function usePrescriptions({
       mutate(`/api/prescriptions/location/${locationId}`)
       mutate(`/api/prescriptions/patient/${patientId}`)
       mutate(`/api/lockerboxes/${locationId}`)
+      mutate(`/api/lockerboxes/${locationId}`)
       toast.success('Prescription Created')
       return true
     }

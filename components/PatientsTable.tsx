@@ -34,7 +34,7 @@ import {
   formatPhoneNumber,
   phoneNumberValidator
 } from '../helpers/validators'
-import { User } from '../types/types'
+import { User, Status } from '../types/types'
 
 export type PatientsPageState = {
   step: string
@@ -309,7 +309,10 @@ export default function PatientsTable({
               header: <Text size="small">Rx Awaiting Pickup</Text>,
               pin: shouldPinColums,
               render: ({ Patient }) => {
-                const numRx = Patient?.Prescriptions.length
+                const numRx = Patient?.Prescriptions.filter(
+                  (prescription) =>
+                    prescription.status === Status.AwaitingPickup
+                )?.length
                 return <Text size="small">{numRx}</Text>
               }
             },
