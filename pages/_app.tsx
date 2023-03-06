@@ -19,7 +19,7 @@ import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 
 try {
-  TimeAgo.addDefaultLocale(en)
+  TimeAgo.addLocale(en)
 } catch (error) {
   // catch the error that the locale has already been created
 }
