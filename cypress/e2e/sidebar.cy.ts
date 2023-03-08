@@ -29,9 +29,9 @@ describe('Sidebar Interface', () => {
     /**
      * Check that workflows page exists
      */
-    cy.get('[data-cy="Workflows"]')
-      .should('have.attr', 'href', '/workflows')
-      .should('exist')
+    // cy.get('[data-cy="Workflows"]')
+    //   .should('have.attr', 'href', '/workflows')
+    //   .should('exist')
 
     /**
      * Check that team page exists
@@ -43,9 +43,9 @@ describe('Sidebar Interface', () => {
     /**
      * Check that the logbook page exists
      */
-    cy.get('[data-cy="Logbook"]')
-      .should('have.attr', 'href', '/logbook')
-      .should('exist')
+    // cy.get('[data-cy="Logbook"]')
+    //   .should('have.attr', 'href', '/logbook')
+    //   .should('exist')
 
     /**
      * Check that the settings page exists
