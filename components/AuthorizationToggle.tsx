@@ -3,13 +3,8 @@ import useAuthorization from '../hooks/authorization'
 import { Role, User } from '../types/types'
 
 export default function AuthorizationToggle({ user }: { user: User }) {
-  const {
-    isAuthorized,
-    isLoading,
-    isError,
-    grantAuthorization,
-    revokeAuthorization
-  } = useAuthorization(user)
+  const { isAuthorized, grantAuthorization, revokeAuthorization } =
+    useAuthorization(user)
 
   function handleChange() {
     if (isAuthorized) {
