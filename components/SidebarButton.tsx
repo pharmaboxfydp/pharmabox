@@ -1,4 +1,4 @@
-import { Box, Button } from 'grommet'
+import { Box, Button, Text } from 'grommet'
 import Link from 'next/link'
 import { ReactElement } from 'react'
 import theme from '../styles/theme'
@@ -17,9 +17,13 @@ export default function SidebarButton({
   href = '/',
   ...rest
 }: SidebarButtonInterface) {
+  /**
+   * temp add should disable boolean here until we build these features to avoid user confusion
+   */
+  const shouldDisable = label === 'Workflows' || label === 'Logbook'
   return (
     <Box pad="xsmall">
-      <Link href={href} passHref>
+      <Link href={shouldDisable ? '#' : href} passHref>
         <Button
           justify="start"
           icon={icon}
@@ -31,6 +35,7 @@ export default function SidebarButton({
           size="small"
           style={{ borderRadius: '4px' }}
           data-cy={label}
+          disabled={shouldDisable}
         />
       </Link>
     </Box>

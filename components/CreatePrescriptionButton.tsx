@@ -1,5 +1,5 @@
 import { PillsAdd } from '@carbon/icons-react'
-import { Box, Button } from 'grommet'
+import { Box, Button, Text, Tip } from 'grommet'
 import { useAtom } from 'jotai'
 import useAuthorization from '../hooks/authorization'
 import { User } from '../types/types'
@@ -14,7 +14,11 @@ export default function CreatePrescriptionButton({ user }: { user: User }) {
     <Box direction="row" align="right">
       <Button
         icon={<PillsAdd size={16} />}
-        label="Add New Prescription"
+        label={
+          !isAuthorized
+            ? 'You Must be Authorized to Add a New Prescription'
+            : 'Add New Prescription'
+        }
         primary
         fill
         size="medium"

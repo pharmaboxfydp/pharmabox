@@ -1,4 +1,10 @@
-import { Alarm, Medication, Person, TrashCan } from '@carbon/icons-react'
+import {
+  Alarm,
+  Medication,
+  Person,
+  ShoppingBag,
+  TrashCan
+} from '@carbon/icons-react'
 import {
   Anchor,
   Box,
@@ -23,9 +29,10 @@ import { Loading } from './Loading'
 export function LocationPrescriptionStatus({ user }: { user: User }) {
   const { activePrescriptions, isLoading, isError } =
     useLocationPrescriptions(user)
-  const { sendPickupReminder, deletePrescription } = usePrescriptions({
-    user: user
-  })
+  const { sendPickupReminder, deletePrescription, markPrescriptionPickedUp } =
+    usePrescriptions({
+      user: user
+    })
   if (isLoading) {
     return <Loading />
   }
@@ -107,8 +114,8 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
                 >
                   <Button
                     justify="start"
-                    label="Remove Prescription"
-                    size="small"
+                    label="Delete"
+                    size="xsmall"
                     icon={<TrashCan size={16} />}
                     onClick={() =>
                       deletePrescription({
@@ -123,13 +130,38 @@ export function LocationPrescriptionStatus({ user }: { user: User }) {
                   />
                 </Box>
                 <Box
+                  background={theme.global.colors['status-unknown']}
+                  round="xsmall"
+                >
+                  <Button
+                    justify="start"
+                    label="Marked Retreived"
+                    size="xsmall"
+                    icon={<ShoppingBag size={16} />}
+                    onClick={() =>
+                      markPrescriptionPickedUp({
+                        prescriptionId: id,
+                        patientId: Patient.id
+                      })
+                    }
+                    style={{ borderRadius: '6px' }}
+                    tip={{
+                      content: (
+                        <Text size="small">
+                          Mark the prescription as retrieved by patient
+                        </Text>
+                      )
+                    }}
+                  />
+                </Box>
+                <Box
                   background={theme.global.colors['neutral-3']}
                   round="xsmall"
                 >
                   <Button
                     justify="start"
                     label="Send Pickup Reminder"
-                    size="small"
+                    size="xsmall"
                     icon={<Alarm size={16} />}
                     onClick={() =>
                       sendPickupReminder({

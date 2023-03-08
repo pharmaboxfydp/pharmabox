@@ -29,9 +29,9 @@ describe('Sidebar Interface', () => {
     /**
      * Check that workflows page exists
      */
-    cy.get('[data-cy="Workflows"]')
-      .should('have.attr', 'href', '/workflows')
-      .should('exist')
+    // cy.get('[data-cy="Workflows"]')
+    //   .should('have.attr', 'href', '/workflows')
+    //   .should('exist')
 
     /**
      * Check that team page exists
@@ -43,9 +43,9 @@ describe('Sidebar Interface', () => {
     /**
      * Check that the logbook page exists
      */
-    cy.get('[data-cy="Logbook"]')
-      .should('have.attr', 'href', '/logbook')
-      .should('exist')
+    // cy.get('[data-cy="Logbook"]')
+    //   .should('have.attr', 'href', '/logbook')
+    //   .should('exist')
 
     /**
      * Check that the settings page exists
@@ -104,12 +104,12 @@ describe('Sidebar Interface', () => {
     /**
      * Check that workflows page exists
      */
-    cy.get('[data-cy="Workflows"]').click()
-    cy.wait(1000)
-    cy.location({ timeout: 1000 }).should((loc) => {
-      expect(loc.pathname).to.equal('/workflows')
-    })
-    cy.get('span').contains('Workflows').should('exist')
+    // cy.get('[data-cy="Workflows"]').click()
+    // cy.wait(1000)
+    // cy.location({ timeout: 1000 }).should((loc) => {
+    //   expect(loc.pathname).to.equal('/workflows')
+    // })
+    // cy.get('span').contains('Workflows').should('exist')
 
     /**
      * Check that team page exists
@@ -124,12 +124,12 @@ describe('Sidebar Interface', () => {
     /**
      * Check that the logbook page exists
      */
-    cy.get('[data-cy="Logbook"]').click()
-    cy.wait(1000)
-    cy.location({ timeout: 1000 }).should((loc) => {
-      expect(loc.pathname).to.equal('/logbook')
-    })
-    cy.get('span').contains('Logbook').should('exist')
+    // cy.get('[data-cy="Logbook"]').click()
+    // cy.wait(1000)
+    // cy.location({ timeout: 1000 }).should((loc) => {
+    //   expect(loc.pathname).to.equal('/logbook')
+    // })
+    // cy.get('span').contains('Logbook').should('exist')
     /**
      * Check that the settings page exists
      */
