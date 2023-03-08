@@ -90,14 +90,14 @@ export const allowedUrls: Record<
       Icon: <WatsonHealthNominate size={24} />
     },
     {
-      link: PharmacistRootPages.Workflows,
-      name: 'Workflows',
-      Icon: <Schematics size={24} />
-    },
-    {
       link: PharmacistRootPages.Team,
       name: 'Team',
       Icon: <Collaborate size={24} />
+    },
+    {
+      link: PharmacistRootPages.Workflows,
+      name: 'Workflows',
+      Icon: <Schematics size={24} />
     },
     {
       link: PharmacistRootPages.Logbook,
@@ -134,7 +134,7 @@ export default function Sidebar({ role }: { role?: Role }) {
   /**
    * If no role is provided default to patient
    */
-  const urls = allowedUrls[role ?? 'patient']
+  const urls = allowedUrls[role ?? Role.Staff]
   return (
     <GSidebar
       background={theme.global.colors['neutral-2']}

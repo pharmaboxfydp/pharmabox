@@ -41,6 +41,13 @@ export interface UsePrescription {
     prescriptionId: number
     patientId: number
   }) => Promise<boolean>
+  markPrescriptionPickedUp: ({
+    prescriptionId,
+    patientId
+  }: {
+    prescriptionId: number
+    patientId: number
+  }) => Promise<boolean>
 }
 
 const fetcher = <T>(...arg: [string, Record<string, any>]): Promise<T> =>
@@ -184,12 +191,43 @@ export function usePrescriptions({
     return false
   }
 
+  async function markPrescriptionPickedUp({
+    prescriptionId,
+    patientId
+  }: {
+    prescriptionId: number
+    patientId: number
+  }) {
+    const response = await fetch(
+      `/api/prescriptions/${prescriptionId}/picked-up`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          data: {
+            prescriptionId
+          }
+        })
+      }
+    )
+    if (response.status === 200) {
+      mutate(`/api/prescriptions/location/${locationId}`)
+      mutate(`/api/prescriptions/patient/${patientId}`)
+      mutate(`/api/lockerboxes/${locationId}`)
+      toast.success('Prescription Marked as Retreived')
+      return true
+    } else {
+      toast.error('Unable to Update Prescription')
+      return false
+    }
+  }
+
   return {
     prescription: data?.prescription ?? null,
     isLoading: !error && !data,
     isError: error,
     createPrescription,
     sendPickupReminder,
-    deletePrescription
+    deletePrescription,
+    markPrescriptionPickedUp
   }
 }
