@@ -11,12 +11,17 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 import styled from 'styled-components'
 import Router from 'next/router'
-import AddPatientModal from '../components/AddPatientModal'
-import CreatePrescriptionModal from '../components/CreatePrescriptionModal'
+import AddPatientModal, {
+  addPatientModalState
+} from '../components/AddPatientModal'
+import CreatePrescriptionModal, {
+  createPrescriptionModalState
+} from '../components/CreatePrescriptionModal'
 import { ServerPageProps } from '../types/types'
 import TimeAgo from 'javascript-time-ago'
 
 import en from 'javascript-time-ago/locale/en.json'
+import { useAtom } from 'jotai'
 
 try {
   TimeAgo.addLocale(en)
@@ -62,15 +67,38 @@ Router.events.on('routeChangeError', () => NProgress.done())
 
 function App({ Component, pageProps }: AppProps<ServerPageProps>) {
   const router = useRouter()
+  const [, setShowCreatePrescriptionModal] = useAtom(
+    createPrescriptionModalState
+  )
+  const [, setShowAddPatientModal] = useAtom(addPatientModalState)
 
   function handleShortCutKeys(event: React.KeyboardEvent<HTMLElement>) {
     const { key } = event
-
-    if (key === 'F2') {
+    switch (key) {
+      case 'F1': {
+        setShowCreatePrescriptionModal(true)
+      }
+      case 'F2': {
+        setShowAddPatientModal(true)
+      }
+      case 'F3': {
+        router.push('/home')
+      }
+      case 'F4': {
+        router.push('/patients')
+      }
+      case 'F5': {
+        router.push('/team')
+      }
+      case 'F6': {
+        router.push('/settings')
+      }
       /**
-       * Shortcut to bring user to patients page
+       * F7 is a reserved key in Chrome
        */
-      router.push('/patients')
+      case 'F8': {
+        router.push('/settings/profile')
+      }
     }
   }
   return (
@@ -84,7 +112,7 @@ function App({ Component, pageProps }: AppProps<ServerPageProps>) {
               <SignedIn>
                 <Keyboard target="document" onKeyDown={handleShortCutKeys}>
                   <Component {...pageProps} />
-                  <AddPatientModal />
+                  <AddPatientModal {...pageProps} />
                   <CreatePrescriptionModal {...pageProps} />
                 </Keyboard>
               </SignedIn>

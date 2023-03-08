@@ -13,7 +13,7 @@ import {
   TextArea,
   Select
 } from 'grommet'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { atom, useAtom } from 'jotai'
 import { ServerPageProps, User } from '../types/types'
 import PatientsTable, { PatientsPageState } from './PatientsTable'
@@ -22,6 +22,7 @@ import { formatPhoneNumber } from '../helpers/validators'
 import { useLockerboxes } from '../hooks/lockerbox'
 import { toast } from 'react-toastify'
 import { usePrescriptions } from '../hooks/prescriptions'
+import useAuthorization from '../hooks/authorization'
 
 /**
  * imparatively define an atom
@@ -39,6 +40,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [showCreatePrescription, setShowCreatePrescriptionModal] = useAtom(
     createPrescriptionModalState
   )
+  const { isAuthorized } = useAuthorization(user)
   const [selectedPatient, setSelectedPatient] = useState<User | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [prescriptionName, setPrescriptionName] = useState<string>('')
@@ -74,15 +76,17 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
       (locker) => locker.label === lockerNumber
     )
 
-    if (!locker) {
+    if (!locker || !lockerNumber) {
       toast.error('The current selected locker is invalid.')
       setIsFetching(false)
       return false
     }
+
     const success = await createPrescription({
       name: prescriptionName,
       patientId: selectedPatient.Patient?.id,
-      lockerBoxId: locker.id
+      lockerBoxId: locker.id,
+      lockerBoxLabel: lockerNumber
     })
 
     setIsFetching(false)
@@ -111,7 +115,7 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
     setSelectedPatient(datum)
   }
 
-  if (showCreatePrescription) {
+  if (showCreatePrescription && isAuthorized) {
     if (emptyLockerboxes?.length === 0) {
       return (
         <Layer

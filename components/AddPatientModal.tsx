@@ -24,6 +24,8 @@ import { useState } from 'react'
 import { atom, useAtom } from 'jotai'
 import { emailValidator, phoneNumberValidator } from '../helpers/validators'
 import usePatients, { NewPatient } from '../hooks/patients'
+import { ServerPageProps } from '../types/types'
+import useAuthorization from '../hooks/authorization'
 
 /**
  * imparatively define an atom
@@ -32,8 +34,9 @@ import usePatients, { NewPatient } from '../hooks/patients'
  */
 export const addPatientModalState = atom<boolean>(false)
 
-export default function AddPatientModal() {
+export default function AddPatientModal({ user }: ServerPageProps) {
   const [showAddPatient, setShowAddPatientModal] = useAtom(addPatientModalState)
+  const { isAuthorized } = useAuthorization(user)
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [phoneValue, setPhoneValue] = useState<string>('')
   const [emailValue, setEmailValue] = useState<string>('')
@@ -66,7 +69,7 @@ export default function AddPatientModal() {
     setShowAddPatientModal(false)
   }
 
-  return showAddPatient ? (
+  return showAddPatient && isAuthorized ? (
     <Layer
       onEsc={closeModal}
       onClickOutside={closeModal}
