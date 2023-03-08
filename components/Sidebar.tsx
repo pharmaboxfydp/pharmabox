@@ -19,6 +19,7 @@ import {
   Catalog,
   Logout
 } from '@carbon/icons-react'
+import { useEffect } from 'react'
 
 export const allowedUrls: Record<
   Role,
@@ -113,6 +114,22 @@ export const allowedUrls: Record<
 
 export default function Sidebar({ role }: { role?: Role }) {
   const { signOut } = useClerk()
+
+  function handleKeyboardEvent(event: KeyboardEvent) {
+    const element = event.target as HTMLElement
+    const shouldTrigger =
+      element?.tagName === 'BODY' && event.key === 'L' && event.shiftKey
+    if (shouldTrigger) {
+      signOut()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keypress', handleKeyboardEvent)
+    return () => {
+      document.removeEventListener('keypress', handleKeyboardEvent)
+    }
+  })
 
   /**
    * If no role is provided default to patient

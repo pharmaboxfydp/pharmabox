@@ -1,4 +1,5 @@
 import { Box, CheckBox } from 'grommet'
+import { useEffect } from 'react'
 import useAuthorization from '../hooks/authorization'
 import { Role, User } from '../types/types'
 
@@ -19,6 +20,23 @@ export default function AuthorizationToggle({ user }: { user: User }) {
       })
     }
   }
+
+  function handleKeyboardEvent(event: KeyboardEvent) {
+    const element = event.target as HTMLElement
+    const shouldTrigger =
+      element?.tagName === 'BODY' && event.key === 'A' && event.shiftKey
+    if (shouldTrigger) {
+      handleChange()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keypress', handleKeyboardEvent)
+    return () => {
+      document.removeEventListener('keypress', handleKeyboardEvent)
+    }
+  })
+
   return (
     <Box pad="xxsmall" animation="fadeIn">
       <CheckBox

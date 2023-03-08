@@ -5,7 +5,17 @@ import {
   QID,
   WarningAlt
 } from '@carbon/icons-react'
-import { Text, Box, Card } from 'grommet'
+import {
+  Text,
+  Box,
+  Card,
+  List,
+  Table,
+  TableHeader,
+  TableCell,
+  TableRow,
+  TableBody
+} from 'grommet'
 import Skeleton from 'react-loading-skeleton'
 import useLocation from '../hooks/location'
 import theme from '../styles/theme'
@@ -68,14 +78,119 @@ function LocationBlock({ user }: { user: User }) {
   )
 }
 
+function KeyCodes() {
+  return (
+    <Box gap="medium">
+      <Box pad={{ left: 'small', top: 'medium' }}>
+        <Text>Keyboard Shortcuts</Text>
+      </Box>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableCell scope="col" border="bottom">
+              <Text size="small">Action</Text>
+            </TableCell>
+            <TableCell scope="col" border="bottom">
+              <Text size="small">Key</Text>
+            </TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Create a New Prescription For Pickup</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>F1</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Add a New Patient</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>F2</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Go to Dashboad Page</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>F3</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Go to Patients Page</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>F4</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Go to Teams Page</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>F5</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Go to Settings Page</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>F6</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Go to Profile Page</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>F8</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">{`Toggle Authorization (Pharmacists Only)`}</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>Shift</kbd> + <kbd>A</kbd>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell scope="row">
+              <Text size="small">Sign Out</Text>
+            </TableCell>
+            <TableCell>
+              <kbd>Shift</kbd> + <kbd>L</kbd>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </Box>
+  )
+}
+
 export default function StaffAndPharmacistSettings({ user }: { user: User }) {
   return (
     <>
-      <Box gap="medium" pad="small">
-        <Text>Location Information</Text>
-        <Box flex="grow" direction="row" gap="medium" animation="fadeIn">
+      <Box gap="medium">
+        <Box pad={{ left: 'small', top: 'medium' }}>
+          <Text>Location Information</Text>
+        </Box>
+        <Box
+          flex="grow"
+          direction="row"
+          gap="medium"
+          animation="fadeIn"
+          pad="small"
+        >
           <LocationBlock user={user} />
         </Box>
+        <KeyCodes />
       </Box>
     </>
   )

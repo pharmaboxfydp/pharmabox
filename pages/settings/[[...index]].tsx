@@ -34,7 +34,7 @@ const Settings = ({ user }: ServerPageProps) => {
         >
           <Breadcrumbs pages={['Settings']} />
           <Box direction="row" border="top" fill>
-            <Box pad="medium" gap="medium" border="right" flex="grow">
+            <Box pad="medium" gap="medium" flex="grow">
               <Box direction="row" gap="small">
                 <Information size={20} />
                 <Text size="small">Settings</Text>
@@ -47,26 +47,28 @@ const Settings = ({ user }: ServerPageProps) => {
                 />
               </Link>
             </Box>
-            <Box pad="small" basis="auto" fill="horizontal" gap="small">
+            <Box
+              basis="auto"
+              fill
+              gap="small"
+              border="left"
+              className="settings-content"
+              style={{ height: 'fit-content' }}
+            >
               {(user.role === Role.Staff || user.role === Role.Pharmacist) && (
                 <StaffAndPharmacistSettings user={user} />
               )}
-
-              <div>
-                <ResponsiveContext.Consumer>
-                  {(responsive) =>
-                    responsive === 'small' ? (
-                      <SidebarButton
-                        icon={<Logout size={24} />}
-                        label={'Logout'}
-                        onClick={signOut}
-                      />
-                    ) : (
-                      <></>
-                    )
-                  }
-                </ResponsiveContext.Consumer>
-              </div>
+              <ResponsiveContext.Consumer>
+                {(responsive) =>
+                  responsive === 'small' && (
+                    <SidebarButton
+                      icon={<Logout size={24} />}
+                      label={'Logout'}
+                      onClick={signOut}
+                    />
+                  )
+                }
+              </ResponsiveContext.Consumer>
             </Box>
           </Box>
         </Box>
