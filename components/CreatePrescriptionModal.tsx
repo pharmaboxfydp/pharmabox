@@ -76,15 +76,17 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
       (locker) => locker.label === lockerNumber
     )
 
-    if (!locker) {
+    if (!locker || !lockerNumber) {
       toast.error('The current selected locker is invalid.')
       setIsFetching(false)
       return false
     }
+
     const success = await createPrescription({
       name: prescriptionName,
       patientId: selectedPatient.Patient?.id,
-      lockerBoxId: locker.id
+      lockerBoxId: locker.id,
+      lockerBoxLabel: lockerNumber
     })
 
     setIsFetching(false)

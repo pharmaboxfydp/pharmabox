@@ -17,6 +17,7 @@ export interface CreatePrescription {
   name: string
   patientId: number | undefined
   lockerBoxId: number
+  lockerBoxLabel: number
 }
 
 export interface UsePrescription {
@@ -101,7 +102,8 @@ export function usePrescriptions({
   async function createPrescription({
     name,
     patientId,
-    lockerBoxId
+    lockerBoxId,
+    lockerBoxLabel
   }: CreatePrescription): Promise<boolean> {
     const creatorRole = user.role
     const createdTime = new Date().toISOString()
@@ -125,7 +127,9 @@ export function usePrescriptions({
       mutate(`/api/prescriptions/patient/${patientId}`)
       mutate(`/api/lockerboxes/${locationId}`)
       mutate(`/api/lockerboxes/${locationId}`)
-      toast.success('Prescription Created')
+      toast.success(
+        `Prescription Created. Place Prescription in Locker ${lockerBoxLabel}`
+      )
       return true
     }
     toast.error('Unable to Create Prescription')

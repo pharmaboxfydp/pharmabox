@@ -2,8 +2,16 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import { Status, LockerBoxState } from '../../../types/types'
 
+interface IncommingRequest extends NextApiRequest {
+  body: {
+    data: {
+      code: string
+    }
+  }
+}
+
 export default async function handler(
-  req: NextApiRequest,
+  req: IncommingRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
@@ -12,11 +20,11 @@ export default async function handler(
         req.body = JSON.parse(req.body)
       }
 
-      const { qrCode: Q } = req.body
-      const qrCode: string = Q
+      const { code } = req.body.data
+
       const prescription = await prisma.prescription.findFirst({
         where: {
-          pickupCode: qrCode,
+          pickupCode: code,
           status: Status.AwaitingPickup
         }
       })
@@ -42,7 +50,7 @@ export default async function handler(
           .status(200)
           .json({ message: 'Success', updatedPrescription, updatedLockerBox })
       } else {
-        return res.status(401).json({ message: 'Invalid QR code', qrCode })
+        return res.status(401).json({ message: 'Invalid Code', code })
       }
     } catch (e) {
       res.status(400).json({ message: 'Bad Request', error: e })
