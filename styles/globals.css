@@ -170,8 +170,8 @@ label span {
   background: #ffb7b7;
 }
 
-.patients-table th {
-  background-color: #ffffff;
+th[scope='col'] {
+  background-color: #fff;
 }
 
 kbd {

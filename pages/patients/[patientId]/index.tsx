@@ -3,7 +3,7 @@ import { Anchor, Box, Button, CheckBox, Header, Menu, Text } from 'grommet'
 import { withServerSideAuth } from '@clerk/nextjs/ssr'
 import { SSRUser } from '../../../helpers/user-details'
 import Page from '../../../components/Page'
-import { ServerPageProps } from '../../../types/types'
+import { ServerPageProps, User } from '../../../types/types'
 import Breadcrumbs from '../../../components/Breadcrumbs'
 import { useRouter } from 'next/router'
 import usePatient from '../../../hooks/patient'
@@ -13,6 +13,7 @@ import {
   Add,
   Edit,
   OverflowMenuHorizontal,
+  PillsAdd,
   TrashCan
 } from '@carbon/icons-react'
 import { useState } from 'react'
@@ -22,18 +23,40 @@ import { addPatientModalState } from '../../../components/AddPatientModal'
 import NotFound from '../../../public/not-found.svg'
 import Image from 'next/image'
 import DeletePatientModal from '../../../components/DeletePatientModal'
+import useAuthorization from '../../../hooks/authorization'
+import {
+  createPrescriptionModalState,
+  patient as selectedPatient,
+  showPatientsTable
+} from '../../../components/CreatePrescriptionModal'
+import {
+  usePatientPrescriptions,
+  usePrescriptions
+} from '../../../hooks/prescriptions'
+import ActivePrescriptionsCard from '../../../components/ActivePrescriptionsCard'
+import PrevPrescriptionsCard from '../../../components/PrevPrescriptionsCard'
 
 const PatientPage = ({ user: currentUser }: ServerPageProps) => {
   const router = useRouter()
   const { patientId } = router.query
   const [, setShowAddPatientModal] = useAtom(addPatientModalState)
+  const { isAuthorized } = useAuthorization(currentUser)
 
   // cast to string to be safe
   const { patient, error, isLoading, updatePickup, deletePatient } = usePatient(
     `${patientId}`
   )
-
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [, setShowCreatePrescriptionModal] = useAtom(
+    createPrescriptionModalState
+  )
+
+  const { sendPickupReminder, deletePrescription, markPrescriptionPickedUp } =
+    usePrescriptions({
+      user: currentUser
+    })
+  const [, setPatient] = useAtom(selectedPatient)
+  const [, setShowTable] = useAtom(showPatientsTable)
 
   async function handleDeletePatient() {
     const deleted = await deletePatient()
@@ -42,6 +65,19 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
       router.push('/patients')
     }
   }
+
+  function handleCreatePrescription() {
+    setShowCreatePrescriptionModal(true)
+    setShowTable(false)
+    if (patient) {
+      let user = patient.User
+      user.Patient = patient
+      setPatient(user)
+    }
+  }
+  const { activePrescriptions, prevPrescriptions } = usePatientPrescriptions(
+    patient?.id
+  )
 
   let patientFirstName: string | undefined
   let patientLastName: string | undefined
@@ -85,14 +121,8 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Page user={currentUser}>
-          <Box
-            animation="fadeIn"
-            direction="column"
-            align="start"
-            className="Settings"
-            fill="horizontal"
-          >
-            <Box basis="auto" fill="horizontal">
+          <Box animation="fadeIn" align="start" className="Patients Page">
+            <Box basis="auto" fill="horizontal" overflow="scroll">
               <Header>
                 <Box>
                   <Breadcrumbs pages={['Patients', `${patientFullName}`]} />
@@ -136,7 +166,29 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                   />
                 </Box>
               </Header>
-              <Box pad="medium">
+              <Box
+                pad="medium"
+                gap="medium"
+                className="contents"
+                style={{ display: 'block' }}
+              >
+                <Box direction="row" align="right">
+                  <Button
+                    icon={<PillsAdd size={16} />}
+                    label={
+                      !isAuthorized
+                        ? 'You Must be Authorized to Add a New Prescription'
+                        : `Add New Prescription for ${patientFirstName} ${patientLastName}`
+                    }
+                    primary
+                    fill="horizontal"
+                    size="medium"
+                    onClick={handleCreatePrescription}
+                    disabled={!isAuthorized}
+                    data-cy="create-prescription-button"
+                    style={{ borderRadius: '10px' }}
+                  />
+                </Box>
                 <Box
                   direction="row"
                   border
@@ -198,6 +250,65 @@ const PatientPage = ({ user: currentUser }: ServerPageProps) => {
                         })
                       }
                     />
+                  </Box>
+                </Box>
+                <Box gap="small" round="small">
+                  <Text weight="bold">Prescriptions Awaiting Pickup</Text>
+                  <Box gap="medium">
+                    {activePrescriptions?.map(
+                      ({
+                        id,
+                        name,
+                        createdTime,
+                        LockerBox,
+                        Patient,
+                        Staff,
+                        Pharmacist
+                      }) => (
+                        <div key={LockerBox.label}>
+                          <ActivePrescriptionsCard
+                            id={id}
+                            name={name}
+                            createdTime={createdTime as Date}
+                            Patient={Patient}
+                            Staff={Staff}
+                            LockerBox={LockerBox}
+                            Pharmacist={Pharmacist}
+                            deletePrescription={deletePrescription}
+                            sendPickupReminder={sendPickupReminder}
+                            markPrescriptionPickedUp={markPrescriptionPickedUp}
+                          />
+                        </div>
+                      )
+                    )}
+                  </Box>
+                </Box>
+                <Box gap="small" round="small">
+                  <Text weight="bold">Previous Prescriptions</Text>
+                  <Box gap="medium">
+                    {prevPrescriptions?.map(
+                      ({
+                        id,
+                        name,
+                        createdTime,
+                        LockerBox,
+                        Patient,
+                        Staff,
+                        Pharmacist
+                      }) => (
+                        <div key={LockerBox.label}>
+                          <PrevPrescriptionsCard
+                            id={id}
+                            name={name}
+                            createdTime={createdTime as Date}
+                            Patient={Patient}
+                            Staff={Staff}
+                            LockerBox={LockerBox}
+                            Pharmacist={Pharmacist}
+                          />
+                        </div>
+                      )
+                    )}
                   </Box>
                 </Box>
               </Box>

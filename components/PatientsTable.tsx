@@ -128,7 +128,7 @@ export default function PatientsTable({
 
   function quietlySetQuery(state: PatientsPageState) {
     router.push(
-      `${router.pathname}/?${new URLSearchParams(state).toString()}`,
+      `${window.location.pathname}/?${new URLSearchParams(state).toString()}`,
       undefined,
       { shallow: true }
     )

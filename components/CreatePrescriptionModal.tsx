@@ -36,12 +36,16 @@ const patientsSearchPaginationState = atom<PatientsPageState>({
   page: '1'
 })
 
+export const patient = atom<User | null>(null)
+export const showPatientsTable = atom<boolean>(true)
+
 export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   const [showCreatePrescription, setShowCreatePrescriptionModal] = useAtom(
     createPrescriptionModalState
   )
   const { isAuthorized } = useAuthorization(user)
-  const [selectedPatient, setSelectedPatient] = useState<User | null>(null)
+  const [selectedPatient, setSelectedPatient] = useAtom(patient)
+  const [patientsTable, setPatientsTable] = useAtom(showPatientsTable)
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [prescriptionName, setPrescriptionName] = useState<string>('')
   const [selectPatientError, setSelectPatientError] = useState<boolean>(false)
@@ -99,8 +103,10 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
   }
 
   function closeModal() {
+    setSelectedPatient(null)
     clearForm()
     setShowCreatePrescriptionModal(false)
+    setPatientsTable(true)
   }
 
   function clearForm() {
@@ -185,23 +191,25 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                 {emptyLockerboxes.length && (
                   <Form onSubmit={handleSubmit}>
                     <Box gap="medium">
-                      <Box
-                        border={{
-                          color: selectPatientError
-                            ? theme.global.colors['status-critical']
-                            : theme.global.colors['light-3']
-                        }}
-                        pad="small"
-                        round="small"
-                      >
-                        <PatientsTable
-                          patientsPageState={patientsSearchPaginationState}
-                          defaultPage={1}
-                          defaultStep={3}
-                          onRowClickOverride={handleRowClick}
-                          filterOnEnabled
-                        />
-                      </Box>
+                      {patientsTable && (
+                        <Box
+                          border={{
+                            color: selectPatientError
+                              ? theme.global.colors['status-critical']
+                              : theme.global.colors['light-3']
+                          }}
+                          pad="small"
+                          round="small"
+                        >
+                          <PatientsTable
+                            patientsPageState={patientsSearchPaginationState}
+                            defaultPage={1}
+                            defaultStep={3}
+                            onRowClickOverride={handleRowClick}
+                            filterOnEnabled
+                          />
+                        </Box>
+                      )}
                       {selectedPatient ? (
                         <Box
                           border={{ color: theme.global.colors['neutral-2'] }}
