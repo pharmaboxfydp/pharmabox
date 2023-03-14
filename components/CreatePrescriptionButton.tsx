@@ -1,5 +1,5 @@
 import { PillsAdd } from '@carbon/icons-react'
-import { Box, Button, Text, Tip } from 'grommet'
+import { Box, Button } from 'grommet'
 import { useAtom } from 'jotai'
 import useAuthorization from '../hooks/authorization'
 import { User } from '../types/types'

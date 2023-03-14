@@ -87,6 +87,43 @@ export function useLocationPrescriptions(user: User): UsePatientPrescriptions {
   }
 }
 
+export function usePatientPrescriptions(
+  patientId: number | undefined
+): UsePatientPrescriptions {
+  const { data, error } = useSWR<{
+    message: string
+    prescriptions: FullPrescription[]
+  }>(`/api/prescriptions/patient/${patientId}`, fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: false
+  })
+
+  const { mutate } = useSWRConfig()
+  function refresh() {
+    mutate(`/api/prescriptions/patient/${patientId}`)
+  }
+
+  const activePrescriptions =
+    data?.prescriptions?.filter(
+      (prescription) => prescription.status === Status.AwaitingPickup
+    ) ?? null
+
+  const prevPrescriptions =
+    data?.prescriptions?.filter(
+      (prescription) => prescription.status === Status.PickupCompleted
+    ) ?? null
+
+  return {
+    prescriptions: data?.prescriptions ?? null,
+    activePrescriptions,
+    prevPrescriptions,
+    isLoading: !error && !data,
+    isError: error,
+    refresh
+  }
+}
+
 export function usePrescriptions({
   prescriptionId,
   user
