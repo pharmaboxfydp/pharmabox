@@ -214,6 +214,8 @@ export default function CreatePrescriptionModal({ user }: ServerPageProps) {
                         <Box
                           border={{ color: theme.global.colors['neutral-2'] }}
                           round="small"
+                          background={theme.global.colors['light-2']}
+                          animation={{ type: 'fadeIn', duration: 400 }}
                         >
                           <Box
                             direction="row"
