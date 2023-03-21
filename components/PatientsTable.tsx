@@ -15,6 +15,7 @@ import { atomWithStorage } from 'jotai/utils'
 
 import Skeleton from 'react-loading-skeleton'
 import {
+  BorderRight,
   Close,
   Email,
   ErrorFilled,
@@ -206,16 +207,6 @@ export default function PatientsTable({
       <Box overflow="auto">
         <Header gap="none" animation="slideUp" sticky="scrollup">
           <TextInput
-            value={fN}
-            placeholder="Search By First Name"
-            a11yTitle="Search By First Name"
-            size="small"
-            style={{ borderRadius: 0, borderRight: 0 }}
-            icon={<LetterFf size={16} />}
-            onChange={(e) => updateFirstName(e.target.value)}
-            data-cy="search-first-name"
-          />
-          <TextInput
             value={lN}
             placeholder="Search By Last Name"
             a11yTitle="Search By Last Name"
@@ -224,6 +215,16 @@ export default function PatientsTable({
             icon={<LetterLl size={16} />}
             onChange={(e) => updateLastName(e.target.value)}
             data-cy="search-last-name"
+          />
+          <TextInput
+            value={fN}
+            placeholder="Search By First Name"
+            a11yTitle="Search By First Name"
+            size="small"
+            style={{ borderRadius: 0, borderRight: 0 }}
+            icon={<LetterFf size={16} />}
+            onChange={(e) => updateFirstName(e.target.value)}
+            data-cy="search-first-name"
           />
           <MaskedInput
             mask={phoneNumberValidator}
@@ -247,12 +248,23 @@ export default function PatientsTable({
             onChange={(e) => updateEmail(e.target.value)}
             data-cy="search-email"
           />
-          <Button
-            icon={<Close size={16} />}
-            onClick={clearSearch}
-            tip={{ content: <Text size="xsmall">Clear Search</Text> }}
-            data-cy="table-clear-search"
-          />
+          <Box
+            border={{ side: 'horizontal' }}
+            width="small"
+            align="center"
+            style={{
+              background: theme.global.colors['light-2'],
+              padding: '1px',
+              borderRight: 'solid 1px rgba(0,0,0,0.1)'
+            }}
+          >
+            <Button
+              icon={<Close size={16} />}
+              onClick={clearSearch}
+              tip={{ content: <Text size="xsmall">Clear Search</Text> }}
+              data-cy="table-clear-search"
+            />
+          </Box>
         </Header>
         <DataTable
           pin
@@ -325,15 +337,14 @@ export default function PatientsTable({
                   round
                   background={
                     user?.Patient?.pickupEnabled
-                      ? theme.global.colors['status-ok']
-                      : theme.global.colors['status-warning']
+                      ? theme.global.colors['status-unknown']
+                      : theme.global.colors['light-1']
                   }
-                  pad="xxsmall"
                   align="center"
                   border
                   width="xsmall"
                 >
-                  <Text size="xsmall" color={theme.global.colors.white}>
+                  <Text size="xsmall">
                     {user?.Patient?.pickupEnabled ? 'Enabled' : 'Disabled'}
                   </Text>
                 </Box>
@@ -358,7 +369,7 @@ export default function PatientsTable({
           justify="between"
           border="top"
         >
-          <Box direction="row" gap="xsmall">
+          <Box direction="row" gap="xsmall" animation="fadeIn">
             <Box pad="small">
               <Text size="xsmall">Show</Text>
             </Box>
